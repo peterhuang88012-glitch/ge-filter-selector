@@ -1,0 +1,344 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>GE 燃气轮机进气过滤选型系统</title>
+    <style>
+        :root { 
+            --primary: #005eb8; 
+            --secondary: #6c757d; 
+            --success: #28a745; 
+            --warning: #ffc107;
+            --danger: #dc3545;
+            --light: #f8f9fa;
+            --dark: #343a40;
+        }
+        body { 
+            font-family: 'Segoe UI', Roboto, "Helvetica Neue", Arial, sans-serif; 
+            line-height: 1.6; 
+            color: #333; 
+            background: #f0f2f5; 
+            margin: 0; 
+            padding: 20px; 
+        }
+        .container { 
+            max-width: 1200px; 
+            margin: auto; 
+            background: white; 
+            padding: 40px; 
+            border-radius: 12px; 
+            box-shadow: 0 4px 20px rgba(0,0,0,0.08); 
+        }
+        header { 
+            border-bottom: 3px solid var(--primary); 
+            margin-bottom: 30px; 
+            padding-bottom: 15px; 
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        h1 { color: var(--primary); margin: 0; font-size: 28px; font-weight: 700; }
+        .version { font-size: 14px; color: var(--secondary); }
+        
+        .grid { display: grid; grid-template-columns: 1fr 1fr; gap: 30px; }
+        @media (max-width: 900px) {
+            .grid { grid-template-columns: 1fr; }
+        }
+        
+        .card { 
+            border: 1px solid #e1e4e8; 
+            padding: 25px; 
+            border-radius: 10px; 
+            background: #fff; 
+            transition: transform 0.2s;
+        }
+        .card:hover { box-shadow: 0 5px 15px rgba(0,0,0,0.05); }
+        h3 { 
+            margin-top: 0; 
+            color: var(--dark); 
+            border-left: 4px solid var(--primary); 
+            padding-left: 10px;
+            font-size: 18px;
+            margin-bottom: 20px;
+        }
+        
+        .input-group { margin-bottom: 20px; }
+        label { display: block; margin-bottom: 8px; font-weight: 600; font-size: 14px; color: #444; }
+        select, input { 
+            width: 100%; 
+            padding: 12px; 
+            border: 1px solid #ced4da; 
+            border-radius: 6px; 
+            box-sizing: border-box; 
+            font-size: 15px;
+            transition: border-color 0.2s;
+        }
+        select:focus, input:focus {
+            outline: none;
+            border-color: var(--primary);
+            box-shadow: 0 0 0 3px rgba(0,94,184,0.1);
+        }
+        
+        .results { background: #f8fbff; border: 1px solid #d0e3ff; }
+        .warning-box { 
+            color: #856404; 
+            background-color: #fff3cd; 
+            padding: 15px; 
+            border-radius: 6px; 
+            margin-top: 20px; 
+            font-size: 14px; 
+            border: 1px solid #ffeeba;
+            display: flex;
+            align-items: center;
+        }
+        .warning-box i { margin-right: 10px; font-style: normal; font-size: 18px; }
+        
+        table { width: 100%; border-collapse: collapse; margin-top: 10px; }
+        th, td { text-align: left; padding: 12px 15px; border-bottom: 1px solid #edf2f7; }
+        td:last-child { text-align: right; font-weight: 600; color: var(--dark); }
+        tr:last-child td { border-bottom: none; }
+        
+        .summary-box { display: flex; gap: 15px; margin-bottom: 25px; }
+        .stat-item { 
+            text-align: center; 
+            flex: 1; 
+            padding: 20px 10px; 
+            background: white; 
+            border: 1px solid #e1e4e8;
+            border-radius: 8px; 
+            box-shadow: 0 2px 4px rgba(0,0,0,0.02);
+        }
+        .stat-value { display: block; font-size: 24px; font-weight: 800; color: var(--primary); margin-bottom: 5px; }
+        .stat-label { font-size: 13px; color: #6c757d; font-weight: 500; }
+        .stat-unit { font-size: 12px; color: #adb5bd; margin-left: 2px; }
+        
+        .footer { 
+            margin-top: 40px; 
+            padding-top: 20px;
+            text-align: center; 
+            color: #95a5a6; 
+            font-size: 13px; 
+            border-top: 1px solid #eee;
+        }
+        .highlight-red { color: var(--danger) !important; }
+        
+        /* Tooltip style */
+        .info-icon {
+            display: inline-block;
+            width: 16px;
+            height: 16px;
+            background: #dee2e6;
+            color: #6c757d;
+            border-radius: 50%;
+            text-align: center;
+            line-height: 16px;
+            font-size: 11px;
+            cursor: help;
+            margin-left: 5px;
+        }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <header>
+        <h1>GE 燃气轮机进气过滤系统选型工具</h1>
+        <div class="version">专业版 v1.1</div>
+    </header>
+
+    <div class="grid">
+        <div class="card">
+            <h3>1. 基础工况输入</h3>
+            <div class="input-group">
+                <label>选择 GE 燃机型号</label>
+                <select id="modelSelect" onchange="calculate()">
+                    <option value="9HA.02">9HA.02 (ISO: 1200 kg/s, 571 MW)</option>
+                    <option value="9HA.01">9HA.01 (ISO: 973 kg/s, 446 MW)</option>
+                    <option value="9F.04">9F.04 (ISO: 665 kg/s, 288 MW)</option>
+                    <option value="9E.03">9E.03 (ISO: 416 kg/s, 132 MW)</option>
+                    <option value="6B.03">6B.03 (ISO: 141 kg/s, 44 MW)</option>
+                    <option value="LM6000">LM6000 (ISO: 130 kg/s, 44 MW)</option>
+                </select>
+            </div>
+
+            <div class="input-group">
+                <label>项目海拔 (m) <span class="info-icon" title="海拔越高，空气越稀薄，密度越低">?</span></label>
+                <input type="number" id="altitude" value="0" oninput="calculate()">
+            </div>
+
+            <div class="input-group">
+                <label>环境温度 (°C)</label>
+                <input type="number" id="temp" value="35" oninput="calculate()">
+            </div>
+
+            <div class="input-group">
+                <label>相对湿度 (%)</label>
+                <input type="number" id="humidity" value="60" min="0" max="100" oninput="calculate()">
+            </div>
+
+            <h3>2. 设计约束</h3>
+            <div class="input-group">
+                <label>目标过滤风速 (m/s) <span class="info-icon" title="推荐范围: 2.5 - 3.2 m/s">?</span></label>
+                <input type="number" id="targetV" value="3.0" step="0.1" oninput="calculate()">
+            </div>
+        </div>
+
+        <div class="card results">
+            <h3>3. 选型计算结果</h3>
+            <div class="summary-box">
+                <div class="stat-item">
+                    <span class="stat-label">实际体积流量</span>
+                    <span class="stat-value" id="resQ">-</span>
+                    <span class="stat-unit">m³/h</span>
+                </div>
+                <div class="stat-item">
+                    <span class="stat-label">过滤器总数</span>
+                    <span class="stat-value" id="resCount">-</span>
+                    <span class="stat-unit">Cells</span>
+                </div>
+            </div>
+
+            <table>
+                <tr>
+                    <td>排列布局 (行 × 列)</td>
+                    <td id="resLayout">-</td>
+                </tr>
+                <tr>
+                    <td>实际过滤风速</td>
+                    <td id="resActualV">-</td>
+                </tr>
+                <tr>
+                    <td>初始压降 (估算)</td>
+                    <td id="resDP">-</td>
+                </tr>
+                <tr>
+                    <td>功率损失 (MW)</td>
+                    <td id="resPowerLoss" class="highlight-red">-</td>
+                </tr>
+            </table>
+
+            <div id="vWarning" class="warning-box" style="display:none;">
+                <i>⚠️</i> <span>警告：当前风速超过 3.5m/s，建议增加过滤器数量以降低压降。</span>
+            </div>
+
+            <h3 style="margin-top:30px;">4. 物理尺寸参考</h3>
+            <table>
+                <tr>
+                    <td>进气墙宽度 (m)</td>
+                    <td id="resWallW">-</td>
+                </tr>
+                <tr>
+                    <td>进气墙高度 (m)</td>
+                    <td id="resWallH">-</td>
+                </tr>
+                <tr>
+                    <td>预估结构重量 (t)</td>
+                    <td id="resWeight">-</td>
+                </tr>
+            </table>
+        </div>
+    </div>
+    
+    <div class="footer">
+        <p>* 本工具基于工程经验公式计算，密度修正采用标准大气模型。最终选型请以厂家施工图及 GE 官方 Performance Data 为准。</p>
+        <p>&copy; 2024 GE 燃机选型辅助系统 | 内部参考工具</p>
+    </div>
+</div>
+
+<script>
+// 1. 数据库
+const geData = {
+    "9HA.02": { m: 1200, mw: 571 },
+    "9HA.01": { m: 973, mw: 446 },
+    "9F.04": { m: 665, mw: 288 },
+    "9E.03": { m: 416, mw: 132 },
+    "6B.03": { m: 141, mw: 44 },
+    "LM6000": { m: 130, mw: 44 }
+};
+
+function calculate() {
+    // 获取输入
+    const model = document.getElementById('modelSelect').value;
+    const alt = parseFloat(document.getElementById('altitude').value) || 0;
+    const t = parseFloat(document.getElementById('temp').value) || 0;
+    const rh = (parseFloat(document.getElementById('humidity').value) || 0) / 100;
+    const targetV = parseFloat(document.getElementById('targetV').value) || 3.0;
+
+    const m_iso = geData[model].m;
+    const mw_rated = geData[model].mw;
+
+    // A. 物理计算
+    // 1. 现场压力 (Pa) - 气压随高度变化公式
+    const p_site = 101325 * Math.pow((1 - 2.25577e-5 * alt), 5.25588);
+    
+    // 2. 湿度修正与密度
+    const t_abs = t + 273.15;
+    // 饱和水蒸气压 (Tetens公式)
+    const p_sat = 611.2 * Math.exp((17.62 * t) / (243.12 + t));
+    const p_v = rh * p_sat;
+    const p_d = p_site - p_v;
+    // 湿空气密度 (kg/m³)
+    const rho = (p_d / (287.05 * t_abs)) + (p_v / (461.5 * t_abs));
+    
+    // 3. 现场质量流量修正 (简化估算：高温导致进气密度下降，进而影响质量流量)
+    // 实际 GE 性能曲线更复杂，此处采用密度比例修正
+    const k_temp = Math.sqrt(288.15 / t_abs);
+    const m_site = m_iso * (p_site / 101325) * k_temp;
+    
+    // 4. 实际体积流量 (m³/h)
+    const q_site = (m_site / rho) * 3600;
+
+    // B. 过滤器分布
+    const unit_area = 0.35; // 592x592 过滤器有效过滤面积 (m²)
+    const unit_pitch = 0.61; // 含框架安装间距 (m)
+    
+    // 计算所需总面积并换算成过滤器数量
+    let total_needed = Math.ceil(q_site / (3600 * unit_area * targetV));
+    
+    // 自动排布算法 (尝试维持 1.5:1 的宽高比，符合大多数进气室设计)
+    let cols = Math.ceil(Math.sqrt(total_needed * 1.5));
+    let rows = Math.ceil(total_needed / cols);
+    let final_count = rows * cols;
+    
+    // 实际过滤风速
+    let actual_v = q_site / (3600 * unit_area * final_count);
+
+    // C. 压降与性能影响
+    // 典型 F9 级高效过滤器压降公式 (Pa): DP = 12v^2 + 5v (经验公式)
+    let dp_init = 12 * Math.pow(actual_v, 2) + 5 * actual_v;
+    // 功率损失估算：每 100Pa 压降约导致 0.135% 的出力损失
+    let powerLoss = mw_rated * (dp_init / 100) * 0.00135;
+
+    // D. 尺寸与重量
+    let wallW = cols * unit_pitch;
+    let wallH = rows * unit_pitch;
+    // 粗略估算结构重量 (t): 考虑框架、支撑及外壳
+    let estWeight = (wallW * wallH * 2 + wallW * 3 + wallH * 3) * 0.05;
+
+    // 更新界面显示
+    document.getElementById('resQ').innerText = Math.round(q_site).toLocaleString();
+    document.getElementById('resCount').innerText = final_count;
+    document.getElementById('resLayout').innerText = `${rows} 行 × ${cols} 列`;
+    document.getElementById('resActualV').innerText = actual_v.toFixed(2) + " m/s";
+    document.getElementById('resDP').innerText = Math.round(dp_init) + " Pa";
+    document.getElementById('resPowerLoss').innerText = powerLoss.toFixed(3) + " MW";
+    document.getElementById('resWallW').innerText = wallW.toFixed(1) + " m";
+    document.getElementById('resWallH').innerText = wallH.toFixed(1) + " m";
+    document.getElementById('resWeight').innerText = estWeight.toFixed(1) + " t";
+
+    // 报警显示
+    const warningEl = document.getElementById('vWarning');
+    if (actual_v > 3.5) {
+        warningEl.style.display = 'flex';
+    } else {
+        warningEl.style.display = 'none';
+    }
+}
+
+// 页面加载时初始化计算
+window.onload = calculate;
+</script>
+
+</body>
+</html>
