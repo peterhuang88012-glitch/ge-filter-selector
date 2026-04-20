@@ -1,0 +1,53 @@
+{
+  "environments": {
+    "Standard": {
+      "description": "标准陆地环境，中等粉尘浓度",
+      "recommendation": "两级过滤：G4 预过滤 + F9/E10 高效过滤",
+      "stages": [
+        { "name": "预过滤", "model": "Viledon T 60", "class": "G4/F5", "capacity": 3400 },
+        { "name": "终过滤", "model": "Viledon MVPGT-95", "class": "F9", "capacity": 4250 }
+      ]
+    },
+    "Marine": {
+      "description": "海洋/沿海环境，高盐雾、高湿度",
+      "recommendation": "三级过滤：疏水预过滤 + 盐雾分离 + 高等级疏水终过滤",
+      "stages": [
+        { "name": "一级预滤", "model": "Viledon T 60 Hydro", "class": "G4", "capacity": 3400 },
+        { "name": "二级过滤", "model": "Viledon F 45", "class": "F5", "capacity": 3400 },
+        { "name": "终极过滤", "model": "Viledon MX 98 Hydro", "class": "E12", "capacity": 4250 }
+      ]
+    },
+    "Desert": {
+      "description": "沙漠/干旱地区，极高粉尘浓度，沙尘暴风险",
+      "recommendation": "脉冲反吹系统：自洁式滤筒组合",
+      "stages": [
+        { "name": "主过滤", "model": "Viledon GTB / GTS", "class": "F9/E10", "capacity": 2500 }
+      ]
+    },
+    "Arctic": {
+      "description": "极寒地区，冰雪、低温脆化风险",
+      "recommendation": "防冰预过滤 + 低温韧性滤材",
+      "stages": [
+        { "name": "防冰层", "model": "Viledon P15/500", "class": "G3", "capacity": 2500 },
+        { "name": "主过滤", "model": "Viledon T 60", "class": "F7", "capacity": 3400 },
+        { "name": "终过滤", "model": "Viledon MVPGT-98", "class": "E10", "capacity": 4250 }
+      ]
+    },
+    "Tropical": {
+      "description": "热带/高湿地区，昆虫、霉菌、持续高湿度",
+      "recommendation": "防虫网 + 广谱抗菌疏水过滤组合",
+      "stages": [
+        { "name": "预过滤", "model": "Viledon T 60 Hydro", "class": "G4", "capacity": 3400 },
+        { "name": "主过滤", "model": "Viledon MVPGT-95 Hydro", "class": "F9", "capacity": 4250 }
+      ]
+    },
+    "Mountain/Seismic": {
+      "description": "山区/地震带，结构加强，抗震设计",
+      "recommendation": "高机械强度框架 + 紧凑型组合",
+      "stages": [
+        { "name": "预过滤", "model": "Viledon T 60", "class": "G4", "capacity": 3400 },
+        { "name": "主过滤", "model": "Viledon MaxiPleat MX 95", "class": "F9", "capacity": 4250 }
+      ]
+    }
+  }
+}

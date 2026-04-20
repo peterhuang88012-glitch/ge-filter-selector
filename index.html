@@ -1,0 +1,850 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>全球燃气轮机进气过滤选型系统 v5.0 - 扩展型号库</title>
+    <style>
+        :root { 
+            --primary: #005eb8; 
+            --secondary: #6c757d; 
+            --success: #28a745; 
+            --warning: #ffc107;
+            --danger: #dc3545;
+            --info: #17a2b8;
+            --light: #f8f9fa;
+            --dark: #343a40;
+        }
+        body { 
+            font-family: 'Segoe UI', Roboto, "Helvetica Neue", Arial, sans-serif; 
+            line-height: 1.6; 
+            color: #333; 
+            background: #f0f2f5; 
+            margin: 0; 
+            padding: 20px; 
+        }
+        .container { 
+            max-width: 1600px; 
+            margin: auto; 
+            background: white; 
+            padding: 40px; 
+            border-radius: 12px; 
+            box-shadow: 0 4px 20px rgba(0,0,0,0.08); 
+        }
+        header { 
+            border-bottom: 3px solid var(--primary); 
+            margin-bottom: 30px; 
+            padding-bottom: 15px; 
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        h1 { color: var(--primary); margin: 0; font-size: 28px; font-weight: 700; }
+        .version { font-size: 14px; color: var(--secondary); }
+        
+        .grid-3 { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 20px; }
+        .grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 30px; }
+        .grid-4 { display: grid; grid-template-columns: 1fr 1fr 1fr 1fr; gap: 20px; }
+        @media (max-width: 1200px) {
+            .grid-3 { grid-template-columns: 1fr 1fr; }
+            .grid-4 { grid-template-columns: 1fr 1fr; }
+        }
+        @media (max-width: 900px) {
+            .grid-3, .grid-2, .grid-4 { grid-template-columns: 1fr; }
+        }
+        
+        .card { 
+            border: 1px solid #e1e4e8; 
+            padding: 25px; 
+            border-radius: 10px; 
+            background: #fff; 
+            transition: transform 0.2s;
+        }
+        .card:hover { box-shadow: 0 5px 15px rgba(0,0,0,0.05); }
+        .card.highlight { border-left: 5px solid var(--success); background: #f0fdf4; }
+        .card.warning-card { border-left: 5px solid var(--warning); background: #fffbf0; }
+        
+        h3 { 
+            margin-top: 0; 
+            color: var(--dark); 
+            border-left: 4px solid var(--primary); 
+            padding-left: 10px;
+            font-size: 18px;
+            margin-bottom: 20px;
+        }
+        
+        .input-group { margin-bottom: 20px; }
+        label { display: block; margin-bottom: 8px; font-weight: 600; font-size: 14px; color: #444; }
+        select, input { 
+            width: 100%; 
+            padding: 12px; 
+            border: 1px solid #ced4da; 
+            border-radius: 6px; 
+            box-sizing: border-box; 
+            font-size: 15px;
+            transition: border-color 0.2s;
+        }
+        select:focus, input:focus {
+            outline: none;
+            border-color: var(--primary);
+            box-shadow: 0 0 0 3px rgba(0,94,184,0.1);
+        }
+        
+        .results { background: #f8fbff; border: 1px solid #d0e3ff; }
+        .warning-box { 
+            color: #856404; 
+            background-color: #fff3cd; 
+            padding: 15px; 
+            border-radius: 6px; 
+            margin-top: 20px; 
+            font-size: 14px; 
+            border: 1px solid #ffeeba;
+            display: flex;
+            align-items: center;
+        }
+        .warning-box i { margin-right: 10px; font-style: normal; font-size: 18px; }
+        
+        table { width: 100%; border-collapse: collapse; margin-top: 10px; }
+        th, td { text-align: left; padding: 12px 15px; border-bottom: 1px solid #edf2f7; }
+        td:last-child { text-align: right; font-weight: 600; color: var(--dark); }
+        tr:last-child td { border-bottom: none; }
+        
+        .summary-box { display: flex; gap: 15px; margin-bottom: 25px; flex-wrap: wrap; }
+        .stat-item { 
+            text-align: center; 
+            flex: 1;
+            min-width: 140px;
+            padding: 20px 10px; 
+            background: white; 
+            border: 1px solid #e1e4e8;
+            border-radius: 8px; 
+            box-shadow: 0 2px 4px rgba(0,0,0,0.02);
+        }
+        .stat-value { display: block; font-size: 24px; font-weight: 800; color: var(--primary); margin-bottom: 5px; }
+        .stat-label { font-size: 13px; color: #6c757d; font-weight: 500; }
+        .stat-unit { font-size: 12px; color: #adb5bd; margin-left: 2px; }
+        
+        .footer { 
+            margin-top: 40px; 
+            padding-top: 20px;
+            text-align: center; 
+            color: #95a5a6; 
+            font-size: 13px; 
+            border-top: 1px solid #eee;
+        }
+        .highlight-red { color: var(--danger) !important; }
+        .highlight-green { color: var(--success) !important; }
+        
+        .info-icon {
+            display: inline-block;
+            width: 16px;
+            height: 16px;
+            background: #dee2e6;
+            color: #6c757d;
+            border-radius: 50%;
+            text-align: center;
+            line-height: 16px;
+            font-size: 11px;
+            cursor: help;
+            margin-left: 5px;
+            position: relative;
+        }
+
+        .info-icon:hover::after {
+            content: attr(data-tooltip);
+            position: absolute;
+            bottom: 125%;
+            left: 50%;
+            transform: translateX(-50%);
+            background: #333;
+            color: white;
+            padding: 8px 12px;
+            border-radius: 4px;
+            font-size: 12px;
+            white-space: nowrap;
+            z-index: 1000;
+        }
+
+        .tab-btn {
+            padding: 8px 16px;
+            border: 2px solid #e1e4e8;
+            background: white;
+            border-radius: 6px;
+            cursor: pointer;
+            font-weight: 600;
+            font-size: 14px;
+            transition: all 0.2s;
+            color: #666;
+        }
+
+        .tab-btn:hover {
+            border-color: var(--primary);
+            color: var(--primary);
+        }
+
+        .tab-btn.active {
+            background: var(--primary);
+            color: white;
+            border-color: var(--primary);
+        }
+
+        .environment-tabs {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
+            gap: 10px;
+            margin-bottom: 20px;
+        }
+
+        .env-btn {
+            padding: 10px 12px;
+            border: 2px solid #ddd;
+            background: white;
+            border-radius: 6px;
+            cursor: pointer;
+            font-weight: 600;
+            font-size: 13px;
+            transition: all 0.2s;
+            color: #666;
+            text-align: center;
+        }
+
+        .env-btn:hover {
+            border-color: var(--primary);
+            color: var(--primary);
+        }
+
+        .env-btn.active {
+            background: var(--success);
+            color: white;
+            border-color: var(--success);
+        }
+
+        .filter-recommendation {
+            background: #f0fdf4;
+            border: 1px solid #86efac;
+            border-radius: 8px;
+            padding: 15px;
+            margin-top: 15px;
+        }
+
+        .filter-stage {
+            background: white;
+            border: 1px solid #e1e4e8;
+            border-radius: 6px;
+            padding: 12px;
+            margin-bottom: 10px;
+            display: grid;
+            grid-template-columns: 1fr 1fr 1fr 1fr;
+            gap: 10px;
+            align-items: center;
+        }
+
+        .filter-stage-label {
+            font-weight: 600;
+            color: var(--primary);
+            font-size: 13px;
+        }
+
+        .filter-stage-value {
+            font-size: 14px;
+            color: #333;
+        }
+
+        .badge {
+            display: inline-block;
+            padding: 4px 10px;
+            border-radius: 12px;
+            font-size: 12px;
+            font-weight: 600;
+            background: #e0e7ff;
+            color: #3730a3;
+        }
+
+        .badge.success {
+            background: #dcfce7;
+            color: #166534;
+        }
+
+        .badge.warning {
+            background: #fef3c7;
+            color: #92400e;
+        }
+
+        .badge.info {
+            background: #cffafe;
+            color: #164e63;
+        }
+
+        .lcc-result {
+            background: #f0f9ff;
+            border: 1px solid #bae6fd;
+            border-radius: 8px;
+            padding: 15px;
+            margin-top: 15px;
+        }
+
+        .lcc-item {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 10px;
+            padding: 8px 0;
+            border-bottom: 1px solid #e0e7ff;
+            font-size: 14px;
+        }
+
+        .lcc-item:last-child {
+            border-bottom: none;
+        }
+
+        .lcc-label {
+            font-weight: 600;
+            color: #333;
+        }
+
+        .lcc-value {
+            text-align: right;
+            color: var(--primary);
+            font-weight: 700;
+        }
+
+        .tabs-container {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 20px;
+            flex-wrap: wrap;
+        }
+
+        .tab-content {
+            display: none;
+        }
+
+        .tab-content.active {
+            display: block;
+        }
+
+        .degradation-warning {
+            background: #fef2f2;
+            border: 1px solid #fecaca;
+            border-radius: 6px;
+            padding: 12px;
+            margin-top: 10px;
+            font-size: 13px;
+            color: #991b1b;
+        }
+
+        .model-count {
+            display: inline-block;
+            background: #e0e7ff;
+            color: #3730a3;
+            padding: 2px 8px;
+            border-radius: 12px;
+            font-size: 12px;
+            margin-left: 5px;
+            font-weight: 600;
+        }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <header>
+        <h1>全球燃气轮机进气过滤选型系统</h1>
+        <div class="version">扩展型号库 v5.0 (30+ 型号覆盖)</div>
+    </header>
+
+    <div class="grid-3">
+        <div class="card">
+            <h3>1. 燃机选择 <span class="model-count">30+ 型号</span></h3>
+            
+            <div class="input-group">
+                <label>厂家</label>
+                <div style="display: flex; gap: 5px; flex-wrap: wrap;">
+                    <button class="tab-btn active" onclick="selectManufacturer('GE', event)">GE (8)</button>
+                    <button class="tab-btn" onclick="selectManufacturer('Siemens', event)">西门子 (7)</button>
+                    <button class="tab-btn" onclick="selectManufacturer('Mitsubishi', event)">三菱 (5)</button>
+                    <button class="tab-btn" onclick="selectManufacturer('Ansaldo', event)">安萨尔多 (2)</button>
+                    <button class="tab-btn" onclick="selectManufacturer('Solar', event)">索拉 (8)</button>
+                    <button class="tab-btn" onclick="selectManufacturer('MAN', event)">曼恩 (2)</button>
+                </div>
+            </div>
+
+            <div class="input-group">
+                <label>型号</label>
+                <select id="modelSelect" onchange="calculate()">
+                    <option value="">-- 请先选择厂家 --</option>
+                </select>
+            </div>
+        </div>
+
+        <div class="card">
+            <h3>2. 环境工况</h3>
+            
+            <div class="input-group">
+                <label>现场环境</label>
+                <div class="environment-tabs">
+                    <button class="env-btn active" onclick="selectEnvironment('Standard', event)">标准</button>
+                    <button class="env-btn" onclick="selectEnvironment('Marine', event)">海洋</button>
+                    <button class="env-btn" onclick="selectEnvironment('Desert', event)">沙漠</button>
+                    <button class="env-btn" onclick="selectEnvironment('Arctic', event)">极寒</button>
+                    <button class="env-btn" onclick="selectEnvironment('Tropical', event)">热带</button>
+                    <button class="env-btn" onclick="selectEnvironment('Mountain', event)">山区</button>
+                </div>
+            </div>
+
+            <div id="envDescription" style="font-size: 13px; color: #666; font-style: italic; margin-top: 10px; padding: 10px; background: #f5f5f5; border-radius: 6px;"></div>
+        </div>
+
+        <div class="card">
+            <h3>3. 基础参数</h3>
+
+            <div class="input-group">
+                <label>海拔 (m) <span class="info-icon" data-tooltip="影响空气密度">?</span></label>
+                <input type="number" id="altitude" value="0" oninput="calculate()">
+            </div>
+
+            <div class="input-group">
+                <label>温度 (°C) <span class="info-icon" data-tooltip="影响空气密度">?</span></label>
+                <input type="number" id="temp" value="35" oninput="calculate()">
+            </div>
+
+            <div class="input-group">
+                <label>湿度 (%) <span class="info-icon" data-tooltip="影响空气密度">?</span></label>
+                <input type="number" id="humidity" value="60" min="0" max="100" oninput="calculate()">
+            </div>
+
+            <div class="input-group">
+                <label>目标风速 (m/s) <span class="info-icon" data-tooltip="推荐 2.5-3.5 m/s">?</span></label>
+                <input type="number" id="targetV" value="3.0" step="0.1" oninput="calculate()">
+            </div>
+        </div>
+    </div>
+
+    <div class="grid-2" style="margin-top: 30px;">
+        <div class="card results">
+            <h3>4. 过滤系统设计</h3>
+            <div class="summary-box">
+                <div class="stat-item">
+                    <span class="stat-label">进气流量</span>
+                    <span class="stat-value" id="resQ">-</span>
+                    <span class="stat-unit">m³/h</span>
+                </div>
+                <div class="stat-item">
+                    <span class="stat-label">滤芯总数</span>
+                    <span class="stat-value" id="resCount">-</span>
+                    <span class="stat-unit">Cells</span>
+                </div>
+                <div class="stat-item">
+                    <span class="stat-label">实际风速</span>
+                    <span class="stat-value" id="resActualV">-</span>
+                    <span class="stat-unit">m/s</span>
+                </div>
+                <div class="stat-item">
+                    <span class="stat-label">初始压降</span>
+                    <span class="stat-value" id="resDP">-</span>
+                    <span class="stat-unit">Pa</span>
+                </div>
+            </div>
+
+            <table>
+                <tr>
+                    <td>排列布局</td>
+                    <td id="resLayout">-</td>
+                </tr>
+                <tr>
+                    <td>功率损失</td>
+                    <td id="resPowerLoss" class="highlight-red">-</td>
+                </tr>
+                <tr>
+                    <td>进气墙尺寸</td>
+                    <td id="resWallSize">-</td>
+                </tr>
+                <tr>
+                    <td>预估重量</td>
+                    <td id="resWeight">-</td>
+                </tr>
+            </table>
+
+            <div id="vWarning" class="warning-box" style="display:none;">
+                <i>⚠️</i> <span>风速超过 3.5m/s，建议增加滤芯数量。</span>
+            </div>
+        </div>
+
+        <div class="card highlight">
+            <h3>5. 科德宝滤芯推荐</h3>
+            <div id="filterRecommendation" style="min-height: 200px;">
+                <p style="color: #999; font-style: italic;">请先选择环境和燃机型号</p>
+            </div>
+        </div>
+    </div>
+
+    <div class="grid-2" style="margin-top: 30px;">
+        <div class="card warning-card">
+            <h3>6. 性能衰减分析</h3>
+            
+            <div class="input-group">
+                <label>年运行小时数 <span class="info-icon" data-tooltip="8760 = 全年连续运行">?</span></label>
+                <input type="number" id="annualHours" value="8000" oninput="calculate()">
+            </div>
+
+            <div class="input-group">
+                <label>可用率 (%) <span class="info-icon" data-tooltip="燃机可用时间占比">?</span></label>
+                <input type="number" id="availability" value="95" min="0" max="100" oninput="calculate()">
+            </div>
+
+            <div class="input-group">
+                <label>年衰减率 (%) <span class="info-icon" data-tooltip="GMRC 标准: 1.5% 年衰减">?</span></label>
+                <input type="number" id="degradationRate" value="1.5" step="0.1" oninput="calculate()">
+            </div>
+
+            <div id="degradationResult" style="margin-top: 15px; padding: 12px; background: white; border-radius: 6px; border-left: 4px solid var(--warning);">
+                <div style="font-weight: 600; color: var(--dark); margin-bottom: 8px;">年度性能衰减估算</div>
+                <div style="font-size: 13px; color: #666;">
+                    <div>功率衰减: <span id="degradPower" style="color: var(--danger); font-weight: 600;">-</span> MW</div>
+                    <div>效率衰减: <span id="degradEfficiency" style="color: var(--danger); font-weight: 600;">-</span> %</div>
+                    <div>衰减成本: <span id="degradCost" style="color: var(--danger); font-weight: 600;">-</span> 万元/年</div>
+                </div>
+            </div>
+        </div>
+
+        <div class="card">
+            <h3>7. 生命周期成本 (LCC)</h3>
+            
+            <div class="input-group">
+                <label>初始投资 (万元)</label>
+                <input type="number" id="initialCost" value="50" oninput="calculate()">
+            </div>
+
+            <div class="input-group">
+                <label>年维护成本 (万元)</label>
+                <input type="number" id="maintenanceCost" value="10" oninput="calculate()">
+            </div>
+
+            <div class="input-group">
+                <label>电价 (元/kWh)</label>
+                <input type="number" id="electricityPrice" value="0.8" step="0.1" oninput="calculate()">
+            </div>
+
+            <div class="input-group">
+                <label>分析周期 (年)</label>
+                <input type="number" id="analysisPeriod" value="10" oninput="calculate()">
+            </div>
+
+            <div id="lccResult" class="lcc-result">
+                <div class="lcc-item">
+                    <div class="lcc-label">初始成本</div>
+                    <div class="lcc-value" id="lccInitial">-</div>
+                </div>
+                <div class="lcc-item">
+                    <div class="lcc-label">维护成本 (10年)</div>
+                    <div class="lcc-value" id="lccMaintenance">-</div>
+                </div>
+                <div class="lcc-item">
+                    <div class="lcc-label">压降能耗成本</div>
+                    <div class="lcc-value" id="lccEnergy">-</div>
+                </div>
+                <div class="lcc-item">
+                    <div class="lcc-label">性能衰减成本</div>
+                    <div class="lcc-value" id="lccDegradation">-</div>
+                </div>
+                <div class="lcc-item" style="border-top: 2px solid #bae6fd; padding-top: 10px; margin-top: 10px;">
+                    <div class="lcc-label" style="font-size: 15px;">总 LCC 成本</div>
+                    <div class="lcc-value" id="lccTotal" style="font-size: 16px;">-</div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="footer">
+        <p>* 本工具基于 GMRC 指南 Release 1.0 开发，包含 30+ 种全球主流燃机型号。</p>
+        <p>** 所有计算结果仅供参考，最终选型请咨询专业工程师并参考厂家官方数据。</p>
+        <p>&copy; 2024 全球燃机选型系统 v5.0 | 扩展型号库版本</p>
+    </div>
+</div>
+
+<script>
+// 扩展燃机数据库
+const turbineDatabase = {
+    "GE": {
+        "9HA.02": { m: 1200, mw: 571, heatRate: 6800 },
+        "9HA.01": { m: 973, mw: 446, heatRate: 7200 },
+        "9F.04": { m: 665, mw: 288, heatRate: 7500 },
+        "9E.03": { m: 416, mw: 132, heatRate: 8100 },
+        "6F.03": { m: 210, mw: 88, heatRate: 7800 },
+        "6B.03": { m: 141, mw: 44, heatRate: 8800 },
+        "LM6000-PF": { m: 127, mw: 42, heatRate: 8500 },
+        "LM2500+G4": { m: 93, mw: 34, heatRate: 8900 }
+    },
+    "Siemens": {
+        "SGT5-9000HL": { m: 1050, mw: 593, heatRate: 6900 },
+        "SGT5-8000H": { m: 869, mw: 450, heatRate: 7100 },
+        "SGT5-4000F": { m: 688, mw: 329, heatRate: 7600 },
+        "SGT5-2000E": { m: 512, mw: 187, heatRate: 8200 },
+        "SGT-800": { m: 135, mw: 62, heatRate: 9100 },
+        "SGT-700": { m: 95, mw: 33, heatRate: 9500 },
+        "SGT-600": { m: 80, mw: 25, heatRate: 9800 }
+    },
+    "Mitsubishi": {
+        "M701JAC": { m: 1024, mw: 574, heatRate: 6850 },
+        "M701J": { m: 896, mw: 493, heatRate: 7150 },
+        "M701F": { m: 765, mw: 380, heatRate: 7550 },
+        "M701D": { m: 450, mw: 144, heatRate: 8300 },
+        "H-25": { m: 95, mw: 32, heatRate: 9600 }
+    },
+    "Ansaldo": {
+        "GT36-S5": { m: 1000, mw: 538, heatRate: 6950 },
+        "GT26": { m: 650, mw: 322, heatRate: 7700 }
+    },
+    "Solar": {
+        "Titan 350": { m: 110, mw: 39, heatRate: 9400 },
+        "Titan 250": { m: 68, mw: 23, heatRate: 9600 },
+        "Titan 130": { m: 50, mw: 16.5, heatRate: 10160 },
+        "Mars 100": { m: 42, mw: 11.3, heatRate: 10935 },
+        "Taurus 70": { m: 27, mw: 8.2, heatRate: 11200 },
+        "Taurus 60": { m: 21, mw: 5.7, heatRate: 11500 },
+        "Centaur 50": { m: 18, mw: 4.6, heatRate: 12000 },
+        "Centaur 40": { m: 15, mw: 3.5, heatRate: 12500 }
+    },
+    "MAN": {
+        "MGT8000": { m: 25, mw: 8.5, heatRate: 10500 },
+        "MGT6000": { m: 20, mw: 6.7, heatRate: 11000 }
+    }
+};
+
+// 环境污染物数据
+const environmentData = {
+    "Standard": {
+        "description": "标准陆地环境，中等粉尘浓度 (0.15-0.5 ppm)，四季变化",
+        "dustLevel": 0.3,
+        "recommendation": "两级过滤：G4 预过滤 + F9 高效过滤",
+        "stages": [
+            { "stage": "预过滤", "model": "Viledon T 60", "class": "G4", "capacity": 3400 },
+            { "stage": "终过滤", "model": "Viledon MVPGT-95", "class": "F9", "capacity": 4250 }
+        ]
+    },
+    "Marine": {
+        "description": "海洋/沿海环境，盐雾浓度 0.01-0.1 ppm，高湿度 (>80%)，腐蚀风险高",
+        "dustLevel": 0.2,
+        "recommendation": "三级疏水过滤系统，防盐雾腐蚀",
+        "stages": [
+            { "stage": "一级预过滤", "model": "Viledon T 60 Hydro", "class": "G4", "capacity": 3400 },
+            { "stage": "二级中效", "model": "Viledon F 45", "class": "F5", "capacity": 3400 },
+            { "stage": "三级终过滤", "model": "Viledon MX 98 Hydro", "class": "E12", "capacity": 4250 }
+        ]
+    },
+    "Desert": {
+        "description": "沙漠环境，极高粉尘浓度。沙尘暴: 3-118 ppm，沙尘雾霾: 0.15-3 ppm，清洁空气: 0.15 ppm",
+        "dustLevel": 50,
+        "recommendation": "脉冲反吹自洁系统，高容尘量设计",
+        "stages": [
+            { "stage": "主过滤", "model": "Viledon GTB / GTS", "class": "F9/E10", "capacity": 2500 }
+        ]
+    },
+    "Arctic": {
+        "description": "极寒环境，温度 <-32°C，结冰和积雪是主要威胁，需防冰预过滤",
+        "dustLevel": 0.1,
+        "recommendation": "防冰预过滤 + 低温韧性滤材组合",
+        "stages": [
+            { "stage": "防冰层", "model": "Viledon P15/500", "class": "G3", "capacity": 2500 },
+            { "stage": "主过滤", "model": "Viledon T 60", "class": "F7", "capacity": 3400 },
+            { "stage": "终过滤", "model": "Viledon MVPGT-98", "class": "E10", "capacity": 4250 }
+        ]
+    },
+    "Tropical": {
+        "description": "热带/高湿地区，湿度 >80%，昆虫、霉菌、持续高湿度，防虫防霉",
+        "dustLevel": 0.4,
+        "recommendation": "防虫网 + 广谱抗菌疏水过滤组合",
+        "stages": [
+            { "stage": "防虫预过滤", "model": "Viledon T 60 Hydro", "class": "G4", "capacity": 3400 },
+            { "stage": "主过滤", "model": "Viledon MVPGT-95 Hydro", "class": "F9", "capacity": 4250 }
+        ]
+    },
+    "Mountain": {
+        "description": "山区/地震带，结构加强需求，抗震设计，高海拔变工况",
+        "dustLevel": 0.35,
+        "recommendation": "高机械强度框架 + 紧凑型组合",
+        "stages": [
+            { "stage": "预过滤", "model": "Viledon T 60", "class": "G4", "capacity": 3400 },
+            { "stage": "主过滤", "model": "Viledon MaxiPleat MX 95", "class": "F9", "capacity": 4250 }
+        ]
+    }
+};
+
+let currentManufacturer = "GE";
+let currentEnvironment = "Standard";
+
+function selectManufacturer(manufacturer, event) {
+    currentManufacturer = manufacturer;
+    document.querySelectorAll('.tab-btn').forEach(btn => btn.classList.remove('active'));
+    event.target.classList.add('active');
+    
+    const modelSelect = document.getElementById('modelSelect');
+    modelSelect.innerHTML = '';
+    
+    const models = turbineDatabase[manufacturer];
+    for (const [modelName, modelData] of Object.entries(models)) {
+        const option = document.createElement('option');
+        option.value = modelName;
+        option.textContent = modelName;
+        modelSelect.appendChild(option);
+    }
+    
+    calculate();
+}
+
+function selectEnvironment(environment, event) {
+    currentEnvironment = environment;
+    document.querySelectorAll('.env-btn').forEach(btn => btn.classList.remove('active'));
+    event.target.classList.add('active');
+    
+    const envDesc = environmentData[environment];
+    document.getElementById('envDescription').textContent = envDesc.description;
+    
+    calculate();
+}
+
+function calculate() {
+    const modelName = document.getElementById('modelSelect').value;
+    
+    if (!modelName) {
+        resetResults();
+        return;
+    }
+
+    const modelData = turbineDatabase[currentManufacturer][modelName];
+    const alt = parseFloat(document.getElementById('altitude').value) || 0;
+    const t = parseFloat(document.getElementById('temp').value) || 0;
+    const rh = (parseFloat(document.getElementById('humidity').value) || 0) / 100;
+    const targetV = parseFloat(document.getElementById('targetV').value) || 3.0;
+
+    // 物理计算
+    const m_iso = modelData.m;
+    const mw_rated = modelData.mw;
+    const heatRate = modelData.heatRate;
+
+    const p_site = 101325 * Math.pow((1 - 2.25577e-5 * alt), 5.25588);
+    const t_abs = t + 273.15;
+    const p_sat = 611.2 * Math.exp((17.62 * t) / (243.12 + t));
+    const p_v = rh * p_sat;
+    const p_d = p_site - p_v;
+    const rho = (p_d / (287.05 * t_abs)) + (p_v / (461.5 * t_abs));
+    const k_temp = Math.sqrt(288.15 / t_abs);
+    const m_site = m_iso * (p_site / 101325) * k_temp;
+    const q_site = (m_site / rho) * 3600;
+
+    // 过滤器分布
+    const unit_area = 0.35;
+    const unit_pitch = 0.61;
+    let total_needed = Math.ceil(q_site / (3600 * unit_area * targetV));
+    let cols = Math.ceil(Math.sqrt(total_needed * 1.5));
+    let rows = Math.ceil(total_needed / cols);
+    let final_count = rows * cols;
+    let actual_v = q_site / (3600 * unit_area * final_count);
+
+    // 压降与功率损失
+    let dp_init = 12 * Math.pow(actual_v, 2) + 5 * actual_v;
+    let powerLoss = mw_rated * (dp_init / 100) * 0.00135;
+
+    // 尺寸与重量
+    let wallW = cols * unit_pitch;
+    let wallH = rows * unit_pitch;
+    let estWeight = (wallW * wallH * 2 + wallW * 3 + wallH * 3) * 0.05;
+
+    // 更新界面
+    document.getElementById('resQ').innerText = Math.round(q_site).toLocaleString();
+    document.getElementById('resCount').innerText = final_count;
+    document.getElementById('resLayout').innerText = `${rows} 行 × ${cols} 列`;
+    document.getElementById('resActualV').innerText = actual_v.toFixed(2);
+    document.getElementById('resDP').innerText = Math.round(dp_init);
+    document.getElementById('resPowerLoss').innerText = powerLoss.toFixed(3) + " MW";
+    document.getElementById('resWallSize').innerText = wallW.toFixed(1) + " × " + wallH.toFixed(1) + " m";
+    document.getElementById('resWeight').innerText = estWeight.toFixed(1) + " t";
+
+    const warningEl = document.getElementById('vWarning');
+    if (actual_v > 3.5) {
+        warningEl.style.display = 'flex';
+    } else {
+        warningEl.style.display = 'none';
+    }
+
+    // 性能衰减计算
+    const degradationRate = (parseFloat(document.getElementById('degradationRate').value) || 1.5) / 100;
+    const annualHours = parseFloat(document.getElementById('annualHours').value) || 8000;
+    const availability = (parseFloat(document.getElementById('availability').value) || 95) / 100;
+    
+    const degradPower = mw_rated * degradationRate;
+    const degradEfficiency = degradationRate * 100;
+    const degradCost = (degradPower * annualHours * availability * 0.8 / 10000).toFixed(2);
+
+    document.getElementById('degradPower').innerText = degradPower.toFixed(3);
+    document.getElementById('degradEfficiency').innerText = degradEfficiency.toFixed(2);
+    document.getElementById('degradCost').innerText = degradCost;
+
+    // LCC 分析
+    const initialCost = parseFloat(document.getElementById('initialCost').value) || 50;
+    const maintenanceCost = parseFloat(document.getElementById('maintenanceCost').value) || 10;
+    const electricityPrice = parseFloat(document.getElementById('electricityPrice').value) || 0.8;
+    const analysisPeriod = parseFloat(document.getElementById('analysisPeriod').value) || 10;
+
+    const energyCost = powerLoss * annualHours * availability * electricityPrice / 10000;
+    const degradationCostTotal = degradCost * analysisPeriod;
+    const maintenanceCostTotal = maintenanceCost * analysisPeriod;
+    const lccTotal = initialCost + maintenanceCostTotal + energyCost * analysisPeriod + degradationCostTotal;
+
+    document.getElementById('lccInitial').innerText = initialCost.toFixed(2) + " 万元";
+    document.getElementById('lccMaintenance').innerText = maintenanceCostTotal.toFixed(2) + " 万元";
+    document.getElementById('lccEnergy').innerText = (energyCost * analysisPeriod).toFixed(2) + " 万元";
+    document.getElementById('lccDegradation').innerText = degradationCostTotal.toFixed(2) + " 万元";
+    document.getElementById('lccTotal').innerText = lccTotal.toFixed(2) + " 万元";
+
+    // 更新滤芯推荐
+    updateFilterRecommendation(q_site, final_count);
+}
+
+function updateFilterRecommendation(q_site, filterCount) {
+    const envData = environmentData[currentEnvironment];
+    const recHtml = document.getElementById('filterRecommendation');
+    
+    let html = `<div class="filter-recommendation">`;
+    html += `<p style="margin-top: 0; color: var(--success); font-weight: 600;">推荐方案：${envData.recommendation}</p>`;
+    
+    for (const stage of envData.stages) {
+        const stageCapacity = stage.capacity;
+        const stageCount = Math.ceil((q_site / 3600) / (stageCapacity / 3600));
+        
+        html += `<div class="filter-stage">`;
+        html += `<div><span class="filter-stage-label">${stage.stage}</span></div>`;
+        html += `<div><span class="filter-stage-value"><strong>${stage.model}</strong></span></div>`;
+        html += `<div><span class="badge">${stage.class}</span></div>`;
+        html += `<div><span class="filter-stage-value" style="color: var(--success); font-weight: 600;">×${stageCount}</span></div>`;
+        html += `</div>`;
+    }
+    
+    html += `<div style="margin-top: 15px; padding: 10px; background: #f3f4f6; border-radius: 6px; font-size: 13px;">`;
+    html += `<strong>说明：</strong> 上述推荐基于 ${currentEnvironment} 环境工况和 GMRC 指南标准。`;
+    html += `</div>`;
+    
+    html += `</div>`;
+    
+    recHtml.innerHTML = html;
+}
+
+function resetResults() {
+    document.getElementById('resQ').innerText = '-';
+    document.getElementById('resCount').innerText = '-';
+    document.getElementById('resLayout').innerText = '-';
+    document.getElementById('resActualV').innerText = '-';
+    document.getElementById('resDP').innerText = '-';
+    document.getElementById('resPowerLoss').innerText = '-';
+    document.getElementById('resWallSize').innerText = '-';
+    document.getElementById('resWeight').innerText = '-';
+    document.getElementById('vWarning').style.display = 'none';
+}
+
+window.onload = function() {
+    selectManufacturer('GE', { target: document.querySelector('.tab-btn.active') });
+    selectEnvironment('Standard', { target: document.querySelector('.env-btn.active') });
+};
+</script>
+
+</body>
+</html>

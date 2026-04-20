@@ -1,0 +1,46 @@
+{
+    "GE": {
+        "9HA.02": { "m": 1200, "mw": 571, "heatRate": 6800 },
+        "9HA.01": { "m": 973, "mw": 446, "heatRate": 7200 },
+        "9F.04": { "m": 665, "mw": 288, "heatRate": 7500 },
+        "9E.03": { "m": 416, "mw": 132, "heatRate": 8100 },
+        "6F.03": { "m": 210, "mw": 88, "heatRate": 7800 },
+        "6B.03": { "m": 141, "mw": 44, "heatRate": 8800 },
+        "LM6000-PF": { "m": 127, "mw": 42, "heatRate": 8500 },
+        "LM2500+G4": { "m": 93, "mw": 34, "heatRate": 8900 }
+    },
+    "Siemens": {
+        "SGT5-9000HL": { "m": 1050, "mw": 593, "heatRate": 6900 },
+        "SGT5-8000H": { "m": 869, "mw": 450, "heatRate": 7100 },
+        "SGT5-4000F": { "m": 688, "mw": 329, "heatRate": 7600 },
+        "SGT5-2000E": { "m": 512, "mw": 187, "heatRate": 8200 },
+        "SGT-800 (62MW)": { "m": 135, "mw": 62, "heatRate": 9100 },
+        "SGT-700": { "m": 95, "mw": 33, "heatRate": 9500 },
+        "SGT-600": { "m": 80, "mw": 25, "heatRate": 9800 }
+    },
+    "Mitsubishi": {
+        "M701JAC": { "m": 1024, "mw": 574, "heatRate": 6850 },
+        "M701J": { "m": 896, "mw": 493, "heatRate": 7150 },
+        "M701F": { "m": 765, "mw": 380, "heatRate": 7550 },
+        "M701D": { "m": 450, "mw": 144, "heatRate": 8300 },
+        "H-25": { "m": 95, "mw": 32, "heatRate": 9600 }
+    },
+    "Ansaldo": {
+        "GT36-S5": { "m": 1000, "mw": 538, "heatRate": 6950 },
+        "GT26": { "m": 650, "mw": 322, "heatRate": 7700 }
+    },
+    "Solar": {
+        "Titan 350": { "m": 110, "mw": 39, "heatRate": 9400 },
+        "Titan 250": { "m": 68, "mw": 23, "heatRate": 9600 },
+        "Titan 130": { "m": 50, "mw": 16.5, "heatRate": 10160 },
+        "Mars 100": { "m": 42, "mw": 11.3, "heatRate": 10935 },
+        "Taurus 70": { "m": 27, "mw": 8.2, "heatRate": 11200 },
+        "Taurus 60": { "m": 21, "mw": 5.7, "heatRate": 11500 },
+        "Centaur 50": { "m": 18, "mw": 4.6, "heatRate": 12000 },
+        "Centaur 40": { "m": 15, "mw": 3.5, "heatRate": 12500 }
+    },
+    "MAN": {
+        "MGT8000": { "m": 25, "mw": 8.5, "heatRate": 10500 },
+        "MGT6000": { "m": 20, "mw": 6.7, "heatRate": 11000 }
+    }
+}
