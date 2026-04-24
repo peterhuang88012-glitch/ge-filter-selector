@@ -1,0 +1,52 @@
+{
+  "GE": [
+    { "model": "9HA.02", "power": 571, "flow": 1125, "heatRate": 7500 },
+    { "model": "9HA.01", "power": 446, "flow": 880, "heatRate": 7600 },
+    { "model": "9F.05", "power": 304, "flow": 730, "heatRate": 9200 },
+    { "model": "9E.03", "power": 132, "flow": 410, "heatRate": 10500 },
+    { "model": "6F.03", "power": 88, "flow": 210, "heatRate": 9800 },
+    { "model": "6B.03", "power": 44, "flow": 145, "heatRate": 10800 },
+    { "model": "LM6000-PF+", "power": 52, "flow": 130, "heatRate": 8500 },
+    { "model": "LM2500+G4", "power": 34, "flow": 95, "heatRate": 8800 },
+    { "model": "9B (MS9001B)", "power": 81, "flow": 345, "heatRate": 11500 },
+    { "model": "7B (MS7001B)", "power": 52, "flow": 235, "heatRate": 12000 },
+    { "model": "6B (MS6001B)", "power": 42, "flow": 140, "heatRate": 11200 }
+  ],
+  "Ansaldo": [
+    { "model": "GT36-S5", "power": 560, "flow": 1100, "heatRate": 7800 },
+    { "model": "GT26", "power": 370, "flow": 715, "heatRate": 8200 },
+    { "model": "GT24", "power": 188, "flow": 445, "heatRate": 8500 },
+    { "model": "AE94.3A", "power": 340, "flow": 593, "heatRate": 8400 },
+    { "model": "AE94.2", "power": 191, "flow": 550, "heatRate": 9500 },
+    { "model": "AE64.3A", "power": 78, "flow": 56, "heatRate": 9800 }
+  ],
+  "Siemens": [
+    { "model": "SGT5-9000HL", "power": 593, "flow": 1200, "heatRate": 7400 },
+    { "model": "SGT5-8000H", "power": 450, "flow": 900, "heatRate": 7600 },
+    { "model": "SGT5-4000F", "power": 329, "flow": 720, "heatRate": 9100 },
+    { "model": "SGT5-2000E", "power": 187, "flow": 530, "heatRate": 10200 },
+    { "model": "SGT-800", "power": 57, "flow": 135, "heatRate": 8800 },
+    { "model": "SGT-700", "power": 33, "flow": 95, "heatRate": 9200 },
+    { "model": "SGT-600", "power": 25, "flow": 80, "heatRate": 9500 }
+  ],
+  "Mitsubishi": [
+    { "model": "M701JAC", "power": 560, "flow": 1100, "heatRate": 7500 },
+    { "model": "M701J", "power": 470, "flow": 950, "heatRate": 7700 },
+    { "model": "M701F", "power": 385, "flow": 800, "heatRate": 8800 },
+    { "model": "H-25", "power": 32, "flow": 95, "heatRate": 9500 }
+  ],
+  "Solar": [
+    { "model": "Titan 250", "power": 22, "flow": 68, "heatRate": 9200 },
+    { "model": "Titan 130", "power": 15, "flow": 50, "heatRate": 9500 },
+    { "model": "Mars 100", "power": 11, "flow": 42, "heatRate": 9800 },
+    { "model": "Mars 90", "power": 9, "flow": 38, "heatRate": 10200 },
+    { "model": "Taurus 70", "power": 8, "flow": 28, "heatRate": 10500 },
+    { "model": "Taurus 60", "power": 6, "flow": 22, "heatRate": 10800 },
+    { "model": "Centaur 50", "power": 5, "flow": 19, "heatRate": 11200 },
+    { "model": "Centaur 40", "power": 4, "flow": 16, "heatRate": 11500 }
+  ],
+  "MAN": [
+    { "model": "MGT8000", "power": 8, "flow": 30, "heatRate": 10500 },
+    { "model": "MGT6000", "power": 7, "flow": 25, "heatRate": 10800 }
+  ]
+}
