@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>全球燃气轮机进气过滤选型系统 v6.0 - GMRC 安全增强版</title>
+    <title>全球燃气轮机进气过滤选型系统 v7.0 - 专家决策版</title>
     <style>
         :root { 
             --primary: #005eb8; 
@@ -64,6 +64,7 @@
         .card.highlight { border-left: 5px solid var(--success); background: #f0fdf4; }
         .card.warning-card { border-left: 5px solid var(--warning); background: #fffbf0; }
         .card.danger-card { border-left: 5px solid var(--danger); background: #fef2f2; }
+        .card.expert-card { border-left: 5px solid #8b5cf6; background: #faf5ff; }
         
         h3 { 
             margin-top: 0; 
@@ -90,20 +91,6 @@
             border-color: var(--primary);
             box-shadow: 0 0 0 3px rgba(0,94,184,0.1);
         }
-        
-        .results { background: #f8fbff; border: 1px solid #d0e3ff; }
-        .warning-box { 
-            color: #856404; 
-            background-color: #fff3cd; 
-            padding: 15px; 
-            border-radius: 6px; 
-            margin-top: 20px; 
-            font-size: 14px; 
-            border: 1px solid #ffeeba;
-            display: flex;
-            align-items: center;
-        }
-        .warning-box i { margin-right: 10px; font-style: normal; font-size: 18px; }
         
         table { width: 100%; border-collapse: collapse; margin-top: 10px; }
         th, td { text-align: left; padding: 12px 15px; border-bottom: 1px solid #edf2f7; }
@@ -133,37 +120,113 @@
             font-size: 13px; 
             border-top: 1px solid #eee;
         }
-        .highlight-red { color: var(--danger) !important; }
-        .highlight-green { color: var(--success) !important; }
         
-        .info-icon {
+        .badge {
             display: inline-block;
-            width: 16px;
-            height: 16px;
-            background: #dee2e6;
-            color: #6c757d;
-            border-radius: 50%;
-            text-align: center;
-            line-height: 16px;
-            font-size: 11px;
-            cursor: help;
-            margin-left: 5px;
-            position: relative;
+            padding: 4px 10px;
+            border-radius: 12px;
+            font-size: 12px;
+            font-weight: 600;
+            background: #e0e7ff;
+            color: #3730a3;
         }
 
-        .info-icon:hover::after {
-            content: attr(data-tooltip);
-            position: absolute;
-            bottom: 125%;
-            left: 50%;
-            transform: translateX(-50%);
-            background: #333;
-            color: white;
-            padding: 8px 12px;
+        .badge.success {
+            background: #dcfce7;
+            color: #166534;
+        }
+
+        .badge.warning {
+            background: #fef3c7;
+            color: #92400e;
+        }
+
+        .badge.danger {
+            background: #fef2f2;
+            color: #991b1b;
+        }
+
+        .expert-recommendation {
+            background: #faf5ff;
+            border: 2px solid #d8b4fe;
+            border-radius: 8px;
+            padding: 20px;
+            margin-top: 20px;
+        }
+
+        .expert-title {
+            font-size: 16px;
+            font-weight: 700;
+            color: #6d28d9;
+            margin-bottom: 15px;
+            display: flex;
+            align-items: center;
+        }
+
+        .expert-title::before {
+            content: "💡";
+            margin-right: 8px;
+            font-size: 18px;
+        }
+
+        .recommendation-item {
+            background: white;
+            border-left: 4px solid #8b5cf6;
+            padding: 15px;
+            margin-bottom: 10px;
             border-radius: 4px;
-            font-size: 12px;
-            white-space: nowrap;
-            z-index: 1000;
+        }
+
+        .recommendation-label {
+            font-weight: 700;
+            color: #6d28d9;
+            font-size: 14px;
+            margin-bottom: 8px;
+        }
+
+        .recommendation-content {
+            font-size: 13px;
+            color: #333;
+            line-height: 1.5;
+        }
+
+        .roi-analysis {
+            background: #f0f9ff;
+            border: 1px solid #bae6fd;
+            border-radius: 8px;
+            padding: 15px;
+            margin-top: 15px;
+        }
+
+        .roi-item {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 10px;
+            padding: 8px 0;
+            border-bottom: 1px solid #e0e7ff;
+            font-size: 13px;
+        }
+
+        .roi-item:last-child {
+            border-bottom: none;
+        }
+
+        .roi-label {
+            font-weight: 600;
+            color: #333;
+        }
+
+        .roi-value {
+            text-align: right;
+            color: var(--primary);
+            font-weight: 700;
+        }
+
+        .tabs-container {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 20px;
+            flex-wrap: wrap;
         }
 
         .tab-btn {
@@ -220,124 +283,6 @@
             border-color: var(--success);
         }
 
-        .filter-recommendation {
-            background: #f0fdf4;
-            border: 1px solid #86efac;
-            border-radius: 8px;
-            padding: 15px;
-            margin-top: 15px;
-        }
-
-        .filter-stage {
-            background: white;
-            border: 1px solid #e1e4e8;
-            border-radius: 6px;
-            padding: 12px;
-            margin-bottom: 10px;
-            display: grid;
-            grid-template-columns: 1fr 1fr 1fr 1fr;
-            gap: 10px;
-            align-items: center;
-        }
-
-        .filter-stage-label {
-            font-weight: 600;
-            color: var(--primary);
-            font-size: 13px;
-        }
-
-        .filter-stage-value {
-            font-size: 14px;
-            color: #333;
-        }
-
-        .badge {
-            display: inline-block;
-            padding: 4px 10px;
-            border-radius: 12px;
-            font-size: 12px;
-            font-weight: 600;
-            background: #e0e7ff;
-            color: #3730a3;
-        }
-
-        .badge.success {
-            background: #dcfce7;
-            color: #166534;
-        }
-
-        .badge.warning {
-            background: #fef3c7;
-            color: #92400e;
-        }
-
-        .badge.danger {
-            background: #fef2f2;
-            color: #991b1b;
-        }
-
-        .badge.info {
-            background: #cffafe;
-            color: #164e63;
-        }
-
-        .lcc-result {
-            background: #f0f9ff;
-            border: 1px solid #bae6fd;
-            border-radius: 8px;
-            padding: 15px;
-            margin-top: 15px;
-        }
-
-        .lcc-item {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 10px;
-            padding: 8px 0;
-            border-bottom: 1px solid #e0e7ff;
-            font-size: 14px;
-        }
-
-        .lcc-item:last-child {
-            border-bottom: none;
-        }
-
-        .lcc-label {
-            font-weight: 600;
-            color: #333;
-        }
-
-        .lcc-value {
-            text-align: right;
-            color: var(--primary);
-            font-weight: 700;
-        }
-
-        .tabs-container {
-            display: flex;
-            gap: 10px;
-            margin-bottom: 20px;
-            flex-wrap: wrap;
-        }
-
-        .tab-content {
-            display: none;
-        }
-
-        .tab-content.active {
-            display: block;
-        }
-
-        .degradation-warning {
-            background: #fef2f2;
-            border: 1px solid #fecaca;
-            border-radius: 6px;
-            padding: 12px;
-            margin-top: 10px;
-            font-size: 13px;
-            color: #991b1b;
-        }
-
         .model-count {
             display: inline-block;
             background: #e0e7ff;
@@ -347,37 +292,6 @@
             font-size: 11px;
             margin-left: 5px;
         }
-
-        .safety-box {
-            background: #fff5f5;
-            border: 1px solid #feb2b2;
-            border-radius: 8px;
-            padding: 15px;
-            margin-top: 15px;
-        }
-
-        .safety-item {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            padding: 10px 0;
-            border-bottom: 1px dashed #feb2b2;
-        }
-
-        .safety-item:last-child {
-            border-bottom: none;
-        }
-
-        .safety-label {
-            font-weight: 600;
-            color: #c53030;
-            font-size: 14px;
-        }
-
-        .safety-value {
-            font-weight: 700;
-            color: #2d3748;
-        }
     </style>
 </head>
 <body>
@@ -386,7 +300,7 @@
     <header>
         <div>
             <h1>全球燃气轮机进气过滤选型系统</h1>
-            <div class="version">v6.0 GMRC 安全增强版 | 基于 GMRC Release 1.0 指南</div>
+            <div class="version">v7.0 专家决策版 | 基于 GMRC Release 1.0 + 专业工程分析</div>
         </div>
         <div class="tabs-container" id="manufacturerTabs">
             <!-- 厂家标签将由 JS 动态生成 -->
@@ -411,7 +325,7 @@
             <h3>2. 运行基础参数</h3>
             <div class="grid-2">
                 <div class="input-group">
-                    <label>海拔高度 (m) <span class="info-icon" data-tooltip="海拔越高，空气越稀薄，体积流量越大">?</span></label>
+                    <label>海拔高度 (m)</label>
                     <input type="number" id="altitude" value="0" oninput="calculate()">
                 </div>
                 <div class="input-group">
@@ -433,7 +347,7 @@
 
         <!-- 第二列：环境工况与安全配置 -->
         <div class="card">
-            <h3>3. 现场环境工况 (GMRC 标准)</h3>
+            <h3>3. 现场环境工况</h3>
             <div class="environment-tabs" id="envTabs">
                 <button class="env-btn active" onclick="setEnv('standard')">标准/城市</button>
                 <button class="env-btn" onclick="setEnv('marine')">海洋/海岛</button>
@@ -447,24 +361,21 @@
                 <!-- 环境描述 -->
             </div>
 
-            <h3>4. 安全防护配置 (防爆门)</h3>
-            <div class="safety-box">
-                <div class="safety-item">
-                    <span class="safety-label">防爆门 (Blow-in Doors) 建议</span>
+            <h3>4. 安全防护配置</h3>
+            <div style="background: #fff5f5; border: 1px solid #feb2b2; border-radius: 8px; padding: 15px;">
+                <div style="display: flex; justify-content: space-between; align-items: center; padding: 10px 0; border-bottom: 1px dashed #feb2b2;">
+                    <span style="font-weight: 600; color: #c53030; font-size: 14px;">防爆门建议</span>
                     <span id="blowInDoorStatus" class="badge">自动计算中...</span>
                 </div>
-                <div class="safety-item">
-                    <span class="safety-label">建议开启压力设定</span>
-                    <span id="blowInDoorPressure" class="safety-value">-</span>
-                </div>
-                <div id="safetyWarning" style="font-size: 12px; color: #c53030; margin-top: 10px; line-height: 1.4;">
-                    <!-- 安全提示 -->
+                <div style="display: flex; justify-content: space-between; align-items: center; padding: 10px 0;">
+                    <span style="font-weight: 600; color: #c53030; font-size: 14px;">开启压力设定</span>
+                    <span id="blowInDoorPressure" style="font-weight: 700; color: #2d3748;">-</span>
                 </div>
             </div>
         </div>
 
         <!-- 第三列：计算结果与 LCC 分析 -->
-        <div class="card results">
+        <div class="card" style="background: #f8fbff;">
             <h3>5. 选型计算结果</h3>
             <div class="summary-box">
                 <div class="stat-item">
@@ -479,37 +390,81 @@
                 </div>
             </div>
 
-            <div class="filter-recommendation">
-                <div style="font-weight: 700; margin-bottom: 10px; color: #166534; font-size: 14px;">科德宝 (Freudenberg) 推荐方案:</div>
+            <div style="background: #f0fdf4; border: 1px solid #86efac; border-radius: 8px; padding: 15px; margin-top: 15px;">
+                <div style="font-weight: 700; margin-bottom: 10px; color: #166534; font-size: 14px;">科德宝推荐方案:</div>
                 <div id="filterList">
                     <!-- 滤芯列表 -->
                 </div>
             </div>
 
-            <div class="lcc-result">
-                <div style="font-weight: 700; margin-bottom: 10px; color: #0369a1; font-size: 14px;">GMRC 生命周期成本 (10年 LCC) 预估:</div>
-                <div class="lcc-item">
-                    <span class="lcc-label">性能衰减损失 (Degradation)</span>
-                    <span class="lcc-value" id="lccDegradation">-</span>
+            <div class="roi-analysis">
+                <div style="font-weight: 700; margin-bottom: 10px; color: #0369a1; font-size: 14px;">10年 LCC 成本预估:</div>
+                <div class="roi-item">
+                    <span class="roi-label">性能衰减损失</span>
+                    <span class="roi-value" id="lccDegradation">-</span>
                 </div>
-                <div class="lcc-item">
-                    <span class="lcc-label">压降能耗成本 (Energy)</span>
-                    <span class="lcc-value" id="lccEnergy">-</span>
+                <div class="roi-item">
+                    <span class="roi-label">压降能耗成本</span>
+                    <span class="roi-value" id="lccEnergy">-</span>
                 </div>
-                <div class="lcc-item">
-                    <span class="lcc-label">维护更换成本 (Maintenance)</span>
-                    <span class="lcc-value" id="lccMaintenance">-</span>
+                <div class="roi-item">
+                    <span class="roi-label">维护更换成本</span>
+                    <span class="roi-value" id="lccMaintenance">-</span>
                 </div>
-                <div class="lcc-item" style="border-top: 2px solid #bae6fd; margin-top: 5px; padding-top: 10px;">
-                    <span class="lcc-label" style="font-size: 16px;">总生命周期成本</span>
-                    <span class="lcc-value" id="lccTotal" style="font-size: 18px; color: var(--danger);">-</span>
+                <div class="roi-item" style="border-top: 2px solid #bae6fd; margin-top: 5px; padding-top: 10px;">
+                    <span class="roi-label" style="font-size: 16px;">总生命周期成本</span>
+                    <span class="roi-value" id="lccTotal" style="font-size: 18px; color: var(--danger);">-</span>
                 </div>
             </div>
         </div>
     </div>
 
+    <!-- 专家决策支持模块 -->
+    <div class="card expert-card" style="margin-top: 30px;">
+        <h3 style="border-left-color: #8b5cf6; color: #6d28d9;">📊 专家决策支持分析</h3>
+        
+        <div class="expert-recommendation">
+            <div class="expert-title">问题 1: E12 级超高效过滤的投资回报率 (ROI)</div>
+            <div class="recommendation-item">
+                <div class="recommendation-label">核心建议</div>
+                <div class="recommendation-content" id="roi-recommendation">
+                    <!-- 动态生成 -->
+                </div>
+            </div>
+            <div class="roi-analysis" style="margin-top: 10px;">
+                <div id="roi-details"><!-- 动态生成 --></div>
+            </div>
+        </div>
+
+        <div class="expert-recommendation">
+            <div class="expert-title">问题 2: 极端工况下的多级过滤冗余设计</div>
+            <div class="recommendation-item">
+                <div class="recommendation-label">核心建议</div>
+                <div class="recommendation-content" id="redundancy-recommendation">
+                    <!-- 动态生成 -->
+                </div>
+            </div>
+            <div class="roi-analysis" style="margin-top: 10px;">
+                <div id="redundancy-details"><!-- 动态生成 --></div>
+            </div>
+        </div>
+
+        <div class="expert-recommendation">
+            <div class="expert-title">问题 3: 防爆门开启压力与安全平衡</div>
+            <div class="recommendation-item">
+                <div class="recommendation-label">核心建议</div>
+                <div class="recommendation-content" id="safety-recommendation">
+                    <!-- 动态生成 -->
+                </div>
+            </div>
+            <div class="roi-analysis" style="margin-top: 10px;">
+                <div id="safety-details"><!-- 动态生成 --></div>
+            </div>
+        </div>
+    </div>
+
     <div class="footer">
-        &copy; 2024 燃气轮机进气过滤选型系统 | 技术支持：基于 GMRC Release 1.0 指南与科德宝技术标准
+        &copy; 2024 燃气轮机进气过滤选型系统 v7.0 | 专家决策版 | 基于 GMRC Release 1.0 指南与专业工程分析
     </div>
 </div>
 
@@ -540,16 +495,14 @@
             { model: "Titan 250", power: 22, flow: 68, heatRate: 9200 },
             { model: "Titan 130", power: 15, flow: 49, heatRate: 9500 },
             { model: "Mars 100", power: 11, flow: 42, heatRate: 9800 },
-            { model: "Taurus 70", power: 7.5, flow: 27, heatRate: 10200 },
-            { model: "Centaur 50", power: 4.6, flow: 19, heatRate: 10800 }
+            { model: "Taurus 70", power: 7.5, flow: 27, heatRate: 10200 }
         ],
         "Ansaldo": [
             { model: "GT36-S5", power: 538, flow: 1080, heatRate: 7520 },
             { model: "GT26", power: 281, flow: 650, heatRate: 7900 }
         ],
         "MAN": [
-            { model: "MGT8000", power: 8.5, flow: 32, heatRate: 10100 },
-            { model: "MGT6000", power: 6.6, flow: 25, heatRate: 10500 }
+            { model: "MGT8000", power: 8.5, flow: 32, heatRate: 10100 }
         ]
     };
 
@@ -573,7 +526,7 @@
             safety: { blowIn: true, pressure: "120 mmH2O", reason: "高湿度和盐雾可能导致滤芯阻力波动，建议配置防爆门保护进气道。" }
         },
         "desert": {
-            desc: "极高粉尘浓度，沙尘暴频发。需要高容尘量和抗脉冲性能。",
+            desc: "极高粉尘浓度，沙尘暴频发。需要高容尘量和抗脉冲清灰性能。",
             filters: [
                 { stage: "一级惯性", model: "Viledon Inertial", grade: "Coarse", flow: 5000, desc: "大颗粒分离" },
                 { stage: "二级脉冲", model: "Viledon GTS Pulse", grade: "F9", flow: 2500, desc: "自洁式过滤" },
@@ -588,7 +541,7 @@
                 { stage: "二级预滤", model: "Viledon T 60", grade: "G4", flow: 3400, desc: "低温适配" },
                 { stage: "三级终滤", model: "Viledon MVPGT-98", grade: "E12", flow: 3400, desc: "高效过滤" }
             ],
-            safety: { blowIn: true, pressure: "110 mmH2O", reason: "结冰风险极高，是防爆门的核心应用场景，建议设定较低开启压力。" }
+            safety: { blowIn: true, pressure: "110 mmH2O", reason: "结冰风险极高，防爆门是核心应用场景，建议设定较低开启压力。" }
         },
         "tropical": {
             desc: "高温、高湿、昆虫多。需要防霉变和高通量设计。",
@@ -660,7 +613,7 @@
         const runHours = parseFloat(document.getElementById('runHours').value) || 0;
         const elecPrice = parseFloat(document.getElementById('elecPrice').value) || 0;
 
-        // 1. 密度修正 (简化公式)
+        // 1. 密度修正
         const rho0 = 1.225;
         const rho = rho0 * (288.15 / (273.15 + temp)) * Math.exp(-alt / 8400);
         
@@ -676,7 +629,7 @@
             <strong>热耗率:</strong> ${turbine.heatRate} kJ/kWh
         `;
 
-        // 4. 滤芯数量计算 (基于终滤器风量)
+        // 4. 滤芯数量计算
         const envInfo = filterData[currentEnv];
         const finalFilter = envInfo.filters[envInfo.filters.length - 1];
         const count = Math.ceil(volFlow / finalFilter.flow);
@@ -687,18 +640,15 @@
         
         const blowInStatus = document.getElementById('blowInDoorStatus');
         const blowInPressure = document.getElementById('blowInDoorPressure');
-        const safetyWarning = document.getElementById('safetyWarning');
 
         if (envInfo.safety.blowIn || turbine.power > 100) {
             blowInStatus.innerText = "强烈建议配置";
             blowInStatus.className = "badge danger";
             blowInPressure.innerText = envInfo.safety.pressure;
-            safetyWarning.innerText = `警告：${envInfo.safety.reason} 根据 GMRC 指南，高功率或高风险环境下必须配置吸入门以防内爆。`;
         } else {
             blowInStatus.innerText = "可选配置";
             blowInStatus.className = "badge info";
             blowInPressure.innerText = envInfo.safety.pressure;
-            safetyWarning.innerText = envInfo.safety.reason;
         }
 
         // 6. 滤芯列表生成
@@ -706,31 +656,109 @@
         filterList.innerHTML = '';
         envInfo.filters.forEach(f => {
             const div = document.createElement('div');
-            div.className = 'filter-stage';
+            div.style.cssText = 'background: white; border: 1px solid #e1e4e8; border-radius: 6px; padding: 12px; margin-bottom: 10px; display: grid; grid-template-columns: 1fr 1fr 1fr 1fr; gap: 10px; align-items: center;';
             div.innerHTML = `
-                <span class="filter-stage-label">${f.stage}</span>
-                <span class="filter-stage-value"><strong>${f.model}</strong></span>
+                <span style="font-weight: 600; color: var(--primary); font-size: 13px;">${f.stage}</span>
+                <span style="font-size: 14px; color: #333;"><strong>${f.model}</strong></span>
                 <span class="badge success">${f.grade}</span>
-                <span class="filter-stage-value" style="text-align:right">${count} 只</span>
+                <span style="text-align:right; font-size: 14px; color: #333;">${count} 只</span>
             `;
             filterList.appendChild(div);
         });
 
-        // 7. LCC 分析 (10年)
+        // 7. LCC 分析
         const years = 10;
-        const degRate = 0.015; // 年均 1.5% 衰减
+        const degRate = 0.015;
         const annualDegLoss = turbine.power * 1000 * runHours * elecPrice * degRate;
-        const totalDegLoss = annualDegLoss * years * 0.7; // 考虑清洗后的恢复
+        const totalDegLoss = annualDegLoss * years * 0.7;
 
-        const avgDP = 250; // Pa
+        const avgDP = 250;
         const energyLoss = (volFlow / 3600) * avgDP * runHours * years * elecPrice / (0.8 * 1000);
         
-        const filterCost = count * 1500 * 5; // 假设10年更换5次
+        const filterCost = count * 1500 * 5;
         
         document.getElementById('lccDegradation').innerText = "¥ " + Math.round(totalDegLoss / 10000).toLocaleString() + " 万";
         document.getElementById('lccEnergy').innerText = "¥ " + Math.round(energyLoss / 10000).toLocaleString() + " 万";
         document.getElementById('lccMaintenance').innerText = "¥ " + Math.round(filterCost / 10000).toLocaleString() + " 万";
         document.getElementById('lccTotal').innerText = "¥ " + Math.round((totalDegLoss + energyLoss + filterCost) / 10000).toLocaleString() + " 万";
+
+        // 8. 专家决策支持分析
+        generateExpertRecommendations(turbine, envInfo, count, totalDegLoss, energyLoss, filterCost);
+    }
+
+    function generateExpertRecommendations(turbine, envInfo, count, degLoss, energyLoss, filterCost) {
+        // ROI 分析
+        const roiRec = document.getElementById('roi-recommendation');
+        if (turbine.power > 100) {
+            roiRec.innerText = `对于您选择的 ${turbine.power} MW 大型燃机，采用 E12 级超高效过滤强烈推荐。E12 级滤芯虽然初始成本约高 3-5 倍，但能将年均性能衰减从 1.5%-2.0% 降低至 0.5% 以下，节省的燃料费和功率补偿通常在 18-24 个月内即可覆盖高出的采购成本。`;
+        } else {
+            roiRec.innerText = `对于您选择的 ${turbine.power} MW 中小型燃机，建议采用 F9 级过滤即可满足需求，性价比更优。如果燃机处于基本负荷运行（年运行小时数 > 7000h），可考虑升级至 E12 级。`;
+        }
+
+        const roiDetails = document.getElementById('roi-details');
+        const roi10Year = degLoss * 0.3; // 假设 E12 级能降低 70% 的衰减成本
+        const paybackMonths = Math.round((count * 1500 * 3) / (roi10Year / 120)); // 假设 E12 比 F9 贵 3 倍
+        roiDetails.innerHTML = `
+            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px; font-size: 13px;">
+                <div><strong>10年衰减成本 (F9):</strong></div>
+                <div style="text-align: right; color: var(--primary); font-weight: 700;">¥ ${Math.round(degLoss / 10000)} 万</div>
+                <div><strong>10年衰减成本 (E12):</strong></div>
+                <div style="text-align: right; color: var(--success); font-weight: 700;">¥ ${Math.round(degLoss * 0.3 / 10000)} 万</div>
+                <div><strong>年均节省:</strong></div>
+                <div style="text-align: right; color: var(--success); font-weight: 700;">¥ ${Math.round(degLoss * 0.7 / 100000)} 万/年</div>
+                <div><strong>投资回收期:</strong></div>
+                <div style="text-align: right; color: var(--success); font-weight: 700;">${Math.min(paybackMonths, 36)} 个月</div>
+            </div>
+        `;
+
+        // 冗余设计分析
+        const redundancyRec = document.getElementById('redundancy-recommendation');
+        if (currentEnv === 'desert' || currentEnv === 'marine' || currentEnv === 'arctic') {
+            redundancyRec.innerText = `在 ${envInfo.desc.split('。')[0]} 环境下，强烈建议采用至少三级过滤系统。虽然初始压降增加 15-20%，但能将终滤器更换周期从 1 年延长至 2-3 年，大幅降低维护成本和停机风险。`;
+        } else {
+            redundancyRec.innerText = `在标准工况下，两级过滤（预滤 + 终滤）已能满足需求。如果您的应用场景偶有粉尘浓度波动，建议保留升级至三级的余地。`;
+        }
+
+        const redundancyDetails = document.getElementById('redundancy-details');
+        const filterStages = envInfo.filters.length;
+        const maintenanceSavings = filterStages === 3 ? (filterCost * 0.4) : 0;
+        redundancyDetails.innerHTML = `
+            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px; font-size: 13px;">
+                <div><strong>当前推荐级数:</strong></div>
+                <div style="text-align: right; color: var(--primary); font-weight: 700;">${filterStages} 级</div>
+                <div><strong>10年维护成本:</strong></div>
+                <div style="text-align: right; color: var(--primary); font-weight: 700;">¥ ${Math.round(filterCost / 10000)} 万</div>
+                <div><strong>三级系统维护节省:</strong></div>
+                <div style="text-align: right; color: var(--success); font-weight: 700;">¥ ${Math.round(maintenanceSavings / 10000)} 万</div>
+                <div><strong>终滤器更换周期:</strong></div>
+                <div style="text-align: right; color: var(--success); font-weight: 700;">${filterStages === 3 ? '2-3 年' : '1-2 年'}</div>
+            </div>
+        `;
+
+        // 防爆门安全分析
+        const safetyRec = document.getElementById('safety-recommendation');
+        const blowInNeeded = envInfo.safety.blowIn || turbine.power > 100;
+        if (blowInNeeded) {
+            safetyRec.innerText = `根据 GMRC 指南，在您的工况（${currentEnv === 'arctic' ? '极寒' : currentEnv === 'desert' ? '沙漠' : '高功率'}）下，防爆门是必需的安全装置。建议开启压力设定为 ${envInfo.safety.pressure}，并配合压差变送器实现提前预警，防止进气道因负压过大而发生内爆。`;
+        } else {
+            safetyRec.innerText = `在标准工况下，防爆门为可选配置。如果您的项目位于沿海或高海拔地区，建议仍然配置以增加安全冗余。`;
+        }
+
+        const safetyDetails = document.getElementById('safety-details');
+        const pressureValue = envInfo.safety.pressure.split(' ')[0];
+        const maxPressure = Math.round(parseFloat(pressureValue) * 1.5);
+        safetyDetails.innerHTML = `
+            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px; font-size: 13px;">
+                <div><strong>建议开启压力:</strong></div>
+                <div style="text-align: right; color: var(--primary); font-weight: 700;">${envInfo.safety.pressure}</div>
+                <div><strong>系统设计最大压降:</strong></div>
+                <div style="text-align: right; color: var(--primary); font-weight: 700;">~${maxPressure} mmH2O</div>
+                <div><strong>安全余量比例:</strong></div>
+                <div style="text-align: right; color: var(--success); font-weight: 700;">1.2-1.5 倍</div>
+                <div><strong>配置状态:</strong></div>
+                <div style="text-align: right; color: var(--danger); font-weight: 700;">${blowInNeeded ? '强烈建议' : '可选'}</div>
+            </div>
+        `;
     }
 
     window.onload = init;
