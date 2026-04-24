@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>全球燃气轮机进气过滤选型系统 v7.0 - 专家决策版</title>
+    <title>全球燃气轮机进气过滤选型系统 v8.0 - 专家决策版</title>
     <style>
         :root { 
             --primary: #005eb8; 
@@ -292,6 +292,161 @@
             font-size: 11px;
             margin-left: 5px;
         }
+
+        .formula-btn {
+            background: #e0e7ff;
+            color: #3730a3;
+            border: none;
+            padding: 8px 14px;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 13px;
+            font-weight: 600;
+            margin-top: 10px;
+            transition: all 0.2s;
+        }
+
+        .formula-btn:hover {
+            background: #c7d2fe;
+            color: #2d1b69;
+        }
+
+        .modal {
+            display: none;
+            position: fixed;
+            z-index: 1000;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.5);
+            overflow-y: auto;
+        }
+
+        .modal.show {
+            display: block;
+        }
+
+        .modal-content {
+            background-color: #fefefe;
+            margin: 3% auto;
+            padding: 30px;
+            border: 1px solid #888;
+            border-radius: 12px;
+            width: 90%;
+            max-width: 1000px;
+            max-height: 85vh;
+            overflow-y: auto;
+            box-shadow: 0 4px 30px rgba(0,0,0,0.3);
+        }
+
+        .modal-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+            border-bottom: 2px solid #005eb8;
+            padding-bottom: 15px;
+        }
+
+        .modal-header h2 {
+            margin: 0;
+            color: #005eb8;
+            font-size: 22px;
+        }
+
+        .close-btn {
+            color: #aaa;
+            font-size: 28px;
+            font-weight: bold;
+            cursor: pointer;
+            background: none;
+            border: none;
+            padding: 0;
+            line-height: 1;
+        }
+
+        .close-btn:hover {
+            color: #000;
+        }
+
+        .formula-section {
+            margin-bottom: 25px;
+            padding: 15px;
+            background: #f9f9f9;
+            border-left: 4px solid #005eb8;
+            border-radius: 4px;
+        }
+
+        .formula-section h3 {
+            margin-top: 0;
+            color: #005eb8;
+            border: none;
+            padding: 0;
+            font-size: 16px;
+        }
+
+        .formula-box {
+            background: white;
+            border: 1px solid #ddd;
+            padding: 15px;
+            border-radius: 6px;
+            margin: 10px 0;
+            font-family: 'Courier New', monospace;
+            font-size: 14px;
+            color: #333;
+            overflow-x: auto;
+            line-height: 1.8;
+        }
+
+        .parameter-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 10px 0;
+            font-size: 13px;
+        }
+
+        .parameter-table th,
+        .parameter-table td {
+            border: 1px solid #ddd;
+            padding: 10px;
+            text-align: left;
+        }
+
+        .parameter-table th {
+            background: #f0f7ff;
+            font-weight: 600;
+            color: #005eb8;
+        }
+
+        .parameter-table tr:nth-child(even) {
+            background: #f9f9f9;
+        }
+
+        .formula-example {
+            background: #fffbf0;
+            border: 1px solid #ffc107;
+            padding: 15px;
+            border-radius: 6px;
+            margin: 10px 0;
+            font-size: 13px;
+        }
+
+        .formula-example strong {
+            color: #ff8c00;
+        }
+
+        .safety-info-box {
+            background: #fef2f2;
+            border: 1px solid #fecaca;
+            border-radius: 8px;
+            padding: 15px;
+            margin-top: 10px;
+        }
+
+        .safety-info-box strong {
+            color: #991b1b;
+        }
     </style>
 </head>
 <body>
@@ -300,7 +455,7 @@
     <header>
         <div>
             <h1>全球燃气轮机进气过滤选型系统</h1>
-            <div class="version">v7.0 专家决策版 | 基于 GMRC Release 1.0 + 专业工程分析</div>
+            <div class="version">v8.0 专家决策版 | 基于 GMRC Release 1.0 + 防爆门安全公式</div>
         </div>
         <div class="tabs-container" id="manufacturerTabs">
             <!-- 厂家标签将由 JS 动态生成 -->
@@ -367,10 +522,15 @@
                     <span style="font-weight: 600; color: #c53030; font-size: 14px;">防爆门建议</span>
                     <span id="blowInDoorStatus" class="badge">自动计算中...</span>
                 </div>
-                <div style="display: flex; justify-content: space-between; align-items: center; padding: 10px 0;">
+                <div style="display: flex; justify-content: space-between; align-items: center; padding: 10px 0; border-bottom: 1px dashed #feb2b2;">
                     <span style="font-weight: 600; color: #c53030; font-size: 14px;">开启压力设定</span>
                     <span id="blowInDoorPressure" style="font-weight: 700; color: #2d3748;">-</span>
                 </div>
+                <div style="display: flex; justify-content: space-between; align-items: center; padding: 10px 0;">
+                    <span style="font-weight: 600; color: #c53030; font-size: 14px;">最大系统压降</span>
+                    <span id="maxSystemDP" style="font-weight: 700; color: #2d3748;">-</span>
+                </div>
+                <button class="formula-btn" onclick="openFormulaModal()">📐 查看计算原理</button>
             </div>
         </div>
 
@@ -464,7 +624,155 @@
     </div>
 
     <div class="footer">
-        &copy; 2024 燃气轮机进气过滤选型系统 v7.0 | 专家决策版 | 基于 GMRC Release 1.0 指南与专业工程分析
+        &copy; 2024 燃气轮机进气过滤选型系统 v8.0 | 专家决策版 | 基于 GMRC Release 1.0 指南与防爆门安全公式
+    </div>
+</div>
+
+<!-- 防爆门公式详解模态窗口 -->
+<div id="formulaModal" class="modal">
+    <div class="modal-content">
+        <div class="modal-header">
+            <h2>防爆门（Blow-in Doors）安全计算公式详解</h2>
+            <button class="close-btn" onclick="closeFormulaModal()">&times;</button>
+        </div>
+
+        <div class="formula-section">
+            <h3>1. 核心计算公式</h3>
+            <div class="formula-box">
+防爆门开启压力 (Set Point, SP) 的基础公式：
+<br>
+<strong>SP = k × DP_max × (ρ_site / ρ_ISO)</strong>
+<br><br>
+其中：
+• SP = 防爆门开启压力设定值 (Pa 或 mmH₂O)
+• k = 安全余量系数 (1.2 ~ 1.5)
+• DP_max = 系统设计最大压降 (Pa)
+• ρ_site / ρ_ISO = 现场空气密度修正系数
+            </div>
+        </div>
+
+        <div class="formula-section">
+            <h3>2. 参数定义与取值</h3>
+            <table class="parameter-table">
+                <tr>
+                    <th>参数</th>
+                    <th>定义</th>
+                    <th>典型值/范围</th>
+                </tr>
+                <tr>
+                    <td><strong>k (安全余量系数)</strong></td>
+                    <td>防爆门开启压力与系统最大压降的比值</td>
+                    <td>1.2 ~ 1.5</td>
+                </tr>
+                <tr>
+                    <td><strong>DP_max (最大系统压降)</strong></td>
+                    <td>滤芯完全堵塞时的总压降</td>
+                    <td>250 ~ 350 Pa</td>
+                </tr>
+                <tr>
+                    <td><strong>ρ_site / ρ_ISO</strong></td>
+                    <td>现场空气密度与标准密度的比值</td>
+                    <td>0.7 ~ 1.2</td>
+                </tr>
+            </table>
+        </div>
+
+        <div class="formula-section">
+            <h3>3. 环境工况下的 k 值推荐</h3>
+            <table class="parameter-table">
+                <tr>
+                    <th>环境类型</th>
+                    <th>推荐 k 值</th>
+                    <th>理由</th>
+                </tr>
+                <tr>
+                    <td>标准/城市</td>
+                    <td>1.4 ~ 1.5</td>
+                    <td>工况相对稳定</td>
+                </tr>
+                <tr>
+                    <td>海洋/海岛</td>
+                    <td>1.3 ~ 1.4</td>
+                    <td>盐雾快速堵塞</td>
+                </tr>
+                <tr>
+                    <td>沙漠/高尘</td>
+                    <td>1.2 ~ 1.3</td>
+                    <td>压降瞬时飙升</td>
+                </tr>
+                <tr>
+                    <td>极寒/冰雪</td>
+                    <td>1.1 ~ 1.2</td>
+                    <td>结冰风险最高</td>
+                </tr>
+                <tr>
+                    <td>热带/高湿</td>
+                    <td>1.4 ~ 1.5</td>
+                    <td>生物堵塞可控</td>
+                </tr>
+                <tr>
+                    <td>山区/地震</td>
+                    <td>1.3 ~ 1.4</td>
+                    <td>突发堵塞风险</td>
+                </tr>
+            </table>
+        </div>
+
+        <div class="formula-section">
+            <h3>4. 现场空气密度修正公式</h3>
+            <div class="formula-box">
+ρ_site = ρ₀ × (T₀ / T_site) × (P_site / P₀) × exp(-h / 8400)
+<br><br>
+其中：
+• ρ₀ = 海平面标准空气密度 = 1.225 kg/m³
+• T₀ = 标准温度 = 288.15 K (15°C)
+• T_site = 现场温度 (K) = 273.15 + 温度(°C)
+• P₀ = 标准大气压 = 101325 Pa
+• P_site = 现场大气压 (Pa)
+• h = 海拔高度 (m)
+• exp(-h/8400) = 海拔修正因子
+            </div>
+        </div>
+
+        <div class="formula-section">
+            <h3>5. 计算示例</h3>
+            <div class="formula-example">
+<strong>示例：标准工况（海平面，15°C）</strong>
+<br>
+已知：环境 = 标准城市，海拔 = 0 m，温度 = 15°C，系统 = 三级，DP_max = 300 Pa
+<br><br>
+计算步骤：
+1. k = 1.4（标准工况）
+2. ρ_site / ρ_ISO = 1.0（标准条件）
+3. SP = 1.4 × 300 × 1.0 = 420 Pa ≈ 43 mmH₂O
+<br><br>
+<strong>建议：防爆门开启压力设定为 43 mmH₂O</strong>
+            </div>
+
+            <div class="formula-example">
+<strong>示例：极寒工况（高海拔，-20°C）</strong>
+<br>
+已知：环境 = 极寒，海拔 = 2000 m，温度 = -20°C，系统 = 三级，DP_max = 300 Pa
+<br><br>
+计算步骤：
+1. k = 1.2（极寒高风险）
+2. ρ_site / ρ_ISO ≈ 0.92（海拔 + 低温修正）
+3. SP = 1.2 × 300 × 0.92 = 331 Pa ≈ 34 mmH₂O
+<br><br>
+<strong>建议：防爆门开启压力设定为 34 mmH₂O</strong>
+            </div>
+        </div>
+
+        <div class="safety-info-box">
+            <strong>⚠️ 安全提示：</strong>
+            <ul style="margin: 10px 0; padding-left: 20px;">
+                <li>防爆门必须配备压差变送器进行实时监测</li>
+                <li>至少每年进行一次功能测试</li>
+                <li>防爆门开启后应立即停止燃机运行</li>
+                <li>与 DCS 系统联动实现自动减载或停机</li>
+                <li>环境变化时应重新评估开启压力设定</li>
+            </ul>
+        </div>
     </div>
 </div>
 
@@ -509,55 +817,67 @@
     const filterData = {
         "standard": {
             desc: "污染物主要为城市粉尘和工业烟雾。重点在于平衡效率与压降。",
+            maxDP: 300,
             filters: [
                 { stage: "一级预滤", model: "Viledon T 60", grade: "G4", flow: 3400, desc: "粗颗粒拦截" },
                 { stage: "二级中效", model: "Viledon F 45", grade: "F5", flow: 3400, desc: "保护终滤器" },
                 { stage: "三级终滤", model: "Viledon MVPGT-95", grade: "F9", flow: 4250, desc: "高效率低压降" }
             ],
+            kValues: { min: 1.4, max: 1.5 },
             safety: { blowIn: false, pressure: "140 mmH2O", reason: "标准工况下堵塞风险较低，建议按需配置。" }
         },
         "marine": {
             desc: "高盐雾、高湿度环境。必须具备极强的疏水性能和防盐雾能力。",
+            maxDP: 320,
             filters: [
                 { stage: "一级疏水", model: "Viledon T 60 Hydro", grade: "G4", flow: 2500, desc: "除雾与粗滤" },
                 { stage: "二级中效", model: "Viledon F 45", grade: "F5", flow: 3400, desc: "深度过滤" },
                 { stage: "三级终滤", model: "Viledon MX 98 Hydro", grade: "E12", flow: 3400, desc: "EPA级疏水终滤" }
             ],
+            kValues: { min: 1.3, max: 1.4 },
             safety: { blowIn: true, pressure: "120 mmH2O", reason: "高湿度和盐雾可能导致滤芯阻力波动，建议配置防爆门保护进气道。" }
         },
         "desert": {
             desc: "极高粉尘浓度，沙尘暴频发。需要高容尘量和抗脉冲清灰性能。",
+            maxDP: 350,
             filters: [
                 { stage: "一级惯性", model: "Viledon Inertial", grade: "Coarse", flow: 5000, desc: "大颗粒分离" },
                 { stage: "二级脉冲", model: "Viledon GTS Pulse", grade: "F9", flow: 2500, desc: "自洁式过滤" },
                 { stage: "三级终滤", model: "Viledon GT 1", grade: "E10", flow: 3400, desc: "最终安全屏障" }
             ],
+            kValues: { min: 1.2, max: 1.3 },
             safety: { blowIn: true, pressure: "150 mmH2O", reason: "沙尘暴期间压降可能瞬时飙升，必须配置防爆门。" }
         },
         "arctic": {
             desc: "极寒、冰雪威胁。重点在于防冰和防止滤材低温脆化。",
+            maxDP: 300,
             filters: [
                 { stage: "一级防雪", model: "Viledon Snow Hood", grade: "N/A", flow: 5000, desc: "物理防雪" },
                 { stage: "二级预滤", model: "Viledon T 60", grade: "G4", flow: 3400, desc: "低温适配" },
                 { stage: "三级终滤", model: "Viledon MVPGT-98", grade: "E12", flow: 3400, desc: "高效过滤" }
             ],
+            kValues: { min: 1.1, max: 1.2 },
             safety: { blowIn: true, pressure: "110 mmH2O", reason: "结冰风险极高，防爆门是核心应用场景，建议设定较低开启压力。" }
         },
         "tropical": {
             desc: "高温、高湿、昆虫多。需要防霉变和高通量设计。",
+            maxDP: 280,
             filters: [
                 { stage: "一级防虫", model: "Viledon Insect Screen", grade: "N/A", flow: 6000, desc: "拦截昆虫" },
                 { stage: "二级预滤", model: "Viledon T 60", grade: "G4", flow: 3400, desc: "高湿适配" },
                 { stage: "三级终滤", model: "Viledon MVPGT-95", grade: "F9", flow: 4250, desc: "大风量设计" }
             ],
+            kValues: { min: 1.4, max: 1.5 },
             safety: { blowIn: false, pressure: "140 mmH2O", reason: "主要风险为生物堵塞，建议加强巡检。" }
         },
         "mountain": {
             desc: "地震带、山区。需要考虑结构强度和抗震性能。",
+            maxDP: 310,
             filters: [
                 { stage: "一级预滤", model: "Viledon T 60", grade: "G4", flow: 3400, desc: "标准预滤" },
                 { stage: "二级终滤", model: "Viledon MVPGT-95", grade: "F9", flow: 4250, desc: "高强度框架" }
             ],
+            kValues: { min: 1.3, max: 1.4 },
             safety: { blowIn: true, pressure: "140 mmH2O", reason: "地震可能导致结构形变或突发堵塞，建议配置以保安全。" }
         }
     };
@@ -605,6 +925,13 @@
         calculate();
     }
 
+    function calculateDensityRatio(alt, temp) {
+        const T0 = 288.15;
+        const Tsite = 273.15 + temp;
+        const altFactor = Math.exp(-alt / 8400);
+        return (T0 / Tsite) * altFactor;
+    }
+
     function calculate() {
         const modelName = document.getElementById('turbineModel').value;
         const turbine = turbineData[currentBrand].find(t => t.model === modelName);
@@ -615,7 +942,8 @@
 
         // 1. 密度修正
         const rho0 = 1.225;
-        const rho = rho0 * (288.15 / (273.15 + temp)) * Math.exp(-alt / 8400);
+        const densityRatio = calculateDensityRatio(alt, temp);
+        const rho = rho0 * densityRatio;
         
         // 2. 体积流量计算
         const massFlow = turbine.flow;
@@ -638,20 +966,28 @@
         // 5. 环境描述与安全配置
         document.getElementById('envDescription').innerText = envInfo.desc;
         
+        // 6. 防爆门计算
+        const k = (envInfo.kValues.min + envInfo.kValues.max) / 2;
+        const maxDP = envInfo.maxDP;
+        const setPoint = k * maxDP * densityRatio;
+        const setPointmmH2O = Math.round(setPoint / 9.81);
+        
+        document.getElementById('maxSystemDP').innerText = maxDP + " Pa";
+        
         const blowInStatus = document.getElementById('blowInDoorStatus');
         const blowInPressure = document.getElementById('blowInDoorPressure');
 
         if (envInfo.safety.blowIn || turbine.power > 100) {
             blowInStatus.innerText = "强烈建议配置";
             blowInStatus.className = "badge danger";
-            blowInPressure.innerText = envInfo.safety.pressure;
+            blowInPressure.innerText = setPointmmH2O + " mmH₂O (" + Math.round(setPoint) + " Pa)";
         } else {
             blowInStatus.innerText = "可选配置";
             blowInStatus.className = "badge info";
-            blowInPressure.innerText = envInfo.safety.pressure;
+            blowInPressure.innerText = setPointmmH2O + " mmH₂O (" + Math.round(setPoint) + " Pa)";
         }
 
-        // 6. 滤芯列表生成
+        // 7. 滤芯列表生成
         const filterList = document.getElementById('filterList');
         filterList.innerHTML = '';
         envInfo.filters.forEach(f => {
@@ -666,7 +1002,7 @@
             filterList.appendChild(div);
         });
 
-        // 7. LCC 分析
+        // 8. LCC 分析
         const years = 10;
         const degRate = 0.015;
         const annualDegLoss = turbine.power * 1000 * runHours * elecPrice * degRate;
@@ -682,11 +1018,11 @@
         document.getElementById('lccMaintenance').innerText = "¥ " + Math.round(filterCost / 10000).toLocaleString() + " 万";
         document.getElementById('lccTotal').innerText = "¥ " + Math.round((totalDegLoss + energyLoss + filterCost) / 10000).toLocaleString() + " 万";
 
-        // 8. 专家决策支持分析
-        generateExpertRecommendations(turbine, envInfo, count, totalDegLoss, energyLoss, filterCost);
+        // 9. 专家决策支持分析
+        generateExpertRecommendations(turbine, envInfo, count, totalDegLoss, energyLoss, filterCost, k, maxDP, setPointmmH2O);
     }
 
-    function generateExpertRecommendations(turbine, envInfo, count, degLoss, energyLoss, filterCost) {
+    function generateExpertRecommendations(turbine, envInfo, count, degLoss, energyLoss, filterCost, k, maxDP, setPoint) {
         // ROI 分析
         const roiRec = document.getElementById('roi-recommendation');
         if (turbine.power > 100) {
@@ -696,8 +1032,8 @@
         }
 
         const roiDetails = document.getElementById('roi-details');
-        const roi10Year = degLoss * 0.3; // 假设 E12 级能降低 70% 的衰减成本
-        const paybackMonths = Math.round((count * 1500 * 3) / (roi10Year / 120)); // 假设 E12 比 F9 贵 3 倍
+        const roi10Year = degLoss * 0.3;
+        const paybackMonths = Math.round((count * 1500 * 3) / (roi10Year / 120));
         roiDetails.innerHTML = `
             <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px; font-size: 13px;">
                 <div><strong>10年衰减成本 (F9):</strong></div>
@@ -739,26 +1075,40 @@
         const safetyRec = document.getElementById('safety-recommendation');
         const blowInNeeded = envInfo.safety.blowIn || turbine.power > 100;
         if (blowInNeeded) {
-            safetyRec.innerText = `根据 GMRC 指南，在您的工况（${currentEnv === 'arctic' ? '极寒' : currentEnv === 'desert' ? '沙漠' : '高功率'}）下，防爆门是必需的安全装置。建议开启压力设定为 ${envInfo.safety.pressure}，并配合压差变送器实现提前预警，防止进气道因负压过大而发生内爆。`;
+            safetyRec.innerText = `根据 GMRC 指南，在您的工况（${currentEnv === 'arctic' ? '极寒' : currentEnv === 'desert' ? '沙漠' : currentEnv === 'marine' ? '海洋' : '高功率'}）下，防爆门是必需的安全装置。建议开启压力设定为 ${setPoint} mmH₂O，并配合压差变送器实现提前预警，防止进气道因负压过大而发生内爆。`;
         } else {
             safetyRec.innerText = `在标准工况下，防爆门为可选配置。如果您的项目位于沿海或高海拔地区，建议仍然配置以增加安全冗余。`;
         }
 
         const safetyDetails = document.getElementById('safety-details');
-        const pressureValue = envInfo.safety.pressure.split(' ')[0];
-        const maxPressure = Math.round(parseFloat(pressureValue) * 1.5);
+        const maxPressure = Math.round(setPoint * 1.5);
         safetyDetails.innerHTML = `
             <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px; font-size: 13px;">
-                <div><strong>建议开启压力:</strong></div>
-                <div style="text-align: right; color: var(--primary); font-weight: 700;">${envInfo.safety.pressure}</div>
-                <div><strong>系统设计最大压降:</strong></div>
-                <div style="text-align: right; color: var(--primary); font-weight: 700;">~${maxPressure} mmH2O</div>
-                <div><strong>安全余量比例:</strong></div>
-                <div style="text-align: right; color: var(--success); font-weight: 700;">1.2-1.5 倍</div>
+                <div><strong>计算的开启压力:</strong></div>
+                <div style="text-align: right; color: var(--primary); font-weight: 700;">${setPoint} mmH₂O</div>
+                <div><strong>系统最大压降:</strong></div>
+                <div style="text-align: right; color: var(--primary); font-weight: 700;">~${maxDP} Pa</div>
+                <div><strong>安全余量系数 (k):</strong></div>
+                <div style="text-align: right; color: var(--primary); font-weight: 700;">${k.toFixed(2)}</div>
                 <div><strong>配置状态:</strong></div>
                 <div style="text-align: right; color: var(--danger); font-weight: 700;">${blowInNeeded ? '强烈建议' : '可选'}</div>
             </div>
         `;
+    }
+
+    function openFormulaModal() {
+        document.getElementById('formulaModal').classList.add('show');
+    }
+
+    function closeFormulaModal() {
+        document.getElementById('formulaModal').classList.remove('show');
+    }
+
+    window.onclick = function(event) {
+        const modal = document.getElementById('formulaModal');
+        if (event.target === modal) {
+            modal.classList.remove('show');
+        }
     }
 
     window.onload = init;
