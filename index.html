@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>全球燃气轮机进气过滤选型系统 v5.0 - 扩展型号库</title>
+    <title>全球燃气轮机进气过滤选型系统 v6.0 - GMRC 安全增强版</title>
     <style>
         :root { 
             --primary: #005eb8; 
@@ -63,6 +63,7 @@
         .card:hover { box-shadow: 0 5px 15px rgba(0,0,0,0.05); }
         .card.highlight { border-left: 5px solid var(--success); background: #f0fdf4; }
         .card.warning-card { border-left: 5px solid var(--warning); background: #fffbf0; }
+        .card.danger-card { border-left: 5px solid var(--danger); background: #fef2f2; }
         
         h3 { 
             margin-top: 0; 
@@ -270,6 +271,11 @@
             color: #92400e;
         }
 
+        .badge.danger {
+            background: #fef2f2;
+            color: #991b1b;
+        }
+
         .badge.info {
             background: #cffafe;
             color: #164e63;
@@ -337,10 +343,40 @@
             background: #e0e7ff;
             color: #3730a3;
             padding: 2px 8px;
-            border-radius: 12px;
-            font-size: 12px;
+            border-radius: 10px;
+            font-size: 11px;
             margin-left: 5px;
+        }
+
+        .safety-box {
+            background: #fff5f5;
+            border: 1px solid #feb2b2;
+            border-radius: 8px;
+            padding: 15px;
+            margin-top: 15px;
+        }
+
+        .safety-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 10px 0;
+            border-bottom: 1px dashed #feb2b2;
+        }
+
+        .safety-item:last-child {
+            border-bottom: none;
+        }
+
+        .safety-label {
             font-weight: 600;
+            color: #c53030;
+            font-size: 14px;
+        }
+
+        .safety-value {
+            font-weight: 700;
+            color: #2d3748;
         }
     </style>
 </head>
@@ -348,502 +384,356 @@
 
 <div class="container">
     <header>
-        <h1>全球燃气轮机进气过滤选型系统</h1>
-        <div class="version">扩展型号库 v5.0 (30+ 型号覆盖)</div>
+        <div>
+            <h1>全球燃气轮机进气过滤选型系统</h1>
+            <div class="version">v6.0 GMRC 安全增强版 | 基于 GMRC Release 1.0 指南</div>
+        </div>
+        <div class="tabs-container" id="manufacturerTabs">
+            <!-- 厂家标签将由 JS 动态生成 -->
+        </div>
     </header>
 
     <div class="grid-3">
+        <!-- 第一列：燃机型号与基础参数 -->
         <div class="card">
-            <h3>1. 燃机选择 <span class="model-count">30+ 型号</span></h3>
-            
+            <h3>1. 燃机型号选择</h3>
             <div class="input-group">
-                <label>厂家</label>
-                <div style="display: flex; gap: 5px; flex-wrap: wrap;">
-                    <button class="tab-btn active" onclick="selectManufacturer('GE', event)">GE (8)</button>
-                    <button class="tab-btn" onclick="selectManufacturer('Siemens', event)">西门子 (7)</button>
-                    <button class="tab-btn" onclick="selectManufacturer('Mitsubishi', event)">三菱 (5)</button>
-                    <button class="tab-btn" onclick="selectManufacturer('Ansaldo', event)">安萨尔多 (2)</button>
-                    <button class="tab-btn" onclick="selectManufacturer('Solar', event)">索拉 (8)</button>
-                    <button class="tab-btn" onclick="selectManufacturer('MAN', event)">曼恩 (2)</button>
-                </div>
-            </div>
-
-            <div class="input-group">
-                <label>型号</label>
-                <select id="modelSelect" onchange="calculate()">
-                    <option value="">-- 请先选择厂家 --</option>
+                <label for="turbineModel">选择具体型号</label>
+                <select id="turbineModel" onchange="calculate()">
+                    <!-- 型号将由 JS 动态生成 -->
                 </select>
             </div>
-        </div>
-
-        <div class="card">
-            <h3>2. 环境工况</h3>
             
-            <div class="input-group">
-                <label>现场环境</label>
-                <div class="environment-tabs">
-                    <button class="env-btn active" onclick="selectEnvironment('Standard', event)">标准</button>
-                    <button class="env-btn" onclick="selectEnvironment('Marine', event)">海洋</button>
-                    <button class="env-btn" onclick="selectEnvironment('Desert', event)">沙漠</button>
-                    <button class="env-btn" onclick="selectEnvironment('Arctic', event)">极寒</button>
-                    <button class="env-btn" onclick="selectEnvironment('Tropical', event)">热带</button>
-                    <button class="env-btn" onclick="selectEnvironment('Mountain', event)">山区</button>
+            <div id="turbineSpecs" style="font-size: 13px; color: #666; background: #f9f9f9; padding: 15px; border-radius: 6px; margin-bottom: 20px;">
+                <!-- 燃机参数显示 -->
+            </div>
+
+            <h3>2. 运行基础参数</h3>
+            <div class="grid-2">
+                <div class="input-group">
+                    <label>海拔高度 (m) <span class="info-icon" data-tooltip="海拔越高，空气越稀薄，体积流量越大">?</span></label>
+                    <input type="number" id="altitude" value="0" oninput="calculate()">
+                </div>
+                <div class="input-group">
+                    <label>环境温度 (°C)</label>
+                    <input type="number" id="temperature" value="15" oninput="calculate()">
                 </div>
             </div>
-
-            <div id="envDescription" style="font-size: 13px; color: #666; font-style: italic; margin-top: 10px; padding: 10px; background: #f5f5f5; border-radius: 6px;"></div>
+            <div class="grid-2">
+                <div class="input-group">
+                    <label>年运行小时 (h)</label>
+                    <input type="number" id="runHours" value="8000" oninput="calculate()">
+                </div>
+                <div class="input-group">
+                    <label>电价 (元/kWh)</label>
+                    <input type="number" id="elecPrice" value="0.5" step="0.1" oninput="calculate()">
+                </div>
+            </div>
         </div>
 
+        <!-- 第二列：环境工况与安全配置 -->
         <div class="card">
-            <h3>3. 基础参数</h3>
-
-            <div class="input-group">
-                <label>海拔 (m) <span class="info-icon" data-tooltip="影响空气密度">?</span></label>
-                <input type="number" id="altitude" value="0" oninput="calculate()">
+            <h3>3. 现场环境工况 (GMRC 标准)</h3>
+            <div class="environment-tabs" id="envTabs">
+                <button class="env-btn active" onclick="setEnv('standard')">标准/城市</button>
+                <button class="env-btn" onclick="setEnv('marine')">海洋/海岛</button>
+                <button class="env-btn" onclick="setEnv('desert')">沙漠/高尘</button>
+                <button class="env-btn" onclick="setEnv('arctic')">极寒/冰雪</button>
+                <button class="env-btn" onclick="setEnv('tropical')">热带/高湿</button>
+                <button class="env-btn" onclick="setEnv('mountain')">山区/地震</button>
+            </div>
+            
+            <div id="envDescription" style="font-size: 13px; color: #666; margin-bottom: 20px; padding: 10px; background: #f0f7ff; border-radius: 6px;">
+                <!-- 环境描述 -->
             </div>
 
-            <div class="input-group">
-                <label>温度 (°C) <span class="info-icon" data-tooltip="影响空气密度">?</span></label>
-                <input type="number" id="temp" value="35" oninput="calculate()">
-            </div>
-
-            <div class="input-group">
-                <label>湿度 (%) <span class="info-icon" data-tooltip="影响空气密度">?</span></label>
-                <input type="number" id="humidity" value="60" min="0" max="100" oninput="calculate()">
-            </div>
-
-            <div class="input-group">
-                <label>目标风速 (m/s) <span class="info-icon" data-tooltip="推荐 2.5-3.5 m/s">?</span></label>
-                <input type="number" id="targetV" value="3.0" step="0.1" oninput="calculate()">
+            <h3>4. 安全防护配置 (防爆门)</h3>
+            <div class="safety-box">
+                <div class="safety-item">
+                    <span class="safety-label">防爆门 (Blow-in Doors) 建议</span>
+                    <span id="blowInDoorStatus" class="badge">自动计算中...</span>
+                </div>
+                <div class="safety-item">
+                    <span class="safety-label">建议开启压力设定</span>
+                    <span id="blowInDoorPressure" class="safety-value">-</span>
+                </div>
+                <div id="safetyWarning" style="font-size: 12px; color: #c53030; margin-top: 10px; line-height: 1.4;">
+                    <!-- 安全提示 -->
+                </div>
             </div>
         </div>
-    </div>
 
-    <div class="grid-2" style="margin-top: 30px;">
+        <!-- 第三列：计算结果与 LCC 分析 -->
         <div class="card results">
-            <h3>4. 过滤系统设计</h3>
+            <h3>5. 选型计算结果</h3>
             <div class="summary-box">
                 <div class="stat-item">
-                    <span class="stat-label">进气流量</span>
-                    <span class="stat-value" id="resQ">-</span>
+                    <span class="stat-label">工况体积流量</span>
+                    <span class="stat-value" id="volFlow">-</span>
                     <span class="stat-unit">m³/h</span>
                 </div>
                 <div class="stat-item">
-                    <span class="stat-label">滤芯总数</span>
-                    <span class="stat-value" id="resCount">-</span>
+                    <span class="stat-label">建议滤芯总数</span>
+                    <span class="stat-value" id="filterCount">-</span>
                     <span class="stat-unit">Cells</span>
                 </div>
-                <div class="stat-item">
-                    <span class="stat-label">实际风速</span>
-                    <span class="stat-value" id="resActualV">-</span>
-                    <span class="stat-unit">m/s</span>
-                </div>
-                <div class="stat-item">
-                    <span class="stat-label">初始压降</span>
-                    <span class="stat-value" id="resDP">-</span>
-                    <span class="stat-unit">Pa</span>
+            </div>
+
+            <div class="filter-recommendation">
+                <div style="font-weight: 700; margin-bottom: 10px; color: #166534; font-size: 14px;">科德宝 (Freudenberg) 推荐方案:</div>
+                <div id="filterList">
+                    <!-- 滤芯列表 -->
                 </div>
             </div>
 
-            <table>
-                <tr>
-                    <td>排列布局</td>
-                    <td id="resLayout">-</td>
-                </tr>
-                <tr>
-                    <td>功率损失</td>
-                    <td id="resPowerLoss" class="highlight-red">-</td>
-                </tr>
-                <tr>
-                    <td>进气墙尺寸</td>
-                    <td id="resWallSize">-</td>
-                </tr>
-                <tr>
-                    <td>预估重量</td>
-                    <td id="resWeight">-</td>
-                </tr>
-            </table>
-
-            <div id="vWarning" class="warning-box" style="display:none;">
-                <i>⚠️</i> <span>风速超过 3.5m/s，建议增加滤芯数量。</span>
-            </div>
-        </div>
-
-        <div class="card highlight">
-            <h3>5. 科德宝滤芯推荐</h3>
-            <div id="filterRecommendation" style="min-height: 200px;">
-                <p style="color: #999; font-style: italic;">请先选择环境和燃机型号</p>
-            </div>
-        </div>
-    </div>
-
-    <div class="grid-2" style="margin-top: 30px;">
-        <div class="card warning-card">
-            <h3>6. 性能衰减分析</h3>
-            
-            <div class="input-group">
-                <label>年运行小时数 <span class="info-icon" data-tooltip="8760 = 全年连续运行">?</span></label>
-                <input type="number" id="annualHours" value="8000" oninput="calculate()">
-            </div>
-
-            <div class="input-group">
-                <label>可用率 (%) <span class="info-icon" data-tooltip="燃机可用时间占比">?</span></label>
-                <input type="number" id="availability" value="95" min="0" max="100" oninput="calculate()">
-            </div>
-
-            <div class="input-group">
-                <label>年衰减率 (%) <span class="info-icon" data-tooltip="GMRC 标准: 1.5% 年衰减">?</span></label>
-                <input type="number" id="degradationRate" value="1.5" step="0.1" oninput="calculate()">
-            </div>
-
-            <div id="degradationResult" style="margin-top: 15px; padding: 12px; background: white; border-radius: 6px; border-left: 4px solid var(--warning);">
-                <div style="font-weight: 600; color: var(--dark); margin-bottom: 8px;">年度性能衰减估算</div>
-                <div style="font-size: 13px; color: #666;">
-                    <div>功率衰减: <span id="degradPower" style="color: var(--danger); font-weight: 600;">-</span> MW</div>
-                    <div>效率衰减: <span id="degradEfficiency" style="color: var(--danger); font-weight: 600;">-</span> %</div>
-                    <div>衰减成本: <span id="degradCost" style="color: var(--danger); font-weight: 600;">-</span> 万元/年</div>
-                </div>
-            </div>
-        </div>
-
-        <div class="card">
-            <h3>7. 生命周期成本 (LCC)</h3>
-            
-            <div class="input-group">
-                <label>初始投资 (万元)</label>
-                <input type="number" id="initialCost" value="50" oninput="calculate()">
-            </div>
-
-            <div class="input-group">
-                <label>年维护成本 (万元)</label>
-                <input type="number" id="maintenanceCost" value="10" oninput="calculate()">
-            </div>
-
-            <div class="input-group">
-                <label>电价 (元/kWh)</label>
-                <input type="number" id="electricityPrice" value="0.8" step="0.1" oninput="calculate()">
-            </div>
-
-            <div class="input-group">
-                <label>分析周期 (年)</label>
-                <input type="number" id="analysisPeriod" value="10" oninput="calculate()">
-            </div>
-
-            <div id="lccResult" class="lcc-result">
+            <div class="lcc-result">
+                <div style="font-weight: 700; margin-bottom: 10px; color: #0369a1; font-size: 14px;">GMRC 生命周期成本 (10年 LCC) 预估:</div>
                 <div class="lcc-item">
-                    <div class="lcc-label">初始成本</div>
-                    <div class="lcc-value" id="lccInitial">-</div>
+                    <span class="lcc-label">性能衰减损失 (Degradation)</span>
+                    <span class="lcc-value" id="lccDegradation">-</span>
                 </div>
                 <div class="lcc-item">
-                    <div class="lcc-label">维护成本 (10年)</div>
-                    <div class="lcc-value" id="lccMaintenance">-</div>
+                    <span class="lcc-label">压降能耗成本 (Energy)</span>
+                    <span class="lcc-value" id="lccEnergy">-</span>
                 </div>
                 <div class="lcc-item">
-                    <div class="lcc-label">压降能耗成本</div>
-                    <div class="lcc-value" id="lccEnergy">-</div>
+                    <span class="lcc-label">维护更换成本 (Maintenance)</span>
+                    <span class="lcc-value" id="lccMaintenance">-</span>
                 </div>
-                <div class="lcc-item">
-                    <div class="lcc-label">性能衰减成本</div>
-                    <div class="lcc-value" id="lccDegradation">-</div>
-                </div>
-                <div class="lcc-item" style="border-top: 2px solid #bae6fd; padding-top: 10px; margin-top: 10px;">
-                    <div class="lcc-label" style="font-size: 15px;">总 LCC 成本</div>
-                    <div class="lcc-value" id="lccTotal" style="font-size: 16px;">-</div>
+                <div class="lcc-item" style="border-top: 2px solid #bae6fd; margin-top: 5px; padding-top: 10px;">
+                    <span class="lcc-label" style="font-size: 16px;">总生命周期成本</span>
+                    <span class="lcc-value" id="lccTotal" style="font-size: 18px; color: var(--danger);">-</span>
                 </div>
             </div>
         </div>
     </div>
 
     <div class="footer">
-        <p>* 本工具基于 GMRC 指南 Release 1.0 开发，包含 30+ 种全球主流燃机型号。</p>
-        <p>** 所有计算结果仅供参考，最终选型请咨询专业工程师并参考厂家官方数据。</p>
-        <p>&copy; 2024 全球燃机选型系统 v5.0 | 扩展型号库版本</p>
+        &copy; 2024 燃气轮机进气过滤选型系统 | 技术支持：基于 GMRC Release 1.0 指南与科德宝技术标准
     </div>
 </div>
 
 <script>
-// 扩展燃机数据库
-const turbineDatabase = {
-    "GE": {
-        "9HA.02": { m: 1200, mw: 571, heatRate: 6800 },
-        "9HA.01": { m: 973, mw: 446, heatRate: 7200 },
-        "9F.04": { m: 665, mw: 288, heatRate: 7500 },
-        "9E.03": { m: 416, mw: 132, heatRate: 8100 },
-        "6F.03": { m: 210, mw: 88, heatRate: 7800 },
-        "6B.03": { m: 141, mw: 44, heatRate: 8800 },
-        "LM6000-PF": { m: 127, mw: 42, heatRate: 8500 },
-        "LM2500+G4": { m: 93, mw: 34, heatRate: 8900 }
-    },
-    "Siemens": {
-        "SGT5-9000HL": { m: 1050, mw: 593, heatRate: 6900 },
-        "SGT5-8000H": { m: 869, mw: 450, heatRate: 7100 },
-        "SGT5-4000F": { m: 688, mw: 329, heatRate: 7600 },
-        "SGT5-2000E": { m: 512, mw: 187, heatRate: 8200 },
-        "SGT-800": { m: 135, mw: 62, heatRate: 9100 },
-        "SGT-700": { m: 95, mw: 33, heatRate: 9500 },
-        "SGT-600": { m: 80, mw: 25, heatRate: 9800 }
-    },
-    "Mitsubishi": {
-        "M701JAC": { m: 1024, mw: 574, heatRate: 6850 },
-        "M701J": { m: 896, mw: 493, heatRate: 7150 },
-        "M701F": { m: 765, mw: 380, heatRate: 7550 },
-        "M701D": { m: 450, mw: 144, heatRate: 8300 },
-        "H-25": { m: 95, mw: 32, heatRate: 9600 }
-    },
-    "Ansaldo": {
-        "GT36-S5": { m: 1000, mw: 538, heatRate: 6950 },
-        "GT26": { m: 650, mw: 322, heatRate: 7700 }
-    },
-    "Solar": {
-        "Titan 350": { m: 110, mw: 39, heatRate: 9400 },
-        "Titan 250": { m: 68, mw: 23, heatRate: 9600 },
-        "Titan 130": { m: 50, mw: 16.5, heatRate: 10160 },
-        "Mars 100": { m: 42, mw: 11.3, heatRate: 10935 },
-        "Taurus 70": { m: 27, mw: 8.2, heatRate: 11200 },
-        "Taurus 60": { m: 21, mw: 5.7, heatRate: 11500 },
-        "Centaur 50": { m: 18, mw: 4.6, heatRate: 12000 },
-        "Centaur 40": { m: 15, mw: 3.5, heatRate: 12500 }
-    },
-    "MAN": {
-        "MGT8000": { m: 25, mw: 8.5, heatRate: 10500 },
-        "MGT6000": { m: 20, mw: 6.7, heatRate: 11000 }
-    }
-};
+    const turbineData = {
+        "GE": [
+            { model: "9HA.02", power: 571, flow: 1125, heatRate: 7500 },
+            { model: "9HA.01", power: 446, flow: 910, heatRate: 7600 },
+            { model: "9F.05", power: 299, flow: 750, heatRate: 7800 },
+            { model: "6F.03", power: 87, flow: 220, heatRate: 8200 },
+            { model: "LM6000-PF+", power: 52, flow: 145, heatRate: 8500 },
+            { model: "LM2500+G4", power: 34, flow: 95, heatRate: 8800 }
+        ],
+        "Siemens": [
+            { model: "SGT5-9000HL", power: 593, flow: 1150, heatRate: 7450 },
+            { model: "SGT5-8000H", power: 450, flow: 930, heatRate: 7550 },
+            { model: "SGT5-4000F", power: 329, flow: 810, heatRate: 7750 },
+            { model: "SGT-800", power: 57, flow: 155, heatRate: 8400 },
+            { model: "SGT-700", power: 33, flow: 98, heatRate: 8700 }
+        ],
+        "Mitsubishi": [
+            { model: "M701JAC", power: 584, flow: 1140, heatRate: 7480 },
+            { model: "M701J", power: 470, flow: 960, heatRate: 7580 },
+            { model: "M701F", power: 312, flow: 780, heatRate: 7850 },
+            { model: "H-25", power: 32, flow: 92, heatRate: 8900 }
+        ],
+        "Solar": [
+            { model: "Titan 250", power: 22, flow: 68, heatRate: 9200 },
+            { model: "Titan 130", power: 15, flow: 49, heatRate: 9500 },
+            { model: "Mars 100", power: 11, flow: 42, heatRate: 9800 },
+            { model: "Taurus 70", power: 7.5, flow: 27, heatRate: 10200 },
+            { model: "Centaur 50", power: 4.6, flow: 19, heatRate: 10800 }
+        ],
+        "Ansaldo": [
+            { model: "GT36-S5", power: 538, flow: 1080, heatRate: 7520 },
+            { model: "GT26", power: 281, flow: 650, heatRate: 7900 }
+        ],
+        "MAN": [
+            { model: "MGT8000", power: 8.5, flow: 32, heatRate: 10100 },
+            { model: "MGT6000", power: 6.6, flow: 25, heatRate: 10500 }
+        ]
+    };
 
-// 环境污染物数据
-const environmentData = {
-    "Standard": {
-        "description": "标准陆地环境，中等粉尘浓度 (0.15-0.5 ppm)，四季变化",
-        "dustLevel": 0.3,
-        "recommendation": "两级过滤：G4 预过滤 + F9 高效过滤",
-        "stages": [
-            { "stage": "预过滤", "model": "Viledon T 60", "class": "G4", "capacity": 3400 },
-            { "stage": "终过滤", "model": "Viledon MVPGT-95", "class": "F9", "capacity": 4250 }
-        ]
-    },
-    "Marine": {
-        "description": "海洋/沿海环境，盐雾浓度 0.01-0.1 ppm，高湿度 (>80%)，腐蚀风险高",
-        "dustLevel": 0.2,
-        "recommendation": "三级疏水过滤系统，防盐雾腐蚀",
-        "stages": [
-            { "stage": "一级预过滤", "model": "Viledon T 60 Hydro", "class": "G4", "capacity": 3400 },
-            { "stage": "二级中效", "model": "Viledon F 45", "class": "F5", "capacity": 3400 },
-            { "stage": "三级终过滤", "model": "Viledon MX 98 Hydro", "class": "E12", "capacity": 4250 }
-        ]
-    },
-    "Desert": {
-        "description": "沙漠环境，极高粉尘浓度。沙尘暴: 3-118 ppm，沙尘雾霾: 0.15-3 ppm，清洁空气: 0.15 ppm",
-        "dustLevel": 50,
-        "recommendation": "脉冲反吹自洁系统，高容尘量设计",
-        "stages": [
-            { "stage": "主过滤", "model": "Viledon GTB / GTS", "class": "F9/E10", "capacity": 2500 }
-        ]
-    },
-    "Arctic": {
-        "description": "极寒环境，温度 <-32°C，结冰和积雪是主要威胁，需防冰预过滤",
-        "dustLevel": 0.1,
-        "recommendation": "防冰预过滤 + 低温韧性滤材组合",
-        "stages": [
-            { "stage": "防冰层", "model": "Viledon P15/500", "class": "G3", "capacity": 2500 },
-            { "stage": "主过滤", "model": "Viledon T 60", "class": "F7", "capacity": 3400 },
-            { "stage": "终过滤", "model": "Viledon MVPGT-98", "class": "E10", "capacity": 4250 }
-        ]
-    },
-    "Tropical": {
-        "description": "热带/高湿地区，湿度 >80%，昆虫、霉菌、持续高湿度，防虫防霉",
-        "dustLevel": 0.4,
-        "recommendation": "防虫网 + 广谱抗菌疏水过滤组合",
-        "stages": [
-            { "stage": "防虫预过滤", "model": "Viledon T 60 Hydro", "class": "G4", "capacity": 3400 },
-            { "stage": "主过滤", "model": "Viledon MVPGT-95 Hydro", "class": "F9", "capacity": 4250 }
-        ]
-    },
-    "Mountain": {
-        "description": "山区/地震带，结构加强需求，抗震设计，高海拔变工况",
-        "dustLevel": 0.35,
-        "recommendation": "高机械强度框架 + 紧凑型组合",
-        "stages": [
-            { "stage": "预过滤", "model": "Viledon T 60", "class": "G4", "capacity": 3400 },
-            { "stage": "主过滤", "model": "Viledon MaxiPleat MX 95", "class": "F9", "capacity": 4250 }
-        ]
-    }
-};
+    const filterData = {
+        "standard": {
+            desc: "污染物主要为城市粉尘和工业烟雾。重点在于平衡效率与压降。",
+            filters: [
+                { stage: "一级预滤", model: "Viledon T 60", grade: "G4", flow: 3400, desc: "粗颗粒拦截" },
+                { stage: "二级中效", model: "Viledon F 45", grade: "F5", flow: 3400, desc: "保护终滤器" },
+                { stage: "三级终滤", model: "Viledon MVPGT-95", grade: "F9", flow: 4250, desc: "高效率低压降" }
+            ],
+            safety: { blowIn: false, pressure: "140 mmH2O", reason: "标准工况下堵塞风险较低，建议按需配置。" }
+        },
+        "marine": {
+            desc: "高盐雾、高湿度环境。必须具备极强的疏水性能和防盐雾能力。",
+            filters: [
+                { stage: "一级疏水", model: "Viledon T 60 Hydro", grade: "G4", flow: 2500, desc: "除雾与粗滤" },
+                { stage: "二级中效", model: "Viledon F 45", grade: "F5", flow: 3400, desc: "深度过滤" },
+                { stage: "三级终滤", model: "Viledon MX 98 Hydro", grade: "E12", flow: 3400, desc: "EPA级疏水终滤" }
+            ],
+            safety: { blowIn: true, pressure: "120 mmH2O", reason: "高湿度和盐雾可能导致滤芯阻力波动，建议配置防爆门保护进气道。" }
+        },
+        "desert": {
+            desc: "极高粉尘浓度，沙尘暴频发。需要高容尘量和抗脉冲性能。",
+            filters: [
+                { stage: "一级惯性", model: "Viledon Inertial", grade: "Coarse", flow: 5000, desc: "大颗粒分离" },
+                { stage: "二级脉冲", model: "Viledon GTS Pulse", grade: "F9", flow: 2500, desc: "自洁式过滤" },
+                { stage: "三级终滤", model: "Viledon GT 1", grade: "E10", flow: 3400, desc: "最终安全屏障" }
+            ],
+            safety: { blowIn: true, pressure: "150 mmH2O", reason: "沙尘暴期间压降可能瞬时飙升，必须配置防爆门。" }
+        },
+        "arctic": {
+            desc: "极寒、冰雪威胁。重点在于防冰和防止滤材低温脆化。",
+            filters: [
+                { stage: "一级防雪", model: "Viledon Snow Hood", grade: "N/A", flow: 5000, desc: "物理防雪" },
+                { stage: "二级预滤", model: "Viledon T 60", grade: "G4", flow: 3400, desc: "低温适配" },
+                { stage: "三级终滤", model: "Viledon MVPGT-98", grade: "E12", flow: 3400, desc: "高效过滤" }
+            ],
+            safety: { blowIn: true, pressure: "110 mmH2O", reason: "结冰风险极高，是防爆门的核心应用场景，建议设定较低开启压力。" }
+        },
+        "tropical": {
+            desc: "高温、高湿、昆虫多。需要防霉变和高通量设计。",
+            filters: [
+                { stage: "一级防虫", model: "Viledon Insect Screen", grade: "N/A", flow: 6000, desc: "拦截昆虫" },
+                { stage: "二级预滤", model: "Viledon T 60", grade: "G4", flow: 3400, desc: "高湿适配" },
+                { stage: "三级终滤", model: "Viledon MVPGT-95", grade: "F9", flow: 4250, desc: "大风量设计" }
+            ],
+            safety: { blowIn: false, pressure: "140 mmH2O", reason: "主要风险为生物堵塞，建议加强巡检。" }
+        },
+        "mountain": {
+            desc: "地震带、山区。需要考虑结构强度和抗震性能。",
+            filters: [
+                { stage: "一级预滤", model: "Viledon T 60", grade: "G4", flow: 3400, desc: "标准预滤" },
+                { stage: "二级终滤", model: "Viledon MVPGT-95", grade: "F9", flow: 4250, desc: "高强度框架" }
+            ],
+            safety: { blowIn: true, pressure: "140 mmH2O", reason: "地震可能导致结构形变或突发堵塞，建议配置以保安全。" }
+        }
+    };
 
-let currentManufacturer = "GE";
-let currentEnvironment = "Standard";
+    let currentBrand = "GE";
+    let currentEnv = "standard";
 
-function selectManufacturer(manufacturer, event) {
-    currentManufacturer = manufacturer;
-    document.querySelectorAll('.tab-btn').forEach(btn => btn.classList.remove('active'));
-    event.target.classList.add('active');
-    
-    const modelSelect = document.getElementById('modelSelect');
-    modelSelect.innerHTML = '';
-    
-    const models = turbineDatabase[manufacturer];
-    for (const [modelName, modelData] of Object.entries(models)) {
-        const option = document.createElement('option');
-        option.value = modelName;
-        option.textContent = modelName;
-        modelSelect.appendChild(option);
-    }
-    
-    calculate();
-}
-
-function selectEnvironment(environment, event) {
-    currentEnvironment = environment;
-    document.querySelectorAll('.env-btn').forEach(btn => btn.classList.remove('active'));
-    event.target.classList.add('active');
-    
-    const envDesc = environmentData[environment];
-    document.getElementById('envDescription').textContent = envDesc.description;
-    
-    calculate();
-}
-
-function calculate() {
-    const modelName = document.getElementById('modelSelect').value;
-    
-    if (!modelName) {
-        resetResults();
-        return;
+    function init() {
+        const tabsContainer = document.getElementById('manufacturerTabs');
+        Object.keys(turbineData).forEach(brand => {
+            const btn = document.createElement('button');
+            btn.className = `tab-btn ${brand === currentBrand ? 'active' : ''}`;
+            btn.innerHTML = `${brand} <span class="model-count">${turbineData[brand].length}</span>`;
+            btn.onclick = () => setBrand(brand);
+            tabsContainer.appendChild(btn);
+        });
+        updateModelList();
     }
 
-    const modelData = turbineDatabase[currentManufacturer][modelName];
-    const alt = parseFloat(document.getElementById('altitude').value) || 0;
-    const t = parseFloat(document.getElementById('temp').value) || 0;
-    const rh = (parseFloat(document.getElementById('humidity').value) || 0) / 100;
-    const targetV = parseFloat(document.getElementById('targetV').value) || 3.0;
-
-    // 物理计算
-    const m_iso = modelData.m;
-    const mw_rated = modelData.mw;
-    const heatRate = modelData.heatRate;
-
-    const p_site = 101325 * Math.pow((1 - 2.25577e-5 * alt), 5.25588);
-    const t_abs = t + 273.15;
-    const p_sat = 611.2 * Math.exp((17.62 * t) / (243.12 + t));
-    const p_v = rh * p_sat;
-    const p_d = p_site - p_v;
-    const rho = (p_d / (287.05 * t_abs)) + (p_v / (461.5 * t_abs));
-    const k_temp = Math.sqrt(288.15 / t_abs);
-    const m_site = m_iso * (p_site / 101325) * k_temp;
-    const q_site = (m_site / rho) * 3600;
-
-    // 过滤器分布
-    const unit_area = 0.35;
-    const unit_pitch = 0.61;
-    let total_needed = Math.ceil(q_site / (3600 * unit_area * targetV));
-    let cols = Math.ceil(Math.sqrt(total_needed * 1.5));
-    let rows = Math.ceil(total_needed / cols);
-    let final_count = rows * cols;
-    let actual_v = q_site / (3600 * unit_area * final_count);
-
-    // 压降与功率损失
-    let dp_init = 12 * Math.pow(actual_v, 2) + 5 * actual_v;
-    let powerLoss = mw_rated * (dp_init / 100) * 0.00135;
-
-    // 尺寸与重量
-    let wallW = cols * unit_pitch;
-    let wallH = rows * unit_pitch;
-    let estWeight = (wallW * wallH * 2 + wallW * 3 + wallH * 3) * 0.05;
-
-    // 更新界面
-    document.getElementById('resQ').innerText = Math.round(q_site).toLocaleString();
-    document.getElementById('resCount').innerText = final_count;
-    document.getElementById('resLayout').innerText = `${rows} 行 × ${cols} 列`;
-    document.getElementById('resActualV').innerText = actual_v.toFixed(2);
-    document.getElementById('resDP').innerText = Math.round(dp_init);
-    document.getElementById('resPowerLoss').innerText = powerLoss.toFixed(3) + " MW";
-    document.getElementById('resWallSize').innerText = wallW.toFixed(1) + " × " + wallH.toFixed(1) + " m";
-    document.getElementById('resWeight').innerText = estWeight.toFixed(1) + " t";
-
-    const warningEl = document.getElementById('vWarning');
-    if (actual_v > 3.5) {
-        warningEl.style.display = 'flex';
-    } else {
-        warningEl.style.display = 'none';
+    function setBrand(brand) {
+        currentBrand = brand;
+        document.querySelectorAll('.tab-btn').forEach(btn => {
+            btn.classList.toggle('active', btn.innerText.startsWith(brand));
+        });
+        updateModelList();
     }
 
-    // 性能衰减计算
-    const degradationRate = (parseFloat(document.getElementById('degradationRate').value) || 1.5) / 100;
-    const annualHours = parseFloat(document.getElementById('annualHours').value) || 8000;
-    const availability = (parseFloat(document.getElementById('availability').value) || 95) / 100;
-    
-    const degradPower = mw_rated * degradationRate;
-    const degradEfficiency = degradationRate * 100;
-    const degradCost = (degradPower * annualHours * availability * 0.8 / 10000).toFixed(2);
+    function updateModelList() {
+        const select = document.getElementById('turbineModel');
+        select.innerHTML = '';
+        turbineData[currentBrand].forEach(item => {
+            const opt = document.createElement('option');
+            opt.value = item.model;
+            opt.text = item.model;
+            select.appendChild(opt);
+        });
+        calculate();
+    }
 
-    document.getElementById('degradPower').innerText = degradPower.toFixed(3);
-    document.getElementById('degradEfficiency').innerText = degradEfficiency.toFixed(2);
-    document.getElementById('degradCost').innerText = degradCost;
+    function setEnv(env) {
+        currentEnv = env;
+        document.querySelectorAll('.env-btn').forEach(btn => {
+            btn.classList.toggle('active', btn.getAttribute('onclick').includes(env));
+        });
+        calculate();
+    }
 
-    // LCC 分析
-    const initialCost = parseFloat(document.getElementById('initialCost').value) || 50;
-    const maintenanceCost = parseFloat(document.getElementById('maintenanceCost').value) || 10;
-    const electricityPrice = parseFloat(document.getElementById('electricityPrice').value) || 0.8;
-    const analysisPeriod = parseFloat(document.getElementById('analysisPeriod').value) || 10;
+    function calculate() {
+        const modelName = document.getElementById('turbineModel').value;
+        const turbine = turbineData[currentBrand].find(t => t.model === modelName);
+        const alt = parseFloat(document.getElementById('altitude').value) || 0;
+        const temp = parseFloat(document.getElementById('temperature').value) || 0;
+        const runHours = parseFloat(document.getElementById('runHours').value) || 0;
+        const elecPrice = parseFloat(document.getElementById('elecPrice').value) || 0;
 
-    const energyCost = powerLoss * annualHours * availability * electricityPrice / 10000;
-    const degradationCostTotal = degradCost * analysisPeriod;
-    const maintenanceCostTotal = maintenanceCost * analysisPeriod;
-    const lccTotal = initialCost + maintenanceCostTotal + energyCost * analysisPeriod + degradationCostTotal;
-
-    document.getElementById('lccInitial').innerText = initialCost.toFixed(2) + " 万元";
-    document.getElementById('lccMaintenance').innerText = maintenanceCostTotal.toFixed(2) + " 万元";
-    document.getElementById('lccEnergy').innerText = (energyCost * analysisPeriod).toFixed(2) + " 万元";
-    document.getElementById('lccDegradation').innerText = degradationCostTotal.toFixed(2) + " 万元";
-    document.getElementById('lccTotal').innerText = lccTotal.toFixed(2) + " 万元";
-
-    // 更新滤芯推荐
-    updateFilterRecommendation(q_site, final_count);
-}
-
-function updateFilterRecommendation(q_site, filterCount) {
-    const envData = environmentData[currentEnvironment];
-    const recHtml = document.getElementById('filterRecommendation');
-    
-    let html = `<div class="filter-recommendation">`;
-    html += `<p style="margin-top: 0; color: var(--success); font-weight: 600;">推荐方案：${envData.recommendation}</p>`;
-    
-    for (const stage of envData.stages) {
-        const stageCapacity = stage.capacity;
-        const stageCount = Math.ceil((q_site / 3600) / (stageCapacity / 3600));
+        // 1. 密度修正 (简化公式)
+        const rho0 = 1.225;
+        const rho = rho0 * (288.15 / (273.15 + temp)) * Math.exp(-alt / 8400);
         
-        html += `<div class="filter-stage">`;
-        html += `<div><span class="filter-stage-label">${stage.stage}</span></div>`;
-        html += `<div><span class="filter-stage-value"><strong>${stage.model}</strong></span></div>`;
-        html += `<div><span class="badge">${stage.class}</span></div>`;
-        html += `<div><span class="filter-stage-value" style="color: var(--success); font-weight: 600;">×${stageCount}</span></div>`;
-        html += `</div>`;
+        // 2. 体积流量计算
+        const massFlow = turbine.flow;
+        const volFlow = (massFlow / rho) * 3600;
+        document.getElementById('volFlow').innerText = Math.round(volFlow).toLocaleString();
+
+        // 3. 燃机参数显示
+        document.getElementById('turbineSpecs').innerHTML = `
+            <strong>ISO 功率:</strong> ${turbine.power} MW | 
+            <strong>质量流量:</strong> ${turbine.flow} kg/s | 
+            <strong>热耗率:</strong> ${turbine.heatRate} kJ/kWh
+        `;
+
+        // 4. 滤芯数量计算 (基于终滤器风量)
+        const envInfo = filterData[currentEnv];
+        const finalFilter = envInfo.filters[envInfo.filters.length - 1];
+        const count = Math.ceil(volFlow / finalFilter.flow);
+        document.getElementById('filterCount').innerText = count;
+
+        // 5. 环境描述与安全配置
+        document.getElementById('envDescription').innerText = envInfo.desc;
+        
+        const blowInStatus = document.getElementById('blowInDoorStatus');
+        const blowInPressure = document.getElementById('blowInDoorPressure');
+        const safetyWarning = document.getElementById('safetyWarning');
+
+        if (envInfo.safety.blowIn || turbine.power > 100) {
+            blowInStatus.innerText = "强烈建议配置";
+            blowInStatus.className = "badge danger";
+            blowInPressure.innerText = envInfo.safety.pressure;
+            safetyWarning.innerText = `警告：${envInfo.safety.reason} 根据 GMRC 指南，高功率或高风险环境下必须配置吸入门以防内爆。`;
+        } else {
+            blowInStatus.innerText = "可选配置";
+            blowInStatus.className = "badge info";
+            blowInPressure.innerText = envInfo.safety.pressure;
+            safetyWarning.innerText = envInfo.safety.reason;
+        }
+
+        // 6. 滤芯列表生成
+        const filterList = document.getElementById('filterList');
+        filterList.innerHTML = '';
+        envInfo.filters.forEach(f => {
+            const div = document.createElement('div');
+            div.className = 'filter-stage';
+            div.innerHTML = `
+                <span class="filter-stage-label">${f.stage}</span>
+                <span class="filter-stage-value"><strong>${f.model}</strong></span>
+                <span class="badge success">${f.grade}</span>
+                <span class="filter-stage-value" style="text-align:right">${count} 只</span>
+            `;
+            filterList.appendChild(div);
+        });
+
+        // 7. LCC 分析 (10年)
+        const years = 10;
+        const degRate = 0.015; // 年均 1.5% 衰减
+        const annualDegLoss = turbine.power * 1000 * runHours * elecPrice * degRate;
+        const totalDegLoss = annualDegLoss * years * 0.7; // 考虑清洗后的恢复
+
+        const avgDP = 250; // Pa
+        const energyLoss = (volFlow / 3600) * avgDP * runHours * years * elecPrice / (0.8 * 1000);
+        
+        const filterCost = count * 1500 * 5; // 假设10年更换5次
+        
+        document.getElementById('lccDegradation').innerText = "¥ " + Math.round(totalDegLoss / 10000).toLocaleString() + " 万";
+        document.getElementById('lccEnergy').innerText = "¥ " + Math.round(energyLoss / 10000).toLocaleString() + " 万";
+        document.getElementById('lccMaintenance').innerText = "¥ " + Math.round(filterCost / 10000).toLocaleString() + " 万";
+        document.getElementById('lccTotal').innerText = "¥ " + Math.round((totalDegLoss + energyLoss + filterCost) / 10000).toLocaleString() + " 万";
     }
-    
-    html += `<div style="margin-top: 15px; padding: 10px; background: #f3f4f6; border-radius: 6px; font-size: 13px;">`;
-    html += `<strong>说明：</strong> 上述推荐基于 ${currentEnvironment} 环境工况和 GMRC 指南标准。`;
-    html += `</div>`;
-    
-    html += `</div>`;
-    
-    recHtml.innerHTML = html;
-}
 
-function resetResults() {
-    document.getElementById('resQ').innerText = '-';
-    document.getElementById('resCount').innerText = '-';
-    document.getElementById('resLayout').innerText = '-';
-    document.getElementById('resActualV').innerText = '-';
-    document.getElementById('resDP').innerText = '-';
-    document.getElementById('resPowerLoss').innerText = '-';
-    document.getElementById('resWallSize').innerText = '-';
-    document.getElementById('resWeight').innerText = '-';
-    document.getElementById('vWarning').style.display = 'none';
-}
-
-window.onload = function() {
-    selectManufacturer('GE', { target: document.querySelector('.tab-btn.active') });
-    selectEnvironment('Standard', { target: document.querySelector('.env-btn.active') });
-};
+    window.onload = init;
 </script>
 
 </body>
