@@ -773,6 +773,67 @@
                 <li>环境变化时应重新评估开启压力设定</li>
             </ul>
         </div>
+
+        <div class="formula-section" style="margin-top: 30px;">
+            <h3>6. 行业标准对比与合规性分析</h3>
+            <table class="parameter-table">
+                <tr>
+                    <th>指标</th>
+                    <th>本系统 (v8.0)</th>
+                    <th>GMRC 指南</th>
+                    <th>OEM 标准 (GE/Siemens)</th>
+                </tr>
+                <tr>
+                    <td><strong>开启压力范围</strong></td>
+                    <td>110 - 150 mmH₂O</td>
+                    <td>100 - 150 mmH₂O</td>
+                    <td>125 - 175 mmH₂O</td>
+                </tr>
+                <tr>
+                    <td><strong>安全余量系数 (k)</strong></td>
+                    <td>1.2 - 1.5</td>
+                    <td>1.25 (典型)</td>
+                    <td>1.3 - 1.6</td>
+                </tr>
+                <tr>
+                    <td><strong>响应时间</strong></td>
+                    <td>瞬时机械</td>
+                    <td>&lt; 1 秒</td>
+                    <td>无源机械触发</td>
+                </tr>
+                <tr>
+                    <td><strong>环境修正</strong></td>
+                    <td>动态密度修正</td>
+                    <td>建议考虑海拔</td>
+                    <td>强制极端低温修正</td>
+                </tr>
+            </table>
+        </div>
+
+        <div class="formula-section">
+            <h3>7. 最终合规性建议</h3>
+            <div class="formula-example" style="background: #e8f5e9; border-color: #4caf50;">
+                <strong style="color: #2e7d32;">✓ 合规建议</strong>
+                <ul style="margin: 10px 0; padding-left: 20px; font-size: 13px;">
+                    <li><strong>设定值合规</strong>：建议将防爆门开启压力设定在 <strong>125 mmH₂O (1225 Pa)</strong> 作为通用基准。极寒地区应下调至 <strong>110 mmH₂O</strong>。</li>
+                    <li><strong>硬件合规</strong>：防爆门必须采用<strong>无源机械式</strong>结构（重锤式或弹簧式），严禁使用电动阀。</li>
+                    <li><strong>监控合规</strong>：必须在防爆门上安装<strong>限位开关</strong>，信号接入燃机保护系统（Trip Logic）。开启时燃机必须立即跳机或强制减载。</li>
+                    <li><strong>维护合规</strong>：根据 ISO 21789 要求，防爆门应纳入年度强制检修清单，检查密封条和机械结构。</li>
+                </ul>
+            </div>
+        </div>
+
+        <div class="formula-section">
+            <h3>8. 参数物理意义详解</h3>
+            <div style="font-size: 13px; line-height: 1.8;">
+                <p><strong>安全余量系数 (k) 的物理意义：</strong></p>
+                <p>代表系统对"误开启"与"延迟开启"之间的容忍度。低 k 值（1.1-1.2）适用于极寒结冰、沙尘暴等恶劣工况，能在进气道结构受损前瞬间开启；高 k 值（1.4-1.5）适用于标准工况，能防止因负荷波动产生的瞬时负压导致防爆门误开。</p>
+                <p style="margin-top: 10px;"><strong>系统最大压降 (DP_max) 的物理意义：</strong></p>
+                <p>这是进气道壁板在不发生永久性塑性变形情况下所能承受的最大静压差。它由进气道结构强度决定，通常取滤芯达到报废压降时的数值，并加上 20% 的结构余量。</p>
+                <p style="margin-top: 10px;"><strong>空气密度修正 (ρ_site / ρ_ISO) 的物理意义：</strong></p>
+                <p>修正了流体动能对压力的贡献。在相同流速下，密度越大，产生的压差力越大。必须基于现场最恶劣的极端低温和最高海拔进行校核。</p>
+            </div>
+        </div>
     </div>
 </div>
 
