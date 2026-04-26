@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>全球燃气轮机进气过滤选型系统 v10.2 - 专家决策与计算依据版</title>
+    <title>全球燃气轮机进气过滤选型系统 v11.3 - OEM 数据校准与脉冲系统集成版</title>
     <style>
         :root { 
             --primary: #005eb8; 
@@ -466,8 +466,8 @@
 <div class="container">
     <header>
         <div>
-            <h1>全球燃气轮机进气过滤选型系统</h1>
-            <div class="version">v10.2+ 专家决策与计算依据版 | 脉冲/静态双核 | 智能推荐 | 计算原理详解</div>
+           <h1>🌍 全球燃气轮机进气过滤选型系统</h1>
+        <div class="version">版本 v11.3 | OEM 数据校准与脉冲系统集成版</div>态双核 | 智能推荐 | 计算原理详解</div>
         </div>
         <div class="badge success">GMRC Release 1.0 标准集成</div>
     </header>
@@ -800,40 +800,42 @@
 <script>
     const turbineData = {
         "GE": [
-            { model: "9HA.02", power: 571, flow: 1120, heatRate: 7500 },
-            { model: "9HA.01", power: 446, flow: 880, heatRate: 7600 },
-            { model: "9F.05", power: 300, flow: 650, heatRate: 7800 },
-            { model: "9E.03", power: 132, flow: 410, heatRate: 8200 },
-            { model: "6F.03", power: 87, flow: 210, heatRate: 8500 },
-            { model: "6B.03", power: 44, flow: 145, heatRate: 8800 },
-            { model: "LM6000-PF+", power: 52, flow: 130, heatRate: 8400 },
-            { model: "LM2500+G4", power: 34, flow: 95, heatRate: 8600 },
+            { model: "9HA.02", power: 571, flow: 1039.9, heatRate: 7500 },
+            { model: "9HA.01", power: 446, flow: 847.8, heatRate: 7600 },
+            { model: "9F.05", power: 300, flow: 730.0, heatRate: 7800 },
+            { model: "9E.04", power: 147, flow: 466.6, heatRate: 8100 },
+            { model: "9E.03", power: 132, flow: 414.1, heatRate: 8200 },
+            { model: "6F.03", power: 87, flow: 213.1, heatRate: 8500 },
+            { model: "6B.03", power: 44, flow: 141.1, heatRate: 8800 },
+            { model: "LM6000-PF+", power: 52, flow: 129.1, heatRate: 8400 },
+            { model: "LM2500+G4", power: 34, flow: 93.5, heatRate: 8600 },
             { model: "9B (MS9001B)", power: 80, flow: 350, heatRate: 9200 },
             { model: "7B (MS7001B)", power: 65, flow: 280, heatRate: 9400 },
-            { model: "6B (MS6001B)", power: 38, flow: 140, heatRate: 9600 }
+            { model: "6B (MS6001B)", power: 38, flow: 139.5, heatRate: 9600 }
         ],
         "Siemens": [
             { model: "SGT5-9000HL", power: 593, flow: 1030, heatRate: 7400 },
-            { model: "SGT5-8000H", power: 450, flow: 850, heatRate: 7550 },
-            { model: "SGT5-4000F", power: 329, flow: 700, heatRate: 7750 },
-            { model: "SGT5-2000E", power: 187, flow: 530, heatRate: 8100 },
-            { model: "SGT-800", power: 57, flow: 135, heatRate: 8300 },
-            { model: "SGT-700", power: 33, flow: 95, heatRate: 8500 },
-            { model: "SGT-600", power: 25, flow: 82, heatRate: 8700 }
+            { model: "SGT5-8000H", power: 450, flow: 869, heatRate: 7550 },
+            { model: "SGT5-4000F", power: 329, flow: 724, heatRate: 7750 },
+            { model: "SGT5-2000E", power: 187, flow: 558, heatRate: 8100 },
+            { model: "SGT-800", power: 57, flow: 135.5, heatRate: 8300 },
+            { model: "SGT-700", power: 33, flow: 98.7, heatRate: 8500 },
+            { model: "SGT-600", power: 25, flow: 82.5, heatRate: 8700 }
         ],
         "Mitsubishi": [
             { model: "M701JAC", power: 574, flow: 1024, heatRate: 7450 },
             { model: "M701J", power: 470, flow: 950, heatRate: 7550 },
             { model: "M701F", power: 385, flow: 748, heatRate: 7800 },
+            { model: "M701D", power: 280, flow: 445, heatRate: 8000 },
             { model: "H-25", power: 32, flow: 90, heatRate: 8600 }
         ],
         "Ansaldo": [
-            { model: "GT36-S5", power: 560, flow: 1100, heatRate: 7450 },
-            { model: "GT26", power: 322, flow: 680, heatRate: 7700 },
+            { model: "GT36-S5", power: 560, flow: 1065, heatRate: 7450 },
+            { model: "GT26", power: 322, flow: 741, heatRate: 7700 },
             { model: "GT24", power: 210, flow: 450, heatRate: 7900 },
-            { model: "AE94.3A", power: 340, flow: 755, heatRate: 7650 },
-            { model: "AE94.2", power: 190, flow: 540, heatRate: 8100 },
-            { model: "AE64.3A", power: 80, flow: 210, heatRate: 8400 }
+            { model: "AE94.3A", power: 340, flow: 593, heatRate: 7650 },
+            { model: "AE94.2", power: 190, flow: 555, heatRate: 8100 },
+            { model: "AE64.3A", power: 80, flow: 212, heatRate: 8400 }
         ],
         "Solar": [
             { model: "Titan 250", power: 23.8, flow: 68, heatRate: 8500 },
