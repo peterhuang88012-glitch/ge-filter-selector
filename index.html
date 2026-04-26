@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>全球燃气轮机进气过滤选型系统 v9.0 - 完整型号库版</title>
+    <title>全球燃气轮机进气过滤选型系统 v10.0 - 辅助系统增强版</title>
     <style>
         :root { 
             --primary: #005eb8; 
@@ -455,7 +455,7 @@
     <header>
         <div>
               <h1>全球燃气轮机进气过滤选型系统</h1>
-        <div class="version">v9.0 完整型号库版 | GE B系列 + Ansaldo全系列 | 基于 GMRC Release 1.0 指南</div>>
+        <div class="version">v10.0 辅助系统增强版 | 进气加热/冷却 | 基于 GMRC Release 1.0 指南</div>>
         </div>
         <div class="tabs-container" id="manufacturerTabs">
             <!-- 厂家标签将由 JS 动态生成 -->
@@ -516,7 +516,25 @@
                 <!-- 环境描述 -->
             </div>
 
-            <h3>4. 安全防护配置</h3>
+            <h3>4. 辅助系统配置</h3>
+            <div style="background: #f0f9ff; border: 1px solid #bae6fd; border-radius: 8px; padding: 15px; margin-bottom: 15px;">
+                <div style="margin-bottom: 12px;">
+                    <label style="display: flex; align-items: center; gap: 10px; cursor: pointer; margin-bottom: 0;">
+                        <input type="checkbox" id="inletHeating" onchange="updateCalculations()" style="width: auto; cursor: pointer;">
+                        <span style="font-weight: 600; color: #0369a1; font-size: 14px;">进气加热系统 (极寒防冰)</span>
+                    </label>
+                    <div style="font-size: 12px; color: #666; margin-left: 26px; margin-top: 4px;">适用于极寒/高湿环境，防止滤芯和导叶结冰</div>
+                </div>
+                <div>
+                    <label style="display: flex; align-items: center; gap: 10px; cursor: pointer; margin-bottom: 0;">
+                        <input type="checkbox" id="inletCooling" onchange="updateCalculations()" style="width: auto; cursor: pointer;">
+                        <span style="font-weight: 600; color: #0369a1; font-size: 14px;">进气冷却系统 (性能提升)</span>
+                    </label>
+                    <div style="font-size: 12px; color: #666; margin-left: 26px; margin-top: 4px;">适用于热带/高温环境，显著提升燃机功率和效率</div>
+                </div>
+            </div>
+
+            <h3>5. 安全防护配置</h3>
             <div style="background: #fff5f5; border: 1px solid #feb2b2; border-radius: 8px; padding: 15px;">
                 <div style="display: flex; justify-content: space-between; align-items: center; padding: 10px 0; border-bottom: 1px dashed #feb2b2;">
                     <span style="font-weight: 600; color: #c53030; font-size: 14px;">防爆门建议</span>
@@ -536,7 +554,7 @@
 
         <!-- 第三列：计算结果与 LCC 分析 -->
         <div class="card" style="background: #f8fbff;">
-            <h3>5. 选型计算结果</h3>
+            <h3>6. 选型计算结果</h3>
             <div class="summary-box">
                 <div class="stat-item">
                     <span class="stat-label">工况体积流量</span>
@@ -852,7 +870,7 @@
         </div>
 
         <div class="formula-section" style="margin-top: 30px;">
-            <h3>10. 环境工况下的动态调整</h3>
+            <h3>11. 环境工况下的动态调整</h3>
             <table class="parameter-table">
                 <tr style="background: #f8f9fa;">
                     <th>工况</th>
@@ -1136,7 +1154,26 @@
             filterList.appendChild(div);
         });
 
-        // 8. LCC 分析
+        // 8. 辅助系统性能计算
+        const inletHeating = document.getElementById('inletHeating').checked;
+        const inletCooling = document.getElementById('inletCooling').checked;
+        
+        let coolingBenefit = 0;
+        let coolingCost = 0;
+        if (inletCooling && (currentEnv === 'tropical' || temp > 35)) {
+            const powerIncrease = turbine.power * 0.05;
+            coolingBenefit = powerIncrease * 1000 * runHours * elecPrice * years;
+            coolingCost = 800000;
+        }
+        
+        let heatingCost = 0;
+        let heatingBenefit = 0;
+        if (inletHeating && (currentEnv === 'arctic' || temp < -10)) {
+            heatingCost = 500000;
+            heatingBenefit = 0;
+        }
+
+        // 9. LCC 分析
         const years = 10;
         const degRate = 0.015;
         const annualDegLoss = turbine.power * 1000 * runHours * elecPrice * degRate;
@@ -1147,23 +1184,57 @@
         
         const filterCost = count * 1500 * 5;
         
+        const totalAuxiliaryCost = coolingCost + heatingCost;
+        const totalAuxiliaryBenefit = coolingBenefit + heatingBenefit;
+        
         document.getElementById('lccDegradation').innerText = "¥ " + Math.round(totalDegLoss / 10000).toLocaleString() + " 万";
         document.getElementById('lccEnergy').innerText = "¥ " + Math.round(energyLoss / 10000).toLocaleString() + " 万";
         document.getElementById('lccMaintenance').innerText = "¥ " + Math.round(filterCost / 10000).toLocaleString() + " 万";
-        document.getElementById('lccTotal').innerText = "¥ " + Math.round((totalDegLoss + energyLoss + filterCost) / 10000).toLocaleString() + " 万";
+        
+        let lccTotal = totalDegLoss + energyLoss + filterCost;
+        if (inletCooling || inletHeating) {
+            const roiAnalysisDiv = document.querySelector('.roi-analysis');
+            const auxiliaryLCC = document.createElement('div');
+            auxiliaryLCC.style.cssText = 'background: #f0f9ff; border: 1px solid #bae6fd; border-radius: 8px; padding: 12px; margin-top: 15px;';
+            auxiliaryLCC.id = 'auxiliaryLCCDiv';
+            auxiliaryLCC.innerHTML = `
+                <div style="font-weight: 700; margin-bottom: 10px; color: #0369a1; font-size: 14px;">辅助系统成本分析:</div>
+                ${inletCooling ? `<div class="roi-item"><span class="roi-label">进气冷却系统成本</span><span class="roi-value">¥ ${Math.round(coolingCost / 10000)} 万</span></div>` : ''}
+                ${inletCooling ? `<div class="roi-item"><span class="roi-label">冷却系统 10年收益</span><span class="roi-value" style="color: var(--success);">¥ ${Math.round(coolingBenefit / 10000)} 万</span></div>` : ''}
+                ${inletHeating ? `<div class="roi-item"><span class="roi-label">进气加热系统成本</span><span class="roi-value">¥ ${Math.round(heatingCost / 10000)} 万</span></div>` : ''}
+                ${inletHeating ? `<div class="roi-item"><span class="roi-label">加热系统作用</span><span class="roi-value" style="color: #666;">防止结冰 / 保证安全</span></div>` : ''}
+            `;
+            const existingDiv = document.getElementById('auxiliaryLCCDiv');
+            if (existingDiv) existingDiv.remove();
+            roiAnalysisDiv.parentElement.appendChild(auxiliaryLCC);
+            lccTotal = lccTotal + totalAuxiliaryCost - totalAuxiliaryBenefit;
+        }
+        
+        document.getElementById('lccTotal').innerText = "¥ " + Math.round(lccTotal / 10000).toLocaleString() + " 万";
 
-        // 9. 专家决策支持分析
-        generateExpertRecommendations(turbine, envInfo, count, totalDegLoss, energyLoss, filterCost, k, maxDP, setPointmmH2O);
+        // 10. 专家决策支持分析
+        generateExpertRecommendations(turbine, envInfo, count, totalDegLoss, energyLoss, filterCost, k, maxDP, setPointmmH2O, inletHeating, inletCooling);
     }
 
-    function generateExpertRecommendations(turbine, envInfo, count, degLoss, energyLoss, filterCost, k, maxDP, setPoint) {
+    function generateExpertRecommendations(turbine, envInfo, count, degLoss, energyLoss, filterCost, k, maxDP, setPoint, inletHeating, inletCooling) {
         // ROI 分析
         const roiRec = document.getElementById('roi-recommendation');
+        let roiText = '';
         if (turbine.power > 100) {
-            roiRec.innerText = `对于您选择的 ${turbine.power} MW 大型燃机，采用 E12 级超高效过滤强烈推荐。E12 级滤芯虽然初始成本约高 3-5 倍，但能将年均性能衰减从 1.5%-2.0% 降低至 0.5% 以下，节省的燃料费和功率补偿通常在 18-24 个月内即可覆盖高出的采购成本。`;
+            roiText = `对于您选择的 ${turbine.power} MW 大型燃机，采用 E12 级超高效过滤强烈推荐。E12 级滤芯虽然初始成本约高 3-5 倍，但能将年均性能衰减从 1.5%-2.0% 降低至 0.5% 以下，节省的燃料费和功率补偿通常在 18-24 个月内即可覆盖高出的采购成本。`;
         } else {
-            roiRec.innerText = `对于您选择的 ${turbine.power} MW 中小型燃机，建议采用 F9 级过滤即可满足需求，性价比更优。如果燃机处于基本负荷运行（年运行小时数 > 7000h），可考虑升级至 E12 级。`;
+            roiText = `对于您选择的 ${turbine.power} MW 中小型燃机，建议采用 F9 级过滤即可满足需求，性价比更优。如果燃机处于基本负荷运行（年运行小时数 > 7000h），可考虑升级至 E12 级。`;
         }
+        
+        if (inletCooling) {
+            roiText += ` 针对您的环境，强烈推荐配置进气冷却系统，可帮助燃机提升 3-8% 的功率。`;
+        }
+        
+        if (inletHeating) {
+            roiText += ` 针对您的环境，强烈推荐配置进气加热系统，以保证滤芯和导叶不会结冰。`;
+        }
+        
+        roiRec.innerText = roiText;
 
         const roiDetails = document.getElementById('roi-details');
         const roi10Year = degLoss * 0.3;
