@@ -467,7 +467,7 @@
     <header>
         <div>
             <h1>全球燃气轮机进气过滤选型系统</h1>
-            <div class="version">v10.2 专家决策与计算依据版 | 进气加热/冷却 | 智能推荐 | 计算原理详解</div>
+            <div class="version">v10.2+ 专家决策与计算依据版 | 脉冲/静态双核 | 智能推荐 | 计算原理详解</div>
         </div>
         <div class="badge success">GMRC Release 1.0 标准集成</div>
     </header>
@@ -507,9 +507,21 @@
             </div>
         </div>
 
-        <!-- 2. 现场环境工况 -->
+        <!-- 2. 过滤系统类型选择 -->
         <div class="card">
-            <h3>2. 现场环境工况</h3>
+            <h3>2. 过滤系统类型</h3>
+            <div class="input-group">
+                <label for="filtrationType">选择过滤系统类型</label>
+                <select id="filtrationType" onchange="updateCalculations()">
+                    <option value="static">静态过滤系统 (Static)</option>
+                    <option value="pulse">脉冲反吹系统 (Pulse Jet)</option>
+                </select>
+            </div>
+            <div id="systemTypeInfo" style="background: #f0f7ff; padding: 12px; border-radius: 6px; border-left: 4px solid #005eb8; font-size: 13px; color: #444; margin-top: 15px;">
+                <strong>静态系统：</strong> 设计风速 3.0 m/s，适用于标准及中等工况。
+            </div>
+
+            <h3 style="margin-top: 25px;">3. 现场环境工况</h3>
             <div class="environment-tabs" id="envTabs">
                 <button class="env-btn active" onclick="setEnv('standard', this)">标准/城市</button>
                 <button class="env-btn" onclick="setEnv('coastal', this)">海洋/海岛</button>
@@ -522,7 +534,7 @@
                 污染物主要为城市粉尘和工业烟雾。重点在于平衡效率与压降。
             </p>
 
-            <h3 style="margin-top: 25px;">3. 辅助系统配置</h3>
+            <h3 style="margin-top: 25px;">4. 辅助系统配置</h3>
             <div class="aux-config">
                 <div class="aux-item" id="heatingCard" onclick="toggleAux('inletHeating')">
                     <input type="checkbox" id="inletHeating" onchange="updateCalculations()" onclick="event.stopPropagation()">
@@ -540,7 +552,7 @@
                 </div>
             </div>
 
-            <h3 style="margin-top: 25px;">4. 安全防护配置</h3>
+            <h3 style="margin-top: 25px;">5. 安全防护配置</h3>
             <div class="card" style="padding: 15px; background: #fff5f5; border: 1px solid #feb2b2;">
                 <table style="margin-top: 0;">
                     <tr>
@@ -562,7 +574,7 @@
 
         <!-- 3. 选型计算结果 -->
         <div class="card highlight">
-            <h3>5. 选型计算结果</h3>
+            <h3>6. 选型计算结果</h3>
             <div class="summary-box">
                 <div class="stat-item">
                     <span class="stat-label">工况体积流量</span>
@@ -725,7 +737,7 @@
                         </tr>
                         <tr>
                             <td>设计风速 (V<sub>target</sub>)</td>
-                            <td>3.0 m/s</td>
+                            <td id="calcDesignVelocity">3.0 m/s</td>
                         </tr>
                         <tr>
                             <td>单只面积 (A<sub>cell</sub>)</td>
@@ -754,12 +766,12 @@
                     </thead>
                     <tbody>
                         <tr>
-                            <td>静态过滤 (本系统)</td>
+                            <td>静态过滤 (Static)</td>
                             <td>2.5 - 3.5</td>
                             <td>平衡初投资与运行压降</td>
                         </tr>
                         <tr>
-                            <td>脉冲反吹系统</td>
+                            <td>脉冲反吹系统 (Pulse Jet)</td>
                             <td>4.0 - 6.0</td>
                             <td>高风速，依赖清灰效率</td>
                         </tr>
@@ -952,7 +964,11 @@
         const temp = parseFloat(document.getElementById('temperature').value) || 0;
         const runHours = parseFloat(document.getElementById('runHours').value) || 0;
         const elecPrice = parseFloat(document.getElementById('elecPrice').value) || 0;
+        const filtrationType = document.getElementById('filtrationType').value;
         const years = 10;
+        
+        // 根据过滤系统类型选择设计风速
+        const designVelocity = filtrationType === 'pulse' ? 5.0 : 3.0;
 
         // 1. 空气密度修正
         const rho0 = 1.225;
@@ -964,12 +980,21 @@
         document.getElementById('volFlow').textContent = Math.round(volFlow).toLocaleString();
         document.getElementById('calcVolFlow').textContent = Math.round(volFlow).toLocaleString();
 
-        // 3. 滤芯数量 (基准风速 3.0 m/s, 单只面积 0.35 m2)
-        const rawCount = volFlow / (3600 * 0.35 * 3.0);
+        // 3. 滤芯数量计算
+        const rawCount = volFlow / (3600 * 0.35 * designVelocity);
         const filterCount = Math.ceil(rawCount);
         document.getElementById('filterCount').textContent = filterCount;
         document.getElementById('calcRawCount').textContent = rawCount.toFixed(2);
         document.getElementById('calcFinalCount').textContent = filterCount;
+        document.getElementById('calcDesignVelocity').textContent = `${designVelocity} m/s`;
+        
+        // 更新系统类型信息提示
+        const systemInfo = document.getElementById('systemTypeInfo');
+        if (filtrationType === 'pulse') {
+            systemInfo.innerHTML = '<strong>脉冲系统：</strong> 设计风速 5.0 m/s，采用在线清灰，适用于高粉尘工况。';
+        } else {
+            systemInfo.innerHTML = '<strong>静态系统：</strong> 设计风速 3.0 m/s，适用于标准及中等工况。';
+        }
 
         // 4. 辅助系统智能推荐逻辑
         const heatingCard = document.getElementById('heatingCard');
@@ -1016,13 +1041,20 @@
             auxResult.style.display = 'none';
         }
 
-        // 6. 安全防护计算
-        const k = filterData[currentEnv].k;
-        const dpMax = 300; // Pa
-        const blowInPa = Math.round(k * dpMax * (rho / rho0));
-        const blowInMm = Math.round(blowInPa / 9.81);
-        document.getElementById('blowInSetting').textContent = `${blowInMm} mmH2O (${blowInPa} Pa)`;
-        document.getElementById('maxSystemDP').textContent = `${dpMax} Pa`;
+        // 6. 安全防护计算 (仅对静态系统有效)
+        if (filtrationType === 'static') {
+            const k = filterData[currentEnv].k;
+            const dpMax = 300; // Pa
+            const blowInPa = Math.round(k * dpMax * (rho / rho0));
+            const blowInMm = Math.round(blowInPa / 9.81);
+            document.getElementById('blowInSetting').textContent = `${blowInMm} mmH2O (${blowInPa} Pa)`;
+            document.getElementById('maxSystemDP').textContent = `${dpMax} Pa`;
+            document.getElementById('blowInAdvice').textContent = '强烈建议配置';
+        } else {
+            document.getElementById('blowInAdvice').textContent = '脉冲系统无需配置';
+            document.getElementById('blowInSetting').textContent = 'N/A';
+            document.getElementById('maxSystemDP').textContent = 'N/A';
+        }
 
         // 7. 推荐方案
         const solutionDiv = document.getElementById('filterSolution');
@@ -1044,10 +1076,17 @@
         });
 
         // 8. LCC 成本预估
-        const degradationRate = 0.015; // 1.5% 年衰减
+        // 脉冲系统性能衰减率较低，压降也更稳定
+        const degradationRate = filtrationType === 'pulse' ? 0.008 : 0.015; // 脉冲系统衰减率更低
         const lccDegradation = turbine.power * 1000 * degradationRate * runHours * elecPrice * years * 0.5;
-        const lccEnergy = (volFlow * 250 / 3600 / 0.8) / 1000 * runHours * elecPrice * years;
-        const lccMaintenance = filterCount * 3 * 1500 * 3; // 10年换3次，平均单价1500
+        
+        // 脉冲系统压降更稳定，平均约 180 Pa，静态系统约 250 Pa
+        const avgDP = filtrationType === 'pulse' ? 180 : 250;
+        const lccEnergy = (volFlow * avgDP / 3600 / 0.8) / 1000 * runHours * elecPrice * years;
+        
+        // 脉冲系统维护成本更低，滤芯更换周期更长
+        const maintenanceMultiplier = filtrationType === 'pulse' ? 1.5 : 3;
+        const lccMaintenance = filterCount * 3 * 1500 * maintenanceMultiplier;
         const totalLCC = lccDegradation + lccEnergy + lccMaintenance;
 
         document.getElementById('lccDegradation').textContent = "¥ " + Math.round(lccDegradation).toLocaleString();
@@ -1060,26 +1099,49 @@
     }
 
     function generateExpertRecommendations(turbine, count, lcc) {
+        const filtrationType = document.getElementById('filtrationType').value;
         const container = document.getElementById('expertAnalysis');
         container.innerHTML = '';
 
-        const recommendations = [
-            {
-                title: "问题 1: E12 级超高效过滤的投资回报率 (ROI)",
-                content: `针对 ${turbine.model}，采用 E12 级过滤虽增加初始成本，但可将年性能衰减从 1.5% 降至 0.4%。预计 10 年可节省燃料费及功率损失约 ¥${Math.round(lcc * 0.4).toLocaleString()}。`,
-                roi: `投资回收期: 18-22 个月`
-            },
-            {
-                title: "问题 2: 极端工况下的多级过滤冗余设计",
-                content: `在 ${filterData[currentEnv].desc.split('。')[0]} 环境下，建议采用三级过滤。增加一级预过滤可使终滤器寿命延长 150%，显著降低年度停机维护频率。`,
-                roi: `维护成本降低: 35%`
-            },
-            {
-                title: "问题 3: 防爆门开启压力与安全平衡",
-                content: `当前设定值 ${document.getElementById('blowInSetting').textContent} 考虑了 ${currentEnv} 环境下的安全余量。该设定既能防止滤芯报警时的误开启，又能确保进气道在 300Pa 极限负压下的结构安全。`,
-                roi: `安全等级: 极高 (符合 GMRC)`
-            }
-        ];
+        let recommendations = [];
+        
+        if (filtrationType === 'pulse') {
+            recommendations = [
+                {
+                    title: "脉冲系统优势分析",
+                    content: `脉冲系统通过在线自洁，可长期维持约 180 Pa 的稳定低压降，相比静态系统（平均约 250 Pa）能耗更低，且滤芯更换周期延长一倍以上。针对 ${turbine.model}，预计 10 年可节省能耗成本约 ¥${Math.round(lcc * 0.25).toLocaleString()}。`,
+                    roi: `10年 LCC 节约预估: ¥${Math.round(lcc * 0.25).toLocaleString()}`
+                },
+                {
+                    title: "高粉尘环境适应性",
+                    content: `在沙漠或高粉尘浓度（>1.0 mg/m³）区域，脉冲系统是唯一推荐方案。其强大的清灰能力可有效防止滤芯堵塞，保障燃机可用率。在 ${filterData[currentEnv].desc.split('。')[0]} 环境下尤为重要。`,
+                    roi: `可用率提升: 2-5%`
+                },
+                {
+                    title: "初投资与占地面积优化",
+                    content: `由于采用 5.0 m/s 的高设计风速，脉冲系统所需滤芯数量（${count}只）和占地面积均小于静态系统，可节约钢结构和土地成本。同时减少了防爆门等安全装置的复杂性。`,
+                    roi: `初投资降低: 10-20%`
+                }
+            ];
+        } else {
+            recommendations = [
+                {
+                    title: "问题 1: E12 级超高效过滤的投资回报率 (ROI)",
+                    content: `针对 ${turbine.model}，采用 E12 级过滤虽增加初始成本，但可将年性能衰减从 1.5% 降至 0.4%。预计 10 年可节省燃料费及功率损失约 ¥${Math.round(lcc * 0.4).toLocaleString()}。`,
+                    roi: `投资回收期: 18-22 个月`
+                },
+                {
+                    title: "问题 2: 极端工况下的多级过滤冗余设计",
+                    content: `在 ${filterData[currentEnv].desc.split('。')[0]} 环境下，建议采用三级过滤。增加一级预过滤可使终滤器寿命延长 150%，显著降低年度停机维护频率。`,
+                    roi: `维护成本降低: 35%`
+                },
+                {
+                    title: "问题 3: 防爆门开启压力与安全平衡",
+                    content: `当前设定值 ${document.getElementById('blowInSetting').textContent} 考虑了 ${currentEnv} 环境下的安全余量。该设定既能防止滤芯报警时的误开启，又能确保进气道在 300Pa 极限负压下的结构安全。`,
+                    roi: `安全等级: 极高 (符合 GMRC)`
+                }
+            ];
+        }
 
         recommendations.forEach(r => {
             const card = document.createElement('div');
