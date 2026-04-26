@@ -1181,6 +1181,9 @@
         const inletHeating = inletHeatingCheckbox.checked;
         const inletCooling = inletCoolingCheckbox.checked;
         
+        // 9. LCC 分析 - 先定义 years
+        const years = 10;
+        
         let coolingBenefit = 0;
         let coolingCost = 0;
         let coolingTempDrop = 0;
@@ -1200,8 +1203,7 @@
             heatingCost = turbine.power > 100 ? 1000000 : 400000;
         }
 
-        // 9. LCC 分析
-        const years = 10;
+        // 9. LCC 分析（续）
         const degRate = 0.015;
         const annualDegLoss = turbine.power * 1000 * runHours * elecPrice * degRate;
         const totalDegLoss = annualDegLoss * years * 0.7;
@@ -1212,7 +1214,7 @@
         const filterCost = count * 1500 * 5;
         
         const totalAuxiliaryCost = coolingCost + heatingCost;
-        const totalAuxiliaryBenefit = coolingBenefit + heatingBenefit;
+        const totalAuxiliaryBenefit = coolingBenefit; // heatingBenefit 不存在，只有 heatingPenalty
         
         document.getElementById('lccDegradation').innerText = "¥ " + Math.round(totalDegLoss / 10000).toLocaleString() + " 万";
         document.getElementById('lccEnergy').innerText = "¥ " + Math.round(energyLoss / 10000).toLocaleString() + " 万";
