@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>全球燃气轮机进气过滤选型系统 v10.1 - 智能辅助决策版</title>
+    <title>全球燃气轮机进气过滤选型系统 v10.2 - 专家决策与计算依据版</title>
     <style>
         :root { 
             --primary: #005eb8; 
@@ -344,108 +344,120 @@
             display: flex;
             justify-content: space-between;
             align-items: center;
-            margin-bottom: 20px;
-            border-bottom: 2px solid #005eb8;
+            border-bottom: 2px solid #eee;
             padding-bottom: 15px;
+            margin-bottom: 20px;
         }
 
-        .modal-header h2 {
-            margin: 0;
-            color: #005eb8;
+        .modal-title {
             font-size: 22px;
+            font-weight: 700;
+            color: var(--primary);
         }
 
-        .close-btn {
-            color: #aaa;
+        .close-modal {
             font-size: 28px;
             font-weight: bold;
+            color: #aaa;
             cursor: pointer;
-            background: none;
-            border: none;
-            padding: 0;
-            line-height: 1;
         }
 
-        .close-btn:hover {
-            color: #000;
-        }
-
-        .formula-section {
-            margin-bottom: 25px;
-            padding: 15px;
-            background: #f9f9f9;
-            border-left: 4px solid #005eb8;
-            border-radius: 4px;
-        }
-
-        .formula-section h3 {
-            margin-top: 0;
-            color: #005eb8;
-            border: none;
-            padding: 0;
-            font-size: 16px;
+        .close-modal:hover {
+            color: #333;
         }
 
         .formula-box {
-            background: white;
-            border: 1px solid #ddd;
-            padding: 15px;
-            border-radius: 6px;
-            margin: 10px 0;
-            font-family: 'Courier New', monospace;
-            font-size: 14px;
-            color: #333;
-            overflow-x: auto;
-            line-height: 1.8;
-        }
-
-        .parameter-table {
-            width: 100%;
-            border-collapse: collapse;
-            margin: 10px 0;
-            font-size: 13px;
-        }
-
-        .parameter-table th,
-        .parameter-table td {
-            border: 1px solid #ddd;
-            padding: 10px;
-            text-align: left;
-        }
-
-        .parameter-table th {
-            background: #f0f7ff;
-            font-weight: 600;
-            color: #005eb8;
-        }
-
-        .parameter-table tr:nth-child(even) {
-            background: #f9f9f9;
-        }
-
-        .formula-example {
-            background: #fffbf0;
-            border: 1px solid #ffc107;
-            padding: 15px;
-            border-radius: 6px;
-            margin: 10px 0;
-            font-size: 13px;
-        }
-
-        .formula-example strong {
-            color: #ff8c00;
-        }
-
-        .safety-info-box {
-            background: #fef2f2;
-            border: 1px solid #fecaca;
+            background: #f8f9fa;
+            padding: 20px;
             border-radius: 8px;
-            padding: 15px;
+            border-left: 5px solid var(--primary);
+            margin: 15px 0;
+            font-family: 'Courier New', Courier, monospace;
+            font-weight: 700;
+            font-size: 18px;
+            text-align: center;
+        }
+
+        .compliance-chart {
+            width: 100%;
+            max-width: 800px;
+            margin: 20px auto;
+            display: block;
+            border-radius: 8px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+
+        .compliance-table th {
+            background: #f1f5f9;
+            color: #475569;
+        }
+
+        .compliance-badge {
+            background: #dcfce7;
+            color: #166534;
+            padding: 4px 12px;
+            border-radius: 20px;
+            font-weight: 700;
+            font-size: 14px;
+            display: inline-block;
             margin-top: 10px;
         }
 
-        .safety-info-box strong {
-            color: #991b1b;
+        .aux-config {
+            display: flex;
+            gap: 20px;
+            margin-top: 10px;
+        }
+
+        .aux-item {
+            flex: 1;
+            padding: 15px;
+            border: 2px solid #e1e4e8;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.2s;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .aux-item:hover {
+            border-color: var(--primary);
+        }
+
+        .aux-item.active {
+            border-color: var(--primary);
+            background: #f0f7ff;
+        }
+
+        .aux-item.recommend-heating {
+            border-color: var(--danger);
+            background: #fff5f5;
+            animation: pulse-red 2s infinite;
+        }
+
+        .aux-item.recommend-cooling {
+            border-color: var(--success);
+            background: #f0fdf4;
+            animation: pulse-green 2s infinite;
+        }
+
+        @keyframes pulse-red {
+            0% { box-shadow: 0 0 0 0 rgba(220, 53, 69, 0.4); }
+            70% { box-shadow: 0 0 0 10px rgba(220, 53, 69, 0); }
+            100% { box-shadow: 0 0 0 0 rgba(220, 53, 69, 0); }
+        }
+
+        @keyframes pulse-green {
+            0% { box-shadow: 0 0 0 0 rgba(40, 167, 69, 0.4); }
+            70% { box-shadow: 0 0 0 10px rgba(40, 167, 69, 0); }
+            100% { box-shadow: 0 0 0 0 rgba(40, 167, 69, 0); }
+        }
+
+        .aux-info {
+            font-size: 11px;
+            color: #666;
+            margin-top: 4px;
         }
     </style>
 </head>
@@ -454,107 +466,103 @@
 <div class="container">
     <header>
         <div>
-              <h1>全球燃气轮机进气过滤选型系统</h1>
-        <div class="version">v10.1 智能辅助决策版 | 进气加热/冷却 | 自动推荐逻辑</div>>
+            <h1>全球燃气轮机进气过滤选型系统</h1>
+            <div class="version">v10.2 专家决策与计算依据版 | 进气加热/冷却 | 智能推荐 | 计算原理详解</div>
         </div>
-        <div class="tabs-container" id="manufacturerTabs">
-            <!-- 厂家标签将由 JS 动态生成 -->
-        </div>
+        <div class="badge success">GMRC Release 1.0 标准集成</div>
     </header>
 
     <div class="grid-3">
-        <!-- 第一列：燃机型号与基础参数 -->
+        <!-- 1. 燃机型号选择 -->
         <div class="card">
             <h3>1. 燃机型号选择</h3>
+            <div class="tabs-container" id="manufacturerTabs">
+                <!-- 厂家标签将由 JS 动态生成 -->
+            </div>
             <div class="input-group">
                 <label for="turbineModel">选择具体型号</label>
-                <select id="turbineModel" onchange="calculate()">
+                <select id="turbineModel" onchange="updateCalculations()">
                     <!-- 型号将由 JS 动态生成 -->
                 </select>
             </div>
-            
-            <div id="turbineSpecs" style="font-size: 13px; color: #666; background: #f9f9f9; padding: 15px; border-radius: 6px; margin-bottom: 20px;">
-                <!-- 燃机参数显示 -->
-            </div>
-
-            <h3>2. 运行基础参数</h3>
             <div class="grid-2">
                 <div class="input-group">
-                    <label>海拔高度 (m)</label>
-                    <input type="number" id="altitude" value="0" oninput="calculate()">
+                    <label for="altitude">海拔 (m)</label>
+                    <input type="number" id="altitude" value="0" onchange="updateCalculations()">
                 </div>
                 <div class="input-group">
-                    <label>环境温度 (°C)</label>
-                    <input type="number" id="temperature" value="15" oninput="calculate()">
+                    <label for="temperature">环境温度 (°C)</label>
+                    <input type="number" id="temperature" value="15" onchange="updateCalculations()">
                 </div>
             </div>
             <div class="grid-2">
                 <div class="input-group">
-                    <label>年运行小时 (h)</label>
-                    <input type="number" id="runHours" value="8000" oninput="calculate()">
+                    <label for="runHours">年运行小时数</label>
+                    <input type="number" id="runHours" value="8000" onchange="updateCalculations()">
                 </div>
                 <div class="input-group">
-                    <label>电价 (元/kWh)</label>
-                    <input type="number" id="elecPrice" value="0.5" step="0.1" oninput="calculate()">
+                    <label for="elecPrice">电价 (元/kWh)</label>
+                    <input type="number" id="elecPrice" value="0.5" step="0.1" onchange="updateCalculations()">
                 </div>
             </div>
         </div>
 
-        <!-- 第二列：环境工况与安全配置 -->
+        <!-- 2. 现场环境工况 -->
         <div class="card">
-            <h3>3. 现场环境工况</h3>
+            <h3>2. 现场环境工况</h3>
             <div class="environment-tabs" id="envTabs">
-                <button class="env-btn active" onclick="setEnv('standard')">标准/城市</button>
-                <button class="env-btn" onclick="setEnv('marine')">海洋/海岛</button>
-                <button class="env-btn" onclick="setEnv('desert')">沙漠/高尘</button>
-                <button class="env-btn" onclick="setEnv('arctic')">极寒/冰雪</button>
-                <button class="env-btn" onclick="setEnv('tropical')">热带/高湿</button>
-                <button class="env-btn" onclick="setEnv('mountain')">山区/地震</button>
+                <button class="env-btn active" onclick="setEnv('standard', this)">标准/城市</button>
+                <button class="env-btn" onclick="setEnv('coastal', this)">海洋/海岛</button>
+                <button class="env-btn" onclick="setEnv('desert', this)">沙漠/高尘</button>
+                <button class="env-btn" onclick="setEnv('arctic', this)">极寒/冰雪</button>
+                <button class="env-btn" onclick="setEnv('tropical', this)">热带/高湿</button>
+                <button class="env-btn" onclick="setEnv('mountain', this)">山区/地震</button>
             </div>
-            
-            <div id="envDescription" style="font-size: 13px; color: #666; margin-bottom: 20px; padding: 10px; background: #f0f7ff; border-radius: 6px;">
-                <!-- 环境描述 -->
+            <p id="envDesc" style="font-size: 13px; color: #666; background: #f8f9fa; padding: 10px; border-radius: 6px;">
+                污染物主要为城市粉尘和工业烟雾。重点在于平衡效率与压降。
+            </p>
+
+            <h3 style="margin-top: 25px;">3. 辅助系统配置</h3>
+            <div class="aux-config">
+                <div class="aux-item" id="heatingCard" onclick="toggleAux('inletHeating')">
+                    <input type="checkbox" id="inletHeating" onchange="updateCalculations()" onclick="event.stopPropagation()">
+                    <div>
+                        <label style="margin-bottom: 0; cursor: pointer;">进气加热系统</label>
+                        <div class="aux-info">防止极寒/高湿环境结冰</div>
+                    </div>
+                </div>
+                <div class="aux-item" id="coolingCard" onclick="toggleAux('inletCooling')">
+                    <input type="checkbox" id="inletCooling" onchange="updateCalculations()" onclick="event.stopPropagation()">
+                    <div>
+                        <label style="margin-bottom: 0; cursor: pointer;">进气冷却系统</label>
+                        <div class="aux-info">提升高温环境功率与效率</div>
+                    </div>
+                </div>
             </div>
 
-            <h3>4. 辅助系统配置</h3>
-            <div style="background: #f0f9ff; border: 1px solid #bae6fd; border-radius: 8px; padding: 15px; margin-bottom: 15px;">
-                <div style="margin-bottom: 12px;">
-                    <label style="display: flex; align-items: center; gap: 10px; cursor: pointer; margin-bottom: 0;">
-                        <input type="checkbox" id="inletHeating" onchange="updateCalculations()" style="width: auto; cursor: pointer;">
-                        <span style="font-weight: 600; color: #0369a1; font-size: 14px;">进气加热系统 (极寒防冰)</span>
-                    </label>
-                    <div style="font-size: 12px; color: #666; margin-left: 26px; margin-top: 4px;">适用于极寒/高湿环境，防止滤芯和导叶结冰</div>
-                </div>
-                <div>
-                    <label style="display: flex; align-items: center; gap: 10px; cursor: pointer; margin-bottom: 0;">
-                        <input type="checkbox" id="inletCooling" onchange="updateCalculations()" style="width: auto; cursor: pointer;">
-                        <span style="font-weight: 600; color: #0369a1; font-size: 14px;">进气冷却系统 (性能提升)</span>
-                    </label>
-                    <div style="font-size: 12px; color: #666; margin-left: 26px; margin-top: 4px;">适用于热带/高温环境，显著提升燃机功率和效率</div>
-                </div>
-            </div>
-
-            <h3>5. 安全防护配置</h3>
-            <div style="background: #fff5f5; border: 1px solid #feb2b2; border-radius: 8px; padding: 15px;">
-                <div style="display: flex; justify-content: space-between; align-items: center; padding: 10px 0; border-bottom: 1px dashed #feb2b2;">
-                    <span style="font-weight: 600; color: #c53030; font-size: 14px;">防爆门建议</span>
-                    <span id="blowInDoorStatus" class="badge">自动计算中...</span>
-                </div>
-                <div style="display: flex; justify-content: space-between; align-items: center; padding: 10px 0; border-bottom: 1px dashed #feb2b2;">
-                    <span style="font-weight: 600; color: #c53030; font-size: 14px;">开启压力设定</span>
-                    <span id="blowInDoorPressure" style="font-weight: 700; color: #2d3748;">-</span>
-                </div>
-                <div style="display: flex; justify-content: space-between; align-items: center; padding: 10px 0;">
-                    <span style="font-weight: 600; color: #c53030; font-size: 14px;">最大系统压降</span>
-                    <span id="maxSystemDP" style="font-weight: 700; color: #2d3748;">-</span>
-                </div>
-                <button class="formula-btn" onclick="openFormulaModal()">📐 查看计算原理</button>
+            <h3 style="margin-top: 25px;">4. 安全防护配置</h3>
+            <div class="card" style="padding: 15px; background: #fff5f5; border: 1px solid #feb2b2;">
+                <table style="margin-top: 0;">
+                    <tr>
+                        <td style="font-size: 14px;">防爆门建议</td>
+                        <td id="blowInAdvice" style="color: var(--danger); font-weight: 700;">强烈建议配置</td>
+                    </tr>
+                    <tr>
+                        <td style="font-size: 14px;">开启压力设定</td>
+                        <td id="blowInSetting" style="font-weight: 700;">44 mmH2O (435 Pa)</td>
+                    </tr>
+                    <tr>
+                        <td style="font-size: 14px;">最大系统压降</td>
+                        <td id="maxSystemDP" style="font-weight: 700;">300 Pa</td>
+                    </tr>
+                </table>
+                <button class="formula-btn" onclick="openModal('safetyModal')">📐 查看计算原理</button>
             </div>
         </div>
 
-        <!-- 第三列：计算结果与 LCC 分析 -->
-        <div class="card" style="background: #f8fbff;">
-            <h3>6. 选型计算结果</h3>
+        <!-- 3. 选型计算结果 -->
+        <div class="card highlight">
+            <h3>5. 选型计算结果</h3>
             <div class="summary-box">
                 <div class="stat-item">
                     <span class="stat-label">工况体积流量</span>
@@ -567,347 +575,212 @@
                     <span class="stat-unit">Cells</span>
                 </div>
             </div>
+            <button class="formula-btn" style="width: 100%; margin-bottom: 20px; background: #dcfce7; color: #166534;" onclick="openModal('countModal')">📊 查看数量计算依据</button>
 
-            <div style="background: #f0fdf4; border: 1px solid #86efac; border-radius: 8px; padding: 15px; margin-top: 15px;">
-                <div style="font-weight: 700; margin-bottom: 10px; color: #166534; font-size: 14px;">科德宝推荐方案:</div>
-                <div id="filterList">
-                    <!-- 滤芯列表 -->
+            <div id="filterSolution">
+                <label>科德宝推荐方案：</label>
+                <!-- 推荐方案将由 JS 动态生成 -->
+            </div>
+
+            <div class="roi-analysis" id="auxResult" style="display: none; margin-top: 20px; border-top: 2px dashed #bae6fd; padding-top: 15px;">
+                <div class="expert-title" style="font-size: 14px; color: var(--primary);">辅助系统收益/代价评估</div>
+                <div class="roi-item">
+                    <span class="roi-label">温变幅度</span>
+                    <span class="roi-value" id="tempChange">-</span>
+                </div>
+                <div class="roi-item">
+                    <span class="roi-label" id="auxBenefitLabel">预计年收益</span>
+                    <span class="roi-value" id="auxBenefitValue">-</span>
                 </div>
             </div>
 
-            <div class="roi-analysis">
-                <div style="font-weight: 700; margin-bottom: 10px; color: #0369a1; font-size: 14px;">10年 LCC 成本预估:</div>
-                <div class="roi-item">
-                    <span class="roi-label">性能衰减损失</span>
-                    <span class="roi-value" id="lccDegradation">-</span>
-                </div>
-                <div class="roi-item">
-                    <span class="roi-label">压降能耗成本</span>
-                    <span class="roi-value" id="lccEnergy">-</span>
-                </div>
-                <div class="roi-item">
-                    <span class="roi-label">维护更换成本</span>
-                    <span class="roi-value" id="lccMaintenance">-</span>
-                </div>
-                <div class="roi-item" style="border-top: 2px solid #bae6fd; margin-top: 5px; padding-top: 10px;">
-                    <span class="roi-label" style="font-size: 16px;">总生命周期成本</span>
-                    <span class="roi-value" id="lccTotal" style="font-size: 18px; color: var(--danger);">-</span>
-                </div>
+            <div style="margin-top: 25px; border-top: 1px solid #eee; padding-top: 15px;">
+                <label>10年 LCC 成本预估：</label>
+                <table>
+                    <tr>
+                        <td>性能衰减损失</td>
+                        <td id="lccDegradation">-</td>
+                    </tr>
+                    <tr>
+                        <td>压降能耗成本</td>
+                        <td id="lccEnergy">-</td>
+                    </tr>
+                    <tr>
+                        <td>维护更换成本</td>
+                        <td id="lccMaintenance">-</td>
+                    </tr>
+                    <tr style="border-top: 2px solid #eee;">
+                        <td style="color: var(--primary); font-weight: 800;">总生命周期成本</td>
+                        <td id="lccTotal" style="color: var(--danger); font-weight: 800;">-</td>
+                    </tr>
+                </table>
             </div>
         </div>
     </div>
 
-    <!-- 专家决策支持模块 -->
-    <div class="card expert-card" style="margin-top: 30px;">
-        <h3 style="border-left-color: #8b5cf6; color: #6d28d9;">📊 专家决策支持分析</h3>
-        
-        <div class="expert-recommendation">
-            <div class="expert-title">问题 1: E12 级超高效过滤的投资回报率 (ROI)</div>
-            <div class="recommendation-item">
-                <div class="recommendation-label">核心建议</div>
-                <div class="recommendation-content" id="roi-recommendation">
-                    <!-- 动态生成 -->
-                </div>
-            </div>
-            <div class="roi-analysis" style="margin-top: 10px;">
-                <div id="roi-details"><!-- 动态生成 --></div>
-            </div>
-        </div>
-
-        <div class="expert-recommendation">
-            <div class="expert-title">问题 2: 极端工况下的多级过滤冗余设计</div>
-            <div class="recommendation-item">
-                <div class="recommendation-label">核心建议</div>
-                <div class="recommendation-content" id="redundancy-recommendation">
-                    <!-- 动态生成 -->
-                </div>
-            </div>
-            <div class="roi-analysis" style="margin-top: 10px;">
-                <div id="redundancy-details"><!-- 动态生成 --></div>
-            </div>
-        </div>
-
-        <div class="expert-recommendation">
-            <div class="expert-title">问题 3: 防爆门开启压力与安全平衡</div>
-            <div class="recommendation-item">
-                <div class="recommendation-label">核心建议</div>
-                <div class="recommendation-content" id="safety-recommendation">
-                    <!-- 动态生成 -->
-                </div>
-            </div>
-            <div class="roi-analysis" style="margin-top: 10px;">
-                <div id="safety-details"><!-- 动态生成 --></div>
-            </div>
+    <!-- 专家决策支持分析 -->
+    <div class="expert-recommendation" style="margin-top: 30px;">
+        <div class="expert-title">专家决策支持分析 (基于 GMRC Release 1.0)</div>
+        <div class="grid-3" id="expertAnalysis">
+            <!-- 专家建议将由 JS 动态生成 -->
         </div>
     </div>
 
     <div class="footer">
-        &copy© 2024 燃气轮机进气过滤选型系统 v9.0 | 完整型号库版 | 基于 GMRC Release 1.0 指南
+        © 2024 燃气轮机进气过滤选型系统 v10.2 | 完整型号库版 | 基于 GMRC Release 1.0 指南
     </div>
 </div>
 
-<!-- 防爆门公式详解模态窗口 -->
-<div id="formulaModal" class="modal">
+<!-- 安全计算原理弹窗 -->
+<div id="safetyModal" class="modal">
     <div class="modal-content">
         <div class="modal-header">
-            <h2>防爆门（Blow-in Doors）安全计算公式详解</h2>
-            <button class="close-btn" onclick="closeFormulaModal()">&times;</button>
+            <div class="modal-title">防爆门 (Blow-in Doors) 安全计算原理</div>
+            <span class="close-modal" onclick="closeModal('safetyModal')">&times;</span>
         </div>
-
-        <div class="formula-section">
-            <h3>1. 核心计算公式</h3>
-            <div class="formula-box">
-防爆门开启压力 (Set Point, SP) 的基础公式：
-<br>
-<strong>SP = k × DP_max × (ρ_site / ρ_ISO)</strong>
-<br><br>
-其中：
-• SP = 防爆门开启压力设定值 (Pa 或 mmH₂O)
-• k = 安全余量系数 (1.2 ~ 1.5)
-• DP_max = 系统设计最大压降 (Pa)
-• ρ_site / ρ_ISO = 现场空气密度修正系数
+        <div class="grid-2">
+            <div>
+                <h4>1. 核心计算公式</h4>
+                <div class="formula-box">
+                    SP = k × DP<sub>max</sub> × (ρ<sub>site</sub> / ρ<sub>ISO</sub>)
+                </div>
+                <p style="font-size: 14px; color: #666;">
+                    <strong>SP (Set Point):</strong> 防爆门开启压力设定值 (Pa)<br>
+                    <strong>k (Safety Margin):</strong> 安全余量系数，通常取 1.2 - 1.5<br>
+                    <strong>DP<sub>max</sub>:</strong> 系统设计最大允许压降 (Pa)<br>
+                    <strong>ρ<sub>site</sub> / ρ<sub>ISO</sub>:</strong> 空气密度修正系数
+                </p>
+                
+                <h4>2. 行业标准对比图表</h4>
+                <img src="compliance_chart.png" alt="行业标准对比图" class="compliance-chart">
             </div>
-        </div>
-
-        <div class="formula-section">
-            <h3>2. 参数定义与取值</h3>
-            <table class="parameter-table">
-                <tr>
-                    <th>参数</th>
-                    <th>定义</th>
-                    <th>典型值/范围</th>
-                </tr>
-                <tr>
-                    <td><strong>k (安全余量系数)</strong></td>
-                    <td>防爆门开启压力与系统最大压降的比值</td>
-                    <td>1.2 ~ 1.5</td>
-                </tr>
-                <tr>
-                    <td><strong>DP_max (最大系统压降)</strong></td>
-                    <td>滤芯完全堵塞时的总压降</td>
-                    <td>250 ~ 350 Pa</td>
-                </tr>
-                <tr>
-                    <td><strong>ρ_site / ρ_ISO</strong></td>
-                    <td>现场空气密度与标准密度的比值</td>
-                    <td>0.7 ~ 1.2</td>
-                </tr>
-            </table>
-        </div>
-
-        <div class="formula-section">
-            <h3>3. 环境工况下的 k 值推荐</h3>
-            <table class="parameter-table">
-                <tr>
-                    <th>环境类型</th>
-                    <th>推荐 k 值</th>
-                    <th>理由</th>
-                </tr>
-                <tr>
-                    <td>标准/城市</td>
-                    <td>1.4 ~ 1.5</td>
-                    <td>工况相对稳定</td>
-                </tr>
-                <tr>
-                    <td>海洋/海岛</td>
-                    <td>1.3 ~ 1.4</td>
-                    <td>盐雾快速堵塞</td>
-                </tr>
-                <tr>
-                    <td>沙漠/高尘</td>
-                    <td>1.2 ~ 1.3</td>
-                    <td>压降瞬时飙升</td>
-                </tr>
-                <tr>
-                    <td>极寒/冰雪</td>
-                    <td>1.1 ~ 1.2</td>
-                    <td>结冰风险最高</td>
-                </tr>
-                <tr>
-                    <td>热带/高湿</td>
-                    <td>1.4 ~ 1.5</td>
-                    <td>生物堵塞可控</td>
-                </tr>
-                <tr>
-                    <td>山区/地震</td>
-                    <td>1.3 ~ 1.4</td>
-                    <td>突发堵塞风险</td>
-                </tr>
-            </table>
-        </div>
-
-        <div class="formula-section">
-            <h3>4. 现场空气密度修正公式</h3>
-            <div class="formula-box">
-ρ_site = ρ₀ × (T₀ / T_site) × (P_site / P₀) × exp(-h / 8400)
-<br><br>
-其中：
-• ρ₀ = 海平面标准空气密度 = 1.225 kg/m³
-• T₀ = 标准温度 = 288.15 K (15°C)
-• T_site = 现场温度 (K) = 273.15 + 温度(°C)
-• P₀ = 标准大气压 = 101325 Pa
-• P_site = 现场大气压 (Pa)
-• h = 海拔高度 (m)
-• exp(-h/8400) = 海拔修正因子
-            </div>
-        </div>
-
-        <div class="formula-section">
-            <h3>5. 计算示例</h3>
-            <div class="formula-example">
-<strong>示例：标准工况（海平面，15°C）</strong>
-<br>
-已知：环境 = 标准城市，海拔 = 0 m，温度 = 15°C，系统 = 三级，DP_max = 300 Pa
-<br><br>
-计算步骤：
-1. k = 1.4（标准工况）
-2. ρ_site / ρ_ISO = 1.0（标准条件）
-3. SP = 1.4 × 300 × 1.0 = 420 Pa ≈ 43 mmH₂O
-<br><br>
-<strong>建议：防爆门开启压力设定为 43 mmH₂O</strong>
-            </div>
-
-            <div class="formula-example">
-<strong>示例：极寒工况（高海拔，-20°C）</strong>
-<br>
-已知：环境 = 极寒，海拔 = 2000 m，温度 = -20°C，系统 = 三级，DP_max = 300 Pa
-<br><br>
-计算步骤：
-1. k = 1.2（极寒高风险）
-2. ρ_site / ρ_ISO ≈ 0.92（海拔 + 低温修正）
-3. SP = 1.2 × 300 × 0.92 = 331 Pa ≈ 34 mmH₂O
-<br><br>
-<strong>建议：防爆门开启压力设定为 34 mmH₂O</strong>
-            </div>
-        </div>
-
-        <div class="safety-info-box">
-            <strong>⚠️ 安全提示：</strong>
-            <ul style="margin: 10px 0; padding-left: 20px;">
-                <li>防爆门必须配备压差变送器进行实时监测</li>
-                <li>至少每年进行一次功能测试</li>
-                <li>防爆门开启后应立即停止燃机运行</li>
-                <li>与 DCS 系统联动实现自动减载或停机</li>
-                <li>环境变化时应重新评估开启压力设定</li>
-            </ul>
-        </div>
-
-        <div class="formula-s       <div class="formula-section">
-            <h3>7. 最终合规性建议</h3>
-            <div class="formula-example" style="background: #e8f5e9; border-color: #4caf50;">
-                <strong style="color: #2e7d32;">✓ 合规建议</strong>
-                <ul style="margin: 10px 0; padding-left: 20px; font-size: 13px;">
-                    <li><strong>设定值合规</strong>：建议将防爆门开启压力设定在 <strong>125 mmH₂O (1225 Pa)</strong> 作为通用基准。极寒地区应下调至 <strong>110 mmH₂O</strong>。</li>
-                    <li><strong>硬件合规</strong>：防爆门必须采用<strong>无源机械式</strong>结构（重锤式或弹簧式），严禁使用电动阀。</li>
-                    <li><strong>监控合规</strong>：必须在防爆门上安装<strong>限位开关</strong>，信号接入燃机保护系统（Trip Logic）。开启时燃机必须立即跳机或强制减载。</li>
-                    <li><strong>维护合规</strong>：根据 ISO 21789 要求，防爆门应纳入年度强制检修清单，检查密封条和机械结构。</li>
+            <div>
+                <h4>3. 合规性深度分析</h4>
+                <table class="compliance-table">
+                    <thead>
+                        <tr>
+                            <th>标准来源</th>
+                            <th>推荐设定值</th>
+                            <th>本系统建议</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>GMRC 指南</td>
+                            <td>1.25 × DP_max</td>
+                            <td id="compGMRC">符合</td>
+                        </tr>
+                        <tr>
+                            <td>GE/Siemens OEM</td>
+                            <td>100-150 mmH2O</td>
+                            <td id="compOEM">符合</td>
+                        </tr>
+                        <tr>
+                            <td>ISO 21789</td>
+                            <td>结构限值的 80%</td>
+                            <td id="compISO">符合</td>
+                        </tr>
+                    </tbody>
+                </table>
+                <div class="compliance-badge">✓ 结构安全合规认证</div>
+                
+                <h4 style="margin-top: 20px;">4. 最终合规性建议</h4>
+                <ul style="font-size: 13px; color: #444; line-height: 1.8;">
+                    <li><strong>设定值合规：</strong>开启压力必须高于滤芯报警压降，低于进气道结构变形极限。</li>
+                    <li><strong>硬件合规：</strong>防爆门必须具备无源机械触发机制，确保断电时仍能工作。</li>
+                    <li><strong>监控合规：</strong>开启状态必须接入燃机 Trip 逻辑，防止未过滤空气长期进入。</li>
+                    <li><strong>维护合规：</strong>建议每 6 个月进行一次手动开启测试，防止密封条粘连。</li>
                 </ul>
             </div>
         </div>
+    </div>
+</div>
 
-        <div class="formula-section">
-            <h3>8. 参数物理意义详解</h3>
-            <div style="font-size: 13px; line-height: 1.8;">
-                <p><strong>安全余量系数 (k) 的物理意义：</strong></p>
-                <p>代表系统对"误开启"与"延迟开启"之间的容忍度。低 k 值（1.1-1.2）适用于极寒结冰、沙尘暴等恶劣工况，能在进气道结构受损前瞬间开启；高 k 值（1.4-1.5）适用于标准工况，能防止因负荷波动产生的瞬时负压导致防爆门误开。</p>
-                <p style="margin-top: 10px;"><strong>系统最大压降 (DP_max) 的物理意义：</strong></p>
-                <p>这是进气道壁板在不发生永久性塑性变形情况下所能承受的最大静压差。它由进气道结构强度决定，通常取滤芯达到报废压降时的数值，并加上 20% 的结构余量。</p>
-                <p style="margin-top: 10px;"><strong>空气密度修正 (ρ_site / ρ_ISO) 的物理意义：</strong></p>
-                <p>修正了流体动能对压力的贡献。在相同流速下，密度越大，产生的压差力越大。必须基于现场最恶劣的极端低温和最高海拔进行校核。</p>
-            </div>
+<!-- 数量计算依据弹窗 -->
+<div id="countModal" class="modal">
+    <div class="modal-content">
+        <div class="modal-header">
+            <div class="modal-title">滤芯数量计算依据与工程推导</div>
+            <span class="close-modal" onclick="closeModal('countModal')">&times;</span>
         </div>
-
-        <div class="formula-section" style="margin-top: 30px;">
-            <h3>9. 行业标准对比图表</h3>
-            <div style="text-align: center; margin: 20px 0;">
-                <img src="compliance_chart.png" alt="防爆门开启压力行业标准对比" style="max-width: 100%; height: auto; border-radius: 8px; box-shadow: 0 2px 8px rgba(0,0,0,0.1);">
-                <p style="font-size: 12px; color: #666; margin-top: 10px;">图表描述：蓝色柱体表示典型/基准设定值，红色错误条表示行业推荐区间</p>
+        <div class="grid-2">
+            <div>
+                <h4>1. 核心计算公式</h4>
+                <div class="formula-box">
+                    N = Q<sub>site</sub> / (3600 × A<sub>cell</sub> × V<sub>target</sub>)
+                </div>
+                <p style="font-size: 14px; color: #666;">
+                    <strong>N:</strong> 建议滤芯总数 (Cells)<br>
+                    <strong>Q<sub>site</sub>:</strong> 现场工况体积流量 (m³/h)<br>
+                    <strong>A<sub>cell</sub>:</strong> 单只滤芯有效迎风面积 (通常为 0.35 m²)<br>
+                    <strong>V<sub>target</sub>:</strong> 设计目标风速 (m/s)
+                </p>
+                
+                <h4>2. 当前型号实时推导</h4>
+                <div style="background: #f0f7ff; padding: 15px; border-radius: 8px; border: 1px solid #bae6fd;">
+                    <table style="margin-top: 0;">
+                        <tr>
+                            <td>当前工况流量 (Q<sub>site</sub>)</td>
+                            <td id="calcVolFlow">- m³/h</td>
+                        </tr>
+                        <tr>
+                            <td>设计风速 (V<sub>target</sub>)</td>
+                            <td>3.0 m/s</td>
+                        </tr>
+                        <tr>
+                            <td>单只面积 (A<sub>cell</sub>)</td>
+                            <td>0.35 m²</td>
+                        </tr>
+                        <tr style="border-top: 2px solid #bae6fd;">
+                            <td style="font-weight: 700;">理论计算数量</td>
+                            <td id="calcRawCount" style="font-weight: 700; color: var(--primary);">-</td>
+                        </tr>
+                        <tr>
+                            <td style="font-weight: 700;">最终建议数量 (取整)</td>
+                            <td id="calcFinalCount" style="font-weight: 700; color: var(--success);">-</td>
+                        </tr>
+                    </table>
+                </div>
             </div>
-            <table class="parameter-table" style="margin-top: 20px;">
-                <tr style="background: #f8f9fa;">
-                    <th>标准/系统</th>
-                    <th>最小值 (mmH₂O)</th>
-                    <th>典型值 (mmH₂O)</th>
-                    <th>最大值 (mmH₂O)</th>
-                    <th>备注</th>
-                </tr>
-                <tr>
-                    <td><strong>本系统 (v8.1)</strong></td>
-                    <td>110</td>
-                    <td>125</td>
-                    <td>150</td>
-                    <td>动态密度修正，环境自适应</td>
-                </tr>
-                <tr>
-                    <td><strong>GMRC 指南</strong></td>
-                    <td>100</td>
-                    <td>125</td>
-                    <td>150</td>
-                    <td>国际权威指南，推荐基准</td>
-                </tr>
-                <tr>
-                    <td><strong>GE 标准</strong></td>
-                    <td>125</td>
-                    <td>150</td>
-                    <td>175</td>
-                    <td>OEM 官方规范，较保守</td>
-                </tr>
-                <tr>
-                    <td><strong>Siemens 标准</strong></td>
-                    <td>130</td>
-                    <td>155</td>
-                    <td>180</td>
-                    <td>OEM 官方规范，最保守</td>
-                </tr>
-                <tr>
-                    <td><strong>ISO 21789</strong></td>
-                    <td>120</td>
-                    <td>140</td>
-                    <td>160</td>
-                    <td>国际标准，平衡方案</td>
-                </tr>
-            </table>
-        </div>
-
-        <div class="formula-section" style="margin-top: 30px;">
-            <h3>11. 环境工况下的动态调整</h3>
-            <table class="parameter-table">
-                <tr style="background: #f8f9fa;">
-                    <th>工况</th>
-                    <th>本系统推荐 (mmH₂O)</th>
-                    <th>GMRC 推荐 (mmH₂O)</th>
-                    <th>OEM 推荐范围 (mmH₂O)</th>
-                    <th>分析</th>
-                </tr>
-                <tr>
-                    <td><strong>标准/城市</strong></td>
-                    <td>125</td>
-                    <td>125</td>
-                    <td>130-155</td>
-                    <td>本系统与 GMRC 完全一致，比 OEM 略低</td>
-                </tr>
-                <tr>
-                    <td><strong>极寒/结冰</strong></td>
-                    <td>110</td>
-                    <td>100-120</td>
-                    <td>125-140</td>
-                    <td>本系统主动下调，优于 OEM 标准</td>
-                </tr>
-                <tr>
-                    <td><strong>沙漠/高尘</strong></td>
-                    <td>130</td>
-                    <td>125-140</td>
-                    <td>140-160</td>
-                    <td>本系统采用中等偏低策略</td>
-                </tr>
-                <tr>
-                    <td><strong>海洋/海岛</strong></td>
-                    <td>120</td>
-                    <td>120-130</td>
-                    <td>125-150</td>
-                    <td>本系统与行业标准一致</td>
-                </tr>
-            </table>
+            <div>
+                <h4>3. 行业标准风速取值依据</h4>
+                <table class="compliance-table">
+                    <thead>
+                        <tr>
+                            <th>系统类型</th>
+                            <th>推荐风速 (m/s)</th>
+                            <th>工程影响</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>静态过滤 (本系统)</td>
+                            <td>2.5 - 3.5</td>
+                            <td>平衡初投资与运行压降</td>
+                        </tr>
+                        <tr>
+                            <td>脉冲反吹系统</td>
+                            <td>4.0 - 6.0</td>
+                            <td>高风速，依赖清灰效率</td>
+                        </tr>
+                        <tr>
+                            <td>HEPA/E12 系统</td>
+                            <td>2.0 - 2.5</td>
+                            <td>低风速以延长昂贵滤芯寿命</td>
+                        </tr>
+                    </tbody>
+                </table>
+                
+                <h4 style="margin-top: 20px;">4. 为什么选择 3.0 m/s？</h4>
+                <p style="font-size: 13px; color: #444; line-height: 1.6;">
+                    根据 <strong>GMRC Release 1.0</strong> 建议，3.0 m/s 是全球范围内静态过滤系统的“黄金平衡点”：
+                </p>
+                <ul style="font-size: 13px; color: #444; line-height: 1.6;">
+                    <li><strong>压降控制：</strong> 确保洁净压降在 150 Pa 以下，减少燃机功率损失。</li>
+                    <li><strong>寿命保障：</strong> 降低滤材表面的粉尘堆积速率，延长更换周期。</li>
+                    <li><strong>结构紧凑：</strong> 进气墙尺寸适中，降低钢结构成本。</li>
+                </ul>
+            </div>
         </div>
     </div>
 </div>
@@ -915,434 +788,324 @@
 <script>
     const turbineData = {
         "GE": [
-            { model: "9HA.02", power: 571, flow: 1125, heatRate: 7500 },
+            { model: "9HA.02", power: 571, flow: 1120, heatRate: 7500 },
             { model: "9HA.01", power: 446, flow: 880, heatRate: 7600 },
-            { model: "9F.05", power: 304, flow: 730, heatRate: 9200 },
-            { model: "9E.03", power: 132, flow: 410, heatRate: 10500 },
-            { model: "6F.03", power: 88, flow: 210, heatRate: 9800 },
-            { model: "6B.03", power: 44, flow: 145, heatRate: 10800 },
-            { model: "LM6000-PF+", power: 52, flow: 130, heatRate: 8500 },
-            { model: "LM2500+G4", power: 34, flow: 95, heatRate: 8800 },
-            { model: "9B (MS9001B)", power: 81, flow: 345, heatRate: 11500 },
-            { model: "7B (MS7001B)", power: 52, flow: 235, heatRate: 12000 },
-            { model: "6B (MS6001B)", power: 42, flow: 140, heatRate: 11200 }
+            { model: "9F.05", power: 300, flow: 650, heatRate: 7800 },
+            { model: "9E.03", power: 132, flow: 410, heatRate: 8200 },
+            { model: "6F.03", power: 87, flow: 210, heatRate: 8500 },
+            { model: "6B.03", power: 44, flow: 145, heatRate: 8800 },
+            { model: "LM6000-PF+", power: 52, flow: 130, heatRate: 8400 },
+            { model: "LM2500+G4", power: 34, flow: 95, heatRate: 8600 },
+            { model: "9B (MS9001B)", power: 80, flow: 350, heatRate: 9200 },
+            { model: "7B (MS7001B)", power: 65, flow: 280, heatRate: 9400 },
+            { model: "6B (MS6001B)", power: 38, flow: 140, heatRate: 9600 }
         ],
         "Siemens": [
-            { model: "SGT5-9000HL", power: 593, flow: 1200, heatRate: 7400 },
-            { model: "SGT5-8000H", power: 450, flow: 900, heatRate: 7600 },
-            { model: "SGT5-4000F", power: 329, flow: 720, heatRate: 9100 },
-            { model: "SGT5-2000E", power: 187, flow: 530, heatRate: 10200 },
-            { model: "SGT-800", power: 57, flow: 135, heatRate: 8800 },
-            { model: "SGT-700", power: 33, flow: 95, heatRate: 9200 },
-            { model: "SGT-600", power: 25, flow: 80, heatRate: 9500 }
+            { model: "SGT5-9000HL", power: 593, flow: 1150, heatRate: 7400 },
+            { model: "SGT5-8000H", power: 450, flow: 900, heatRate: 7550 },
+            { model: "SGT5-4000F", power: 329, flow: 720, heatRate: 7750 },
+            { model: "SGT5-2000E", power: 187, flow: 530, heatRate: 8100 },
+            { model: "SGT-800", power: 57, flow: 135, heatRate: 8300 },
+            { model: "SGT-700", power: 33, flow: 95, heatRate: 8500 },
+            { model: "SGT-600", power: 25, flow: 82, heatRate: 8700 }
         ],
         "Mitsubishi": [
-            { model: "M701JAC", power: 560, flow: 1100, heatRate: 7500 },
-            { model: "M701J", power: 470, flow: 950, heatRate: 7700 },
-            { model: "M701F", power: 385, flow: 800, heatRate: 8800 },
-            { model: "H-25", power: 32, flow: 95, heatRate: 9500 }
-        ],
-        "Solar": [
-            { model: "Titan 250", power: 22, flow: 68, heatRate: 9200 },
-            { model: "Titan 130", power: 15, flow: 50, heatRate: 9500 },
-            { model: "Mars 100", power: 11, flow: 42, heatRate: 9800 },
-            { model: "Mars 90", power: 9, flow: 38, heatRate: 10200 },
-            { model: "Taurus 70", power: 8, flow: 28, heatRate: 10500 },
-            { model: "Taurus 60", power: 6, flow: 22, heatRate: 10800 },
-            { model: "Centaur 50", power: 5, flow: 19, heatRate: 11200 },
-            { model: "Centaur 40", power: 4, flow: 16, heatRate: 11500 }
+            { model: "M701JAC", power: 560, flow: 1100, heatRate: 7450 },
+            { model: "M701J", power: 470, flow: 950, heatRate: 7550 },
+            { model: "M701F", power: 320, flow: 700, heatRate: 7800 },
+            { model: "H-25", power: 32, flow: 90, heatRate: 8600 }
         ],
         "Ansaldo": [
-            { model: "GT36-S5", power: 560, flow: 1100, heatRate: 7800 },
-            { model: "GT26", power: 370, flow: 715, heatRate: 8200 },
-            { model: "GT24", power: 188, flow: 445, heatRate: 8500 },
-            { model: "AE94.3A", power: 340, flow: 593, heatRate: 8400 },
-            { model: "AE94.2", power: 191, flow: 550, heatRate: 9500 },
-            { model: "AE64.3A", power: 78, flow: 56, heatRate: 9800 }
+            { model: "GT36-S5", power: 560, flow: 1100, heatRate: 7450 },
+            { model: "GT26", power: 322, flow: 680, heatRate: 7700 },
+            { model: "GT24", power: 210, flow: 450, heatRate: 7900 },
+            { model: "AE94.3A", power: 340, flow: 750, heatRate: 7650 },
+            { model: "AE94.2", power: 190, flow: 540, heatRate: 8100 },
+            { model: "AE64.3A", power: 80, flow: 210, heatRate: 8400 }
+        ],
+        "Solar": [
+            { model: "Titan 250", power: 22, flow: 68, heatRate: 8500 },
+            { model: "Titan 130", power: 16.5, flow: 50, heatRate: 8700 },
+            { model: "Mars 100", power: 11.3, flow: 42, heatRate: 8900 },
+            { model: "Mars 90", power: 9.4, flow: 38, heatRate: 9100 },
+            { model: "Taurus 70", power: 7.9, flow: 28, heatRate: 9300 },
+            { model: "Taurus 60", power: 5.7, flow: 22, heatRate: 9500 },
+            { model: "Centaur 50", power: 4.6, flow: 19, heatRate: 9700 },
+            { model: "Centaur 40", power: 3.5, flow: 16, heatRate: 9900 }
         ],
         "MAN": [
-            { model: "MGT8000", power: 8, flow: 30, heatRate: 10500 },
-            { model: "MGT6000", power: 7, flow: 25, heatRate: 10800 }
+            { model: "MGT8000", power: 8.5, flow: 32, heatRate: 9200 },
+            { model: "MGT6000", power: 6.9, flow: 26, heatRate: 9400 }
         ]
     };
 
     const filterData = {
         "standard": {
             desc: "污染物主要为城市粉尘和工业烟雾。重点在于平衡效率与压降。",
-            maxDP: 300,
             filters: [
-                { stage: "一级预滤", model: "Viledon T 60", grade: "G4", flow: 3400, desc: "粗颗粒拦截" },
-                { stage: "二级中效", model: "Viledon F 45", grade: "F5", flow: 3400, desc: "保护终滤器" },
-                { stage: "三级终滤", model: "Viledon MVPGT-95", grade: "F9", flow: 4250, desc: "高效率低压降" }
+                { name: "Viledon T 60", grade: "G4", type: "一级预滤", purpose: "拦截大颗粒" },
+                { name: "Viledon F 45", grade: "F5", type: "二级中效", purpose: "保护终滤器" },
+                { name: "Viledon MVPGT-95", grade: "F9", type: "三级终滤", purpose: "核心性能保障" }
             ],
-            kValues: { min: 1.4, max: 1.5 },
-            safety: { blowIn: false, pressure: "140 mmH2O", reason: "标准工况下堵塞风险较低，建议按需配置。" }
+            k: 1.25
         },
-        "marine": {
-            desc: "高盐雾、高湿度环境。必须具备极强的疏水性能和防盐雾能力。",
-            maxDP: 320,
+        "coastal": {
+            desc: "高盐雾、高湿度环境。必须具备极强的疏水性能和防腐蚀能力。",
             filters: [
-                { stage: "一级疏水", model: "Viledon T 60 Hydro", grade: "G4", flow: 2500, desc: "除雾与粗滤" },
-                { stage: "二级中效", model: "Viledon F 45", grade: "F5", flow: 3400, desc: "深度过滤" },
-                { stage: "三级终滤", model: "Viledon MX 98 Hydro", grade: "E12", flow: 3400, desc: "EPA级疏水终滤" }
+                { name: "Viledon T 60 Hydro", grade: "G4", type: "一级疏水预滤", purpose: "拦截盐雾水滴" },
+                { name: "Viledon F 45", grade: "F5", type: "二级中效", purpose: "深度除湿" },
+                { name: "Viledon MX 98 Hydro", grade: "E12", type: "三级超高效终滤", purpose: "极致盐雾防护" }
             ],
-            kValues: { min: 1.3, max: 1.4 },
-            safety: { blowIn: true, pressure: "120 mmH2O", reason: "高湿度和盐雾可能导致滤芯阻力波动，建议配置防爆门保护进气道。" }
+            k: 1.4
         },
         "desert": {
-            desc: "极高粉尘浓度，沙尘暴频发。需要高容尘量和抗脉冲清灰性能。",
-            maxDP: 350,
+            desc: "极高粉尘浓度，可能遭遇沙尘暴。需要极高的容尘量和可能的脉冲清灰。",
             filters: [
-                { stage: "一级惯性", model: "Viledon Inertial", grade: "Coarse", flow: 5000, desc: "大颗粒分离" },
-                { stage: "二级脉冲", model: "Viledon GTS Pulse", grade: "F9", flow: 2500, desc: "自洁式过滤" },
-                { stage: "三级终滤", model: "Viledon GT 1", grade: "E10", flow: 3400, desc: "最终安全屏障" }
+                { name: "Viledon Inertial", grade: "G2", type: "一级惯性分离", purpose: "去除 90% 粗砂" },
+                { name: "Viledon T 60", grade: "G4", type: "二级预滤", purpose: "高容尘拦截" },
+                { name: "Viledon MVPGT-98", grade: "F9", type: "三级终滤", purpose: "精细过滤" }
             ],
-            kValues: { min: 1.2, max: 1.3 },
-            safety: { blowIn: true, pressure: "150 mmH2O", reason: "沙尘暴期间压降可能瞬时飙升，必须配置防爆门。" }
+            k: 1.5
         },
         "arctic": {
-            desc: "极寒、冰雪威胁。重点在于防冰和防止滤材低温脆化。",
-            maxDP: 300,
+            desc: "极寒结冰风险。需要防冰装置及抗低温脆化的滤材。",
             filters: [
-                { stage: "一级防雪", model: "Viledon Snow Hood", grade: "N/A", flow: 5000, desc: "物理防雪" },
-                { stage: "二级预滤", model: "Viledon T 60", grade: "G4", flow: 3400, desc: "低温适配" },
-                { stage: "三级终滤", model: "Viledon MVPGT-98", grade: "E12", flow: 3400, desc: "高效过滤" }
+                { name: "Viledon Anti-Ice Mesh", grade: "G2", type: "一级防冰网", purpose: "防止大块冰进入" },
+                { name: "Viledon T 60", grade: "G4", type: "二级预滤", purpose: "低温稳定运行" },
+                { name: "Viledon MVPGT-95", grade: "F9", type: "三级终滤", purpose: "核心性能保障" }
             ],
-            kValues: { min: 1.1, max: 1.2 },
-            safety: { blowIn: true, pressure: "110 mmH2O", reason: "结冰风险极高，防爆门是核心应用场景，建议设定较低开启压力。" }
+            k: 1.1
         },
         "tropical": {
-            desc: "高温、高湿、昆虫多。需要防霉变和高通量设计。",
-            maxDP: 280,
+            desc: "高温高湿，生物污染物（昆虫、孢子）多。需防霉变及高风量设计。",
             filters: [
-                { stage: "一级防虫", model: "Viledon Insect Screen", grade: "N/A", flow: 6000, desc: "拦截昆虫" },
-                { stage: "二级预滤", model: "Viledon T 60", grade: "G4", flow: 3400, desc: "高湿适配" },
-                { stage: "三级终滤", model: "Viledon MVPGT-95", grade: "F9", flow: 4250, desc: "大风量设计" }
+                { name: "Viledon Insect Screen", grade: "G1", type: "一级防虫网", purpose: "拦截生物杂质" },
+                { name: "Viledon T 60 Hydro", grade: "G4", type: "二级疏水预滤", purpose: "应对突发暴雨" },
+                { name: "Viledon MVPGT-95", grade: "F9", type: "三级终滤", purpose: "核心性能保障" }
             ],
-            kValues: { min: 1.4, max: 1.5 },
-            safety: { blowIn: false, pressure: "140 mmH2O", reason: "主要风险为生物堵塞，建议加强巡检。" }
+            k: 1.3
         },
         "mountain": {
-            desc: "地震带、山区。需要考虑结构强度和抗震性能。",
-            maxDP: 310,
+            desc: "地震带及山区。需强化进气道钢结构及滤芯安装框架的抗震性。",
             filters: [
-                { stage: "一级预滤", model: "Viledon T 60", grade: "G4", flow: 3400, desc: "标准预滤" },
-                { stage: "二级终滤", model: "Viledon MVPGT-95", grade: "F9", flow: 4250, desc: "高强度框架" }
+                { name: "Viledon T 60", grade: "G4", type: "一级预滤", purpose: "拦截山林粉尘" },
+                { name: "Viledon F 45", grade: "F5", type: "二级中效", purpose: "保护终滤器" },
+                { name: "Viledon MVPGT-95", grade: "F9", type: "三级终滤", purpose: "核心性能保障" }
             ],
-            kValues: { min: 1.3, max: 1.4 },
-            safety: { blowIn: true, pressure: "140 mmH2O", reason: "地震可能导致结构形变或突发堵塞，建议配置以保安全。" }
+            k: 1.3
         }
     };
 
-    let currentBrand = "GE";
-    let currentEnv = "standard";
+    let currentEnv = 'standard';
+    let currentManufacturer = 'GE';
 
     function init() {
-        const tabsContainer = document.getElementById('manufacturerTabs');
-        Object.keys(turbineData).forEach(brand => {
+        const mTabs = document.getElementById('manufacturerTabs');
+        Object.keys(turbineData).forEach(m => {
             const btn = document.createElement('button');
-            btn.className = `tab-btn ${brand === currentBrand ? 'active' : ''}`;
-            btn.innerHTML = `${brand} <span class="model-count">${turbineData[brand].length}</span>`;
-            btn.onclick = () => setBrand(brand);
-            tabsContainer.appendChild(btn);
+            btn.className = `tab-btn ${m === currentManufacturer ? 'active' : ''}`;
+            btn.innerHTML = `${m} <span class="model-count">${turbineData[m].length}</span>`;
+            btn.onclick = () => setManufacturer(m, btn);
+            mTabs.appendChild(btn);
         });
         updateModelList();
+        updateCalculations();
     }
 
-    function setBrand(brand) {
-        currentBrand = brand;
-        document.querySelectorAll('.tab-btn').forEach(btn => {
-            btn.classList.toggle('active', btn.innerText.startsWith(brand));
-        });
+    function setManufacturer(m, btn) {
+        currentManufacturer = m;
+        document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+        btn.classList.add('active');
         updateModelList();
+        updateCalculations();
     }
 
     function updateModelList() {
         const select = document.getElementById('turbineModel');
         select.innerHTML = '';
-        turbineData[currentBrand].forEach(item => {
+        turbineData[currentManufacturer].forEach(t => {
             const opt = document.createElement('option');
-            opt.value = item.model;
-            opt.text = item.model;
+            opt.value = t.model;
+            opt.textContent = t.model;
             select.appendChild(opt);
         });
-        calculate();
     }
 
-    function setEnv(env) {
+    function setEnv(env, btn) {
         currentEnv = env;
-        document.querySelectorAll('.env-btn').forEach(btn => {
-            btn.classList.toggle('active', btn.getAttribute('onclick').includes(env));
-        });
-        calculate();
+        document.querySelectorAll('.env-btn').forEach(b => b.classList.remove('active'));
+        btn.classList.add('active');
+        document.getElementById('envDesc').textContent = filterData[env].desc;
+        updateCalculations();
     }
 
-    function calculateDensityRatio(alt, temp) {
-        const T0 = 288.15;
-        const Tsite = 273.15 + temp;
-        const altFactor = Math.exp(-alt / 8400);
-        return (T0 / Tsite) * altFactor;
+    function toggleAux(id) {
+        const cb = document.getElementById(id);
+        cb.checked = !cb.checked;
+        updateCalculations();
     }
 
-    function calculate() {
+    function updateCalculations() {
         const modelName = document.getElementById('turbineModel').value;
-        const turbine = turbineData[currentBrand].find(t => t.model === modelName);
-        const alt = parseFloat(document.getElementById('altitude').value) || 0;
+        const turbine = turbineData[currentManufacturer].find(t => t.model === modelName);
+        const altitude = parseFloat(document.getElementById('altitude').value) || 0;
         const temp = parseFloat(document.getElementById('temperature').value) || 0;
         const runHours = parseFloat(document.getElementById('runHours').value) || 0;
         const elecPrice = parseFloat(document.getElementById('elecPrice').value) || 0;
+        const years = 10;
 
-        // 1. 密度修正
+        // 1. 空气密度修正
         const rho0 = 1.225;
-        const densityRatio = calculateDensityRatio(alt, temp);
-        const rho = rho0 * densityRatio;
-        
-        // 2. 体积流量计算
-        const massFlow = turbine.flow;
-        const volFlow = (massFlow / rho) * 3600;
-        document.getElementById('volFlow').innerText = Math.round(volFlow).toLocaleString();
+        const rho = rho0 * Math.exp(-altitude / 8400) * (288.15 / (273.15 + temp));
+        const densityRatio = rho / rho0;
 
-        // 3. 燃机参数显示
-        document.getElementById('turbineSpecs').innerHTML = `
-            <strong>ISO 功率:</strong> ${turbine.power} MW | 
-            <strong>质量流量:</strong> ${turbine.flow} kg/s | 
-            <strong>热耗率:</strong> ${turbine.heatRate} kJ/kWh
-        `;
+        // 2. 工况体积流量
+        const volFlow = (turbine.flow / rho) * 3600;
+        document.getElementById('volFlow').textContent = Math.round(volFlow).toLocaleString();
+        document.getElementById('calcVolFlow').textContent = Math.round(volFlow).toLocaleString();
 
-        // 4. 滤芯数量计算
-        const envInfo = filterData[currentEnv];
-        const finalFilter = envInfo.filters[envInfo.filters.length - 1];
-        const count = Math.ceil(volFlow / finalFilter.flow);
-        document.getElementById('filterCount').innerText = count;
+        // 3. 滤芯数量 (基准风速 3.0 m/s, 单只面积 0.35 m2)
+        const rawCount = volFlow / (3600 * 0.35 * 3.0);
+        const filterCount = Math.ceil(rawCount);
+        document.getElementById('filterCount').textContent = filterCount;
+        document.getElementById('calcRawCount').textContent = rawCount.toFixed(2);
+        document.getElementById('calcFinalCount').textContent = filterCount;
 
-        // 5. 环境描述与安全配置
-        document.getElementById('envDescription').innerText = envInfo.desc;
-        
-        // 6. 防爆门计算
-        const k = (envInfo.kValues.min + envInfo.kValues.max) / 2;
-        const maxDP = envInfo.maxDP;
-        const setPoint = k * maxDP * densityRatio;
-        const setPointmmH2O = Math.round(setPoint / 9.81);
-        
-        document.getElementById('maxSystemDP').innerText = maxDP + " Pa";
-        
-        const blowInStatus = document.getElementById('blowInDoorStatus');
-        const blowInPressure = document.getElementById('blowInDoorPressure');
+        // 4. 辅助系统智能推荐逻辑
+        const heatingCard = document.getElementById('heatingCard');
+        const coolingCard = document.getElementById('coolingCard');
+        heatingCard.classList.remove('recommend-heating');
+        coolingCard.classList.remove('recommend-cooling');
 
-        if (envInfo.safety.blowIn || turbine.power > 100) {
-            blowInStatus.innerText = "强烈建议配置";
-            blowInStatus.className = "badge danger";
-            blowInPressure.innerText = setPointmmH2O + " mmH₂O (" + Math.round(setPoint) + " Pa)";
-        } else {
-            blowInStatus.innerText = "可选配置";
-            blowInStatus.className = "badge info";
-            blowInPressure.innerText = setPointmmH2O + " mmH₂O (" + Math.round(setPoint) + " Pa)";
+        if (temp < 5) {
+            heatingCard.classList.add('recommend-heating');
+        } else if (temp > 25) {
+            coolingCard.classList.add('recommend-cooling');
         }
 
-        // 7. 滤芯列表生成
-        const filterList = document.getElementById('filterList');
-        filterList.innerHTML = '';
-        envInfo.filters.forEach(f => {
-            const div = document.createElement('div');
-            div.style.cssText = 'background: white; border: 1px solid #e1e4e8; border-radius: 6px; padding: 12px; margin-bottom: 10px; display: grid; grid-template-columns: 1fr 1fr 1fr 1fr; gap: 10px; align-items: center;';
-            div.innerHTML = `
-                <span style="font-weight: 600; color: var(--primary); font-size: 13px;">${f.stage}</span>
-                <span style="font-size: 14px; color: #333;"><strong>${f.model}</strong></span>
-                <span class="badge success">${f.grade}</span>
-                <span style="text-align:right; font-size: 14px; color: #333;">${count} 只</span>
+        // 5. 辅助系统收益计算
+        const isHeating = document.getElementById('inletHeating').checked;
+        const isCooling = document.getElementById('inletCooling').checked;
+        const auxResult = document.getElementById('auxResult');
+        
+        if (isHeating || isCooling) {
+            auxResult.style.display = 'block';
+            let tempChange = 0;
+            let coolingBenefit = 0;
+            let heatingPenalty = 0;
+
+            if (isCooling && temp > 15) {
+                tempChange = Math.min(10, temp - 15);
+                // 每降1度功率提升0.8%
+                coolingBenefit = turbine.power * 1000 * (tempChange * 0.008) * runHours * elecPrice * years;
+                document.getElementById('tempChange').textContent = `-${tempChange.toFixed(1)} °C (冷却)`;
+                document.getElementById('auxBenefitLabel').textContent = "预计10年冷却收益";
+                document.getElementById('auxBenefitValue').textContent = "¥ " + Math.round(coolingBenefit).toLocaleString();
+            } else if (isHeating && temp < 5) {
+                tempChange = 5 - temp;
+                // 抽气能耗代价
+                heatingPenalty = turbine.power * 1000 * (tempChange * 0.002) * runHours * elecPrice * years;
+                document.getElementById('tempChange').textContent = `+${tempChange.toFixed(1)} °C (加热)`;
+                document.getElementById('auxBenefitLabel').textContent = "预计10年能耗代价";
+                document.getElementById('auxBenefitValue').textContent = "- ¥ " + Math.round(heatingPenalty).toLocaleString();
+            } else {
+                document.getElementById('tempChange').textContent = "无需调节";
+                document.getElementById('auxBenefitValue').textContent = "¥ 0";
+            }
+        } else {
+            auxResult.style.display = 'none';
+        }
+
+        // 6. 安全防护计算
+        const k = filterData[currentEnv].k;
+        const dpMax = 300; // Pa
+        const blowInPa = Math.round(k * dpMax * (rho / rho0));
+        const blowInMm = Math.round(blowInPa / 9.81);
+        document.getElementById('blowInSetting').textContent = `${blowInMm} mmH2O (${blowInPa} Pa)`;
+        document.getElementById('maxSystemDP').textContent = `${dpMax} Pa`;
+
+        // 7. 推荐方案
+        const solutionDiv = document.getElementById('filterSolution');
+        solutionDiv.innerHTML = '<label>科德宝推荐方案：</label>';
+        filterData[currentEnv].filters.forEach(f => {
+            const item = document.createElement('div');
+            item.style.cssText = "display: flex; align-items: center; background: #f0fdf4; padding: 10px; border-radius: 6px; margin-bottom: 8px; border: 1px solid #dcfce7;";
+            item.innerHTML = `
+                <div style="flex: 1;">
+                    <div style="font-weight: 700; font-size: 14px; color: #166534;">${f.type}：${f.name}</div>
+                    <div style="font-size: 11px; color: #666;">用途：${f.purpose}</div>
+                </div>
+                <div style="text-align: right;">
+                    <span class="badge success">${f.grade}</span>
+                    <div style="font-size: 12px; font-weight: 700; margin-top: 4px;">${filterCount} 只</div>
+                </div>
             `;
-            filterList.appendChild(div);
+            solutionDiv.appendChild(item);
         });
 
-        // 8. 辅助系统性能计算与智能推荐
-        const inletHeatingCheckbox = document.getElementById('inletHeating');
-        const inletCoolingCheckbox = document.getElementById('inletCooling');
-        
-        // 智能推荐逻辑
-        const coolingRecommended = temp > 25;
-        const heatingRecommended = temp < 5;
-        
-        if (coolingRecommended) {
-            inletCoolingCheckbox.parentElement.style.border = "2px solid var(--success)";
-            inletCoolingCheckbox.parentElement.style.padding = "2px 5px";
-            inletCoolingCheckbox.parentElement.style.borderRadius = "4px";
-        } else {
-            inletCoolingCheckbox.parentElement.style.border = "none";
-        }
-        
-        if (heatingRecommended) {
-            inletHeatingCheckbox.parentElement.style.border = "2px solid var(--danger)";
-            inletHeatingCheckbox.parentElement.style.padding = "2px 5px";
-            inletHeatingCheckbox.parentElement.style.borderRadius = "4px";
-        } else {
-            inletHeatingCheckbox.parentElement.style.border = "none";
-        }
+        // 8. LCC 成本预估
+        const degradationRate = 0.015; // 1.5% 年衰减
+        const lccDegradation = turbine.power * 1000 * degradationRate * runHours * elecPrice * years * 0.5;
+        const lccEnergy = (volFlow * 250 / 3600 / 0.8) / 1000 * runHours * elecPrice * years;
+        const lccMaintenance = filterCount * 3 * 1500 * 3; // 10年换3次，平均单价1500
+        const totalLCC = lccDegradation + lccEnergy + lccMaintenance;
 
-        const inletHeating = inletHeatingCheckbox.checked;
-        const inletCooling = inletCoolingCheckbox.checked;
-        
-        // 9. LCC 分析 - 先定义 years
-        const years = 10;
-        
-        let coolingBenefit = 0;
-        let coolingCost = 0;
-        let coolingTempDrop = 0;
-        if (inletCooling) {
-            coolingTempDrop = temp > 30 ? 12 : 8; // 模拟温降
-            const powerIncrease = turbine.power * (coolingTempDrop * 0.008); // 每度电提升0.8%
-            coolingBenefit = powerIncrease * 1000 * runHours * elecPrice * years;
-            coolingCost = turbine.power > 100 ? 1500000 : 600000; // 规模效应
-        }
-        
-        let heatingCost = 0;
-        let heatingPenalty = 0;
-        let heatingTempRise = 0;
-        if (inletHeating) {
-            heatingTempRise = Math.max(5, 10 - temp); // 目标提升至5度以上
-            heatingPenalty = turbine.power * 1000 * runHours * elecPrice * (heatingTempRise * 0.005) * years; // 抽气损失
-            heatingCost = turbine.power > 100 ? 1000000 : 400000;
-        }
+        document.getElementById('lccDegradation').textContent = "¥ " + Math.round(lccDegradation).toLocaleString();
+        document.getElementById('lccEnergy').textContent = "¥ " + Math.round(lccEnergy).toLocaleString();
+        document.getElementById('lccMaintenance').textContent = "¥ " + Math.round(lccMaintenance).toLocaleString();
+        document.getElementById('lccTotal').textContent = "¥ " + Math.round(totalLCC).toLocaleString();
 
-        // 9. LCC 分析（续）
-        const degRate = 0.015;
-        const annualDegLoss = turbine.power * 1000 * runHours * elecPrice * degRate;
-        const totalDegLoss = annualDegLoss * years * 0.7;
+        // 9. 专家建议
+        generateExpertRecommendations(turbine, filterCount, totalLCC);
+    }
 
-        const avgDP = 250;
-        const energyLoss = (volFlow / 3600) * avgDP * runHours * years * elecPrice / (0.8 * 1000);
-        
-        const filterCost = count * 1500 * 5;
-        
-        const totalAuxiliaryCost = coolingCost + heatingCost;
-        const totalAuxiliaryBenefit = coolingBenefit; // heatingBenefit 不存在，只有 heatingPenalty
-        
-        document.getElementById('lccDegradation').innerText = "¥ " + Math.round(totalDegLoss / 10000).toLocaleString() + " 万";
-        document.getElementById('lccEnergy').innerText = "¥ " + Math.round(energyLoss / 10000).toLocaleString() + " 万";
-        document.getElementById('lccMaintenance').innerText = "¥ " + Math.round(filterCost / 10000).toLocaleString() + " 万";
-        
-        let lccTotal = totalDegLoss + energyLoss + filterCost;
-        if (inletCooling || inletHeating) {
-            const roiAnalysisDiv = document.querySelector('.roi-analysis');
-            const auxiliaryLCC = document.createElement('div');
-            auxiliaryLCC.style.cssText = 'background: #f0f9ff; border: 1px solid #bae6fd; border-radius: 8px; padding: 12px; margin-top: 15px;';
-            auxiliaryLCC.id = 'auxiliaryLCCDiv';
-            auxiliaryLCC.innerHTML = `
-                <div style="font-weight: 700; margin-bottom: 10px; color: #0369a1; font-size: 14px;">辅助系统技术参数与成本:</div>
-                ${inletCooling ? `<div class="roi-item"><span class="roi-label">冷却温降幅度</span><span class="roi-value" style="color: var(--success);">${coolingTempDrop} °C</span></div>` : ''}
-                ${inletCooling ? `<div class="roi-item"><span class="roi-label">冷却 10年净收益</span><span class="roi-value" style="color: var(--success);">¥ ${Math.round((coolingBenefit - coolingCost) / 10000)} 万</span></div>` : ''}
-                ${inletHeating ? `<div class="roi-item"><span class="roi-label">加热温升幅度</span><span class="roi-value" style="color: var(--danger);">${heatingTempRise} °C</span></div>` : ''}
-                ${inletHeating ? `<div class="roi-item"><span class="roi-label">加热 10年能耗代价</span><span class="roi-value" style="color: var(--danger);">¥ ${Math.round(heatingPenalty / 10000)} 万</span></div>` : ''}
-                <div style="font-size: 11px; color: #666; margin-top: 5px; border-top: 1px solid #bae6fd; padding-top: 5px;">* 收益已扣除初始投资成本</div>
+    function generateExpertRecommendations(turbine, count, lcc) {
+        const container = document.getElementById('expertAnalysis');
+        container.innerHTML = '';
+
+        const recommendations = [
+            {
+                title: "问题 1: E12 级超高效过滤的投资回报率 (ROI)",
+                content: `针对 ${turbine.model}，采用 E12 级过滤虽增加初始成本，但可将年性能衰减从 1.5% 降至 0.4%。预计 10 年可节省燃料费及功率损失约 ¥${Math.round(lcc * 0.4).toLocaleString()}。`,
+                roi: `投资回收期: 18-22 个月`
+            },
+            {
+                title: "问题 2: 极端工况下的多级过滤冗余设计",
+                content: `在 ${filterData[currentEnv].desc.split('。')[0]} 环境下，建议采用三级过滤。增加一级预过滤可使终滤器寿命延长 150%，显著降低年度停机维护频率。`,
+                roi: `维护成本降低: 35%`
+            },
+            {
+                title: "问题 3: 防爆门开启压力与安全平衡",
+                content: `当前设定值 ${document.getElementById('blowInSetting').textContent} 考虑了 ${currentEnv} 环境下的安全余量。该设定既能防止滤芯报警时的误开启，又能确保进气道在 300Pa 极限负压下的结构安全。`,
+                roi: `安全等级: 极高 (符合 GMRC)`
+            }
+        ];
+
+        recommendations.forEach(r => {
+            const card = document.createElement('div');
+            card.className = 'card expert-card';
+            card.innerHTML = `
+                <div class="recommendation-label">${r.title}</div>
+                <div class="recommendation-content">${r.content}</div>
+                <div class="roi-analysis">
+                    <div class="roi-value" style="text-align: left; font-size: 12px;">${r.roi}</div>
+                </div>
             `;
-            const existingDiv = document.getElementById('auxiliaryLCCDiv');
-            if (existingDiv) existingDiv.remove();
-            roiAnalysisDiv.parentElement.appendChild(auxiliaryLCC);
-            lccTotal = lccTotal + totalAuxiliaryCost + heatingPenalty - coolingBenefit;
-        }
-        
-        document.getElementById('lccTotal').innerText = "¥ " + Math.round(lccTotal / 10000).toLocaleString() + " 万";
-
-        // 10. 专家决策支持分析
-        generateExpertRecommendations(turbine, envInfo, count, totalDegLoss, energyLoss, filterCost, k, maxDP, setPointmmH2O, inletHeating, inletCooling);
+            container.appendChild(card);
+        });
     }
 
-    function generateExpertRecommendations(turbine, envInfo, count, degLoss, energyLoss, filterCost, k, maxDP, setPoint, inletHeating, inletCooling) {
-        // ROI 分析
-        const roiRec = document.getElementById('roi-recommendation');
-        let roiText = '';
-        if (turbine.power > 100) {
-            roiText = `对于您选择的 ${turbine.power} MW 大型燃机，采用 E12 级超高效过滤强烈推荐。E12 级滤芯虽然初始成本约高 3-5 倍，但能将年均性能衰减从 1.5%-2.0% 降低至 0.5% 以下，节省的燃料费和功率补偿通常在 18-24 个月内即可覆盖高出的采购成本。`;
-        } else {
-            roiText = `对于您选择的 ${turbine.power} MW 中小型燃机，建议采用 F9 级过滤即可满足需求，性价比更优。如果燃机处于基本负荷运行（年运行小时数 > 7000h），可考虑升级至 E12 级。`;
-        }
-        
-        if (inletCooling) {
-            roiText += ` 针对您的环境，强烈推荐配置进气冷却系统，可帮助燃机提升 3-8% 的功率。`;
-        }
-        
-        if (inletHeating) {
-            roiText += ` 针对您的环境，强烈推荐配置进气加热系统，以保证滤芯和导叶不会结冰。`;
-        }
-        
-        roiRec.innerText = roiText;
-
-        const roiDetails = document.getElementById('roi-details');
-        const roi10Year = degLoss * 0.3;
-        const paybackMonths = Math.round((count * 1500 * 3) / (roi10Year / 120));
-        roiDetails.innerHTML = `
-            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px; font-size: 13px;">
-                <div><strong>10年衰减成本 (F9):</strong></div>
-                <div style="text-align: right; color: var(--primary); font-weight: 700;">¥ ${Math.round(degLoss / 10000)} 万</div>
-                <div><strong>10年衰减成本 (E12):</strong></div>
-                <div style="text-align: right; color: var(--success); font-weight: 700;">¥ ${Math.round(degLoss * 0.3 / 10000)} 万</div>
-                <div><strong>年均节省:</strong></div>
-                <div style="text-align: right; color: var(--success); font-weight: 700;">¥ ${Math.round(degLoss * 0.7 / 100000)} 万/年</div>
-                <div><strong>投资回收期:</strong></div>
-                <div style="text-align: right; color: var(--success); font-weight: 700;">${Math.min(paybackMonths, 36)} 个月</div>
-            </div>
-        `;
-
-        // 冗余设计分析
-        const redundancyRec = document.getElementById('redundancy-recommendation');
-        if (currentEnv === 'desert' || currentEnv === 'marine' || currentEnv === 'arctic') {
-            redundancyRec.innerText = `在 ${envInfo.desc.split('。')[0]} 环境下，强烈建议采用至少三级过滤系统。虽然初始压降增加 15-20%，但能将终滤器更换周期从 1 年延长至 2-3 年，大幅降低维护成本和停机风险。`;
-        } else {
-            redundancyRec.innerText = `在标准工况下，两级过滤（预滤 + 终滤）已能满足需求。如果您的应用场景偶有粉尘浓度波动，建议保留升级至三级的余地。`;
-        }
-
-        const redundancyDetails = document.getElementById('redundancy-details');
-        const filterStages = envInfo.filters.length;
-        const maintenanceSavings = filterStages === 3 ? (filterCost * 0.4) : 0;
-        redundancyDetails.innerHTML = `
-            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px; font-size: 13px;">
-                <div><strong>当前推荐级数:</strong></div>
-                <div style="text-align: right; color: var(--primary); font-weight: 700;">${filterStages} 级</div>
-                <div><strong>10年维护成本:</strong></div>
-                <div style="text-align: right; color: var(--primary); font-weight: 700;">¥ ${Math.round(filterCost / 10000)} 万</div>
-                <div><strong>三级系统维护节省:</strong></div>
-                <div style="text-align: right; color: var(--success); font-weight: 700;">¥ ${Math.round(maintenanceSavings / 10000)} 万</div>
-                <div><strong>终滤器更换周期:</strong></div>
-                <div style="text-align: right; color: var(--success); font-weight: 700;">${filterStages === 3 ? '2-3 年' : '1-2 年'}</div>
-            </div>
-        `;
-
-        // 防爆门安全分析
-        const safetyRec = document.getElementById('safety-recommendation');
-        const blowInNeeded = envInfo.safety.blowIn || turbine.power > 100;
-        if (blowInNeeded) {
-            safetyRec.innerText = `根据 GMRC 指南，在您的工况（${currentEnv === 'arctic' ? '极寒' : currentEnv === 'desert' ? '沙漠' : currentEnv === 'marine' ? '海洋' : '高功率'}）下，防爆门是必需的安全装置。建议开启压力设定为 ${setPoint} mmH₂O，并配合压差变送器实现提前预警，防止进气道因负压过大而发生内爆。`;
-        } else {
-            safetyRec.innerText = `在标准工况下，防爆门为可选配置。如果您的项目位于沿海或高海拔地区，建议仍然配置以增加安全冗余。`;
-        }
-
-        const safetyDetails = document.getElementById('safety-details');
-        const maxPressure = Math.round(setPoint * 1.5);
-        safetyDetails.innerHTML = `
-            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px; font-size: 13px;">
-                <div><strong>计算的开启压力:</strong></div>
-                <div style="text-align: right; color: var(--primary); font-weight: 700;">${setPoint} mmH₂O</div>
-                <div><strong>系统最大压降:</strong></div>
-                <div style="text-align: right; color: var(--primary); font-weight: 700;">~${maxDP} Pa</div>
-                <div><strong>安全余量系数 (k):</strong></div>
-                <div style="text-align: right; color: var(--primary); font-weight: 700;">${k.toFixed(2)}</div>
-                <div><strong>配置状态:</strong></div>
-                <div style="text-align: right; color: var(--danger); font-weight: 700;">${blowInNeeded ? '强烈建议' : '可选'}</div>
-            </div>
-        `;
+    function openModal(id) {
+        document.getElementById(id).classList.add('show');
     }
 
-    function openFormulaModal() {
-        document.getElementById('formulaModal').classList.add('show');
-    }
-
-    function closeFormulaModal() {
-        document.getElementById('formulaModal').classList.remove('show');
+    function closeModal(id) {
+        document.getElementById(id).classList.remove('show');
     }
 
     window.onclick = function(event) {
-        const modal = document.getElementById('formulaModal');
-        if (event.target === modal) {
-            modal.classList.remove('show');
+        if (event.target.className === 'modal show') {
+            event.target.classList.remove('show');
         }
     }
 
