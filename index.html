@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>全球燃气轮机进气过滤选型系统 v10.0 - 辅助系统增强版</title>
+    <title>全球燃气轮机进气过滤选型系统 v10.1 - 智能辅助决策版</title>
     <style>
         :root { 
             --primary: #005eb8; 
@@ -455,7 +455,7 @@
     <header>
         <div>
               <h1>全球燃气轮机进气过滤选型系统</h1>
-        <div class="version">v10.0 辅助系统增强版 | 进气加热/冷却 | 基于 GMRC Release 1.0 指南</div>>
+        <div class="version">v10.1 智能辅助决策版 | 进气加热/冷却 | 自动推荐逻辑</div>>
         </div>
         <div class="tabs-container" id="manufacturerTabs">
             <!-- 厂家标签将由 JS 动态生成 -->
@@ -1154,23 +1154,50 @@
             filterList.appendChild(div);
         });
 
-        // 8. 辅助系统性能计算
-        const inletHeating = document.getElementById('inletHeating').checked;
-        const inletCooling = document.getElementById('inletCooling').checked;
+        // 8. 辅助系统性能计算与智能推荐
+        const inletHeatingCheckbox = document.getElementById('inletHeating');
+        const inletCoolingCheckbox = document.getElementById('inletCooling');
+        
+        // 智能推荐逻辑
+        const coolingRecommended = temp > 25;
+        const heatingRecommended = temp < 5;
+        
+        if (coolingRecommended) {
+            inletCoolingCheckbox.parentElement.style.border = "2px solid var(--success)";
+            inletCoolingCheckbox.parentElement.style.padding = "2px 5px";
+            inletCoolingCheckbox.parentElement.style.borderRadius = "4px";
+        } else {
+            inletCoolingCheckbox.parentElement.style.border = "none";
+        }
+        
+        if (heatingRecommended) {
+            inletHeatingCheckbox.parentElement.style.border = "2px solid var(--danger)";
+            inletHeatingCheckbox.parentElement.style.padding = "2px 5px";
+            inletHeatingCheckbox.parentElement.style.borderRadius = "4px";
+        } else {
+            inletHeatingCheckbox.parentElement.style.border = "none";
+        }
+
+        const inletHeating = inletHeatingCheckbox.checked;
+        const inletCooling = inletCoolingCheckbox.checked;
         
         let coolingBenefit = 0;
         let coolingCost = 0;
-        if (inletCooling && (currentEnv === 'tropical' || temp > 35)) {
-            const powerIncrease = turbine.power * 0.05;
+        let coolingTempDrop = 0;
+        if (inletCooling) {
+            coolingTempDrop = temp > 30 ? 12 : 8; // 模拟温降
+            const powerIncrease = turbine.power * (coolingTempDrop * 0.008); // 每度电提升0.8%
             coolingBenefit = powerIncrease * 1000 * runHours * elecPrice * years;
-            coolingCost = 800000;
+            coolingCost = turbine.power > 100 ? 1500000 : 600000; // 规模效应
         }
         
         let heatingCost = 0;
-        let heatingBenefit = 0;
-        if (inletHeating && (currentEnv === 'arctic' || temp < -10)) {
-            heatingCost = 500000;
-            heatingBenefit = 0;
+        let heatingPenalty = 0;
+        let heatingTempRise = 0;
+        if (inletHeating) {
+            heatingTempRise = Math.max(5, 10 - temp); // 目标提升至5度以上
+            heatingPenalty = turbine.power * 1000 * runHours * elecPrice * (heatingTempRise * 0.005) * years; // 抽气损失
+            heatingCost = turbine.power > 100 ? 1000000 : 400000;
         }
 
         // 9. LCC 分析
@@ -1198,16 +1225,17 @@
             auxiliaryLCC.style.cssText = 'background: #f0f9ff; border: 1px solid #bae6fd; border-radius: 8px; padding: 12px; margin-top: 15px;';
             auxiliaryLCC.id = 'auxiliaryLCCDiv';
             auxiliaryLCC.innerHTML = `
-                <div style="font-weight: 700; margin-bottom: 10px; color: #0369a1; font-size: 14px;">辅助系统成本分析:</div>
-                ${inletCooling ? `<div class="roi-item"><span class="roi-label">进气冷却系统成本</span><span class="roi-value">¥ ${Math.round(coolingCost / 10000)} 万</span></div>` : ''}
-                ${inletCooling ? `<div class="roi-item"><span class="roi-label">冷却系统 10年收益</span><span class="roi-value" style="color: var(--success);">¥ ${Math.round(coolingBenefit / 10000)} 万</span></div>` : ''}
-                ${inletHeating ? `<div class="roi-item"><span class="roi-label">进气加热系统成本</span><span class="roi-value">¥ ${Math.round(heatingCost / 10000)} 万</span></div>` : ''}
-                ${inletHeating ? `<div class="roi-item"><span class="roi-label">加热系统作用</span><span class="roi-value" style="color: #666;">防止结冰 / 保证安全</span></div>` : ''}
+                <div style="font-weight: 700; margin-bottom: 10px; color: #0369a1; font-size: 14px;">辅助系统技术参数与成本:</div>
+                ${inletCooling ? `<div class="roi-item"><span class="roi-label">冷却温降幅度</span><span class="roi-value" style="color: var(--success);">${coolingTempDrop} °C</span></div>` : ''}
+                ${inletCooling ? `<div class="roi-item"><span class="roi-label">冷却 10年净收益</span><span class="roi-value" style="color: var(--success);">¥ ${Math.round((coolingBenefit - coolingCost) / 10000)} 万</span></div>` : ''}
+                ${inletHeating ? `<div class="roi-item"><span class="roi-label">加热温升幅度</span><span class="roi-value" style="color: var(--danger);">${heatingTempRise} °C</span></div>` : ''}
+                ${inletHeating ? `<div class="roi-item"><span class="roi-label">加热 10年能耗代价</span><span class="roi-value" style="color: var(--danger);">¥ ${Math.round(heatingPenalty / 10000)} 万</span></div>` : ''}
+                <div style="font-size: 11px; color: #666; margin-top: 5px; border-top: 1px solid #bae6fd; padding-top: 5px;">* 收益已扣除初始投资成本</div>
             `;
             const existingDiv = document.getElementById('auxiliaryLCCDiv');
             if (existingDiv) existingDiv.remove();
             roiAnalysisDiv.parentElement.appendChild(auxiliaryLCC);
-            lccTotal = lccTotal + totalAuxiliaryCost - totalAuxiliaryBenefit;
+            lccTotal = lccTotal + totalAuxiliaryCost + heatingPenalty - coolingBenefit;
         }
         
         document.getElementById('lccTotal').innerText = "¥ " + Math.round(lccTotal / 10000).toLocaleString() + " 万";
