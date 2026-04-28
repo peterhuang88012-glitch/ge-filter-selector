@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>全球燃气轮机进气过滤选型系统 v11.3 - OEM 数据校准与脉冲系统集成版</title>
+    <title>全球燃气轮机进气过滤选型系统 v11.5 - 设计风速自定义与动态推荐版</title>
     <style>
         :root { 
             --primary: #005eb8; 
@@ -467,7 +467,7 @@
     <header>
         <div>
            <h1>🌍 全球燃气轮机进气过滤选型系统</h1>
-        <div class="version">版本 v11.3 | OEM 数据校准与脉冲系统集成版</div>态双核 | 智能推荐 | 计算原理详解</div>
+        <div class="version">版本 v11.5 | 设计风速自定义与动态推荐版</div>态双核 | 智能推荐 | 计算原理详解</div>
         </div>
         <div class="badge success">GMRC Release 1.0 标准集成</div>
     </header>
@@ -519,6 +519,20 @@
             </div>
             <div id="systemTypeInfo" style="background: #f0f7ff; padding: 12px; border-radius: 6px; border-left: 4px solid #005eb8; font-size: 13px; color: #444; margin-top: 15px;">
                 <strong>静态系统：</strong> 设计风速 3.0 m/s，适用于标准及中等工况。
+            </div>
+            
+            <div style="margin-top: 20px; padding: 15px; background: #f9fafb; border-radius: 8px; border: 1px solid #e5e7eb;">
+                <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px;">
+                    <label for="designVelocity" style="font-weight: 600; color: #333; margin: 0;">设计风速 (m/s)</label>
+                    <span id="recommendedVelocityLabel" style="font-size: 12px; background: #e0e7ff; color: #3730a3; padding: 4px 10px; border-radius: 12px; font-weight: 600;">推荐值：3.0 m/s</span>
+                </div>
+                <div style="display: flex; gap: 10px; align-items: center;">
+                    <input type="number" id="designVelocity" value="3.0" step="0.1" min="1.5" max="8.0" onchange="updateCalculations()" style="flex: 1; padding: 10px; border: 2px solid #005eb8; border-radius: 6px; font-size: 14px;">
+                    <button onclick="setRecommendedVelocity()" style="padding: 10px 16px; background: #005eb8; color: white; border: none; border-radius: 6px; cursor: pointer; font-weight: 600; font-size: 13px; white-space: nowrap;">使用推荐值</button>
+                </div>
+                <p style="font-size: 12px; color: #666; margin: 8px 0 0 0; line-height: 1.4;">
+                    💡 <strong>提示：</strong>调整风速会直接影响滤芯数量、压降和成本。推荐值基于 GMRC 标准，您可根据实际工况灵活调整。
+                </p>
             </div>
 
             <h3 style="margin-top: 25px;">3. 现场环境工况</h3>
@@ -783,15 +797,18 @@
                     </tbody>
                 </table>
                 
-                <h4 style="margin-top: 20px;">4. 为什么选择 3.0 m/s？</h4>
+                <h4 style="margin-top: 20px;">4. 设计风速的选择原理</h4>
                 <p style="font-size: 13px; color: #444; line-height: 1.6;">
-                    根据 <strong>GMRC Release 1.0</strong> 建议，3.0 m/s 是全球范围内静态过滤系统的“黄金平衡点”：
+                    设计风速是滤芯选型的核心参数，直接影响滤芯数量、压降、寿命和成本。根据 <strong>GMRC Release 1.0</strong> 建议，不同系统类型的推荐风速范围如下：
                 </p>
                 <ul style="font-size: 13px; color: #444; line-height: 1.6;">
-                    <li><strong>压降控制：</strong> 确保洁净压降在 150 Pa 以下，减少燃机功率损失。</li>
-                    <li><strong>寿命保障：</strong> 降低滤材表面的粉尘堆积速率，延长更换周期。</li>
-                    <li><strong>结构紧凑：</strong> 进气墙尺寸适中，降低钢结构成本。</li>
+                    <li><strong>静态系统 (Static):</strong> 2.5-3.5 m/s。其中 3.0 m/s 是"黄金平衡点"，确保洁净压降在 150 Pa 以下，降低燃机功率损失。</li>
+                    <li><strong>脚冲系统 (Pulse Jet):</strong> 4.0-6.0 m/s。高风速设计依赖在线清灰效率，可显著减少滤芯数量和占地面积。</li>
+                    <li><strong>HEPA/E12 系统:</strong> 2.0-2.5 m/s。低风速设计以延长昂贵滤芯的使用寿命。</li>
                 </ul>
+                <p style="font-size: 13px; color: #666; background: #f8f9fa; padding: 10px; border-radius: 6px; margin-top: 15px;">
+                    <strong>💡 提示：</strong>您可根据实际的粉尘浓度、滤芯寿命预算和经济性考量，在推荐范围内调整设计风速。系统将实时计算相应的滤芯数量和成本影响。
+                </p>
             </div>
         </div>
     </div>
@@ -959,6 +976,13 @@
         updateCalculations();
     }
 
+    function setRecommendedVelocity() {
+        const filtrationType = document.getElementById('filtrationType').value;
+        const recommendedVelocity = filtrationType === 'pulse' ? 5.0 : 3.0;
+        document.getElementById('designVelocity').value = recommendedVelocity;
+        updateCalculations();
+    }
+
     function updateCalculations() {
         const modelName = document.getElementById('turbineModel').value;
         const turbine = turbineData[currentManufacturer].find(t => t.model === modelName);
@@ -969,8 +993,15 @@
         const filtrationType = document.getElementById('filtrationType').value;
         const years = 10;
         
-        // 根据过滤系统类型选择设计风速
-        const designVelocity = filtrationType === 'pulse' ? 5.0 : 3.0;
+        // 根据过滤系统类型更新推荐值标签
+        let recommendedVelocity = 3.0;
+        if (filtrationType === 'pulse') {
+            recommendedVelocity = 5.0;
+        }
+        document.getElementById('recommendedVelocityLabel').textContent = `推荐值：${recommendedVelocity} m/s`;
+        
+        // 使用自定义设计风速（或默认为推荐值）
+        const designVelocity = parseFloat(document.getElementById('designVelocity').value) || recommendedVelocity;
 
         // 1. 空气密度修正
         const rho0 = 1.225;
@@ -990,12 +1021,12 @@
         document.getElementById('calcFinalCount').textContent = filterCount;
         document.getElementById('calcDesignVelocity').textContent = `${designVelocity} m/s`;
         
-        // 更新系统类型信息提示
+        // 更新系统类型信息提示（添加当前设置风速）
         const systemInfo = document.getElementById('systemTypeInfo');
         if (filtrationType === 'pulse') {
-            systemInfo.innerHTML = '<strong>脉冲系统：</strong> 设计风速 5.0 m/s，采用在线清灰，适用于高粉尘工况。';
+            systemInfo.innerHTML = `<strong>脚冲系统：</strong> 推荐风速 5.0 m/s，当前设置为 <span style="color: #005eb8; font-weight: 700;">${designVelocity} m/s</span>，采用在线清灰，适用于高粉尘工况。`;
         } else {
-            systemInfo.innerHTML = '<strong>静态系统：</strong> 设计风速 3.0 m/s，适用于标准及中等工况。';
+            systemInfo.innerHTML = `<strong>静态系统：</strong> 推荐风速 3.0 m/s，当前设置为 <span style="color: #005eb8; font-weight: 700;">${designVelocity} m/s</span>，适用于标准及中等工况。`;
         }
 
         // 4. 辅助系统智能推荐逻辑
